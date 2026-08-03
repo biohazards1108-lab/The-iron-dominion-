@@ -1,0 +1,535 @@
+/* =========================================
+   IRON DOMINION INDUSTRIAL EMPIRE THEME
+   Tekkit 1.6.4 Website
+========================================= */
+
+
+/* GLOBAL */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    background:
+    linear-gradient(
+        rgba(0,0,0,0.85),
+        rgba(0,0,0,0.95)
+    ),
+    url("../assets/images/steel-background.jpg");
+
+    background-size: cover;
+
+    background-attachment: fixed;
+
+    color: #e0e0e0;
+
+    font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+}
+
+
+/* =========================================
+   HERO HEADER
+========================================= */
+
+
+.hero {
+
+    height: 500px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    background:
+
+    linear-gradient(
+    rgba(0,0,0,.65),
+    rgba(0,0,0,.9)
+    ),
+
+    url("../assets/images/iron-banner.jpg");
+
+
+    background-size:cover;
+
+    background-position:center;
+
+    border-bottom:
+
+    4px solid #b87333;
+
+}
+
+
+
+.overlay {
+
+    padding:40px;
+
+}
+
+
+
+.hero h1 {
+
+
+    font-size:70px;
+
+    margin:0;
+
+    color:#d4af37;
+
+
+    text-shadow:
+
+    0 0 10px #b87333,
+    0 0 25px #8b0000;
+
+
+}
+
+
+
+.hero h2 {
+
+
+    font-size:30px;
+
+    color:#ddd;
+
+
+}
+
+
+
+.hero p {
+
+
+    font-size:20px;
+
+}
+
+
+
+/* BUTTON */
+
+
+button {
+
+
+    margin-top:25px;
+
+    padding:
+
+    15px 35px;
+
+
+    background:
+
+    linear-gradient(
+    #d4af37,
+    #8b5a00
+    );
+
+
+    border:none;
+
+    color:#111;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+
+    border-radius:6px;
+
+
+}
+
+
+button:hover {
+
+
+    background:#b87333;
+
+    transform:scale(1.05);
+
+}
+
+
+
+/* =========================================
+ NAVIGATION
+========================================= */
+
+
+nav {
+
+
+    background:#151515;
+
+    padding:20px;
+
+    text-align:center;
+
+    border-bottom:
+
+    2px solid #333;
+
+
+}
+
+
+
+nav a {
+
+
+    color:#d4af37;
+
+    text-decoration:none;
+
+    margin:0 15px;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+
+}
+
+
+
+nav a:hover {
+
+
+    color:#00a8ff;
+
+
+}
+
+
+
+
+/* =========================================
+ MAIN PANELS
+========================================= */
+
+
+main {
+
+
+    width:90%;
+
+    max-width:1200px;
+
+    margin:auto;
+
+
+}
+
+
+
+.panel {
+
+
+    background:
+
+
+    linear-gradient(
+
+    145deg,
+
+    rgba(50,50,50,.95),
+
+    rgba(15,15,15,.95)
+
+    );
+
+
+    margin:30px 0;
+
+
+    padding:30px;
+
+
+    border-radius:10px;
+
+
+    border:
+
+
+    2px solid #444;
+
+
+
+    box-shadow:
+
+
+    0 0 20px rgba(0,0,0,.8);
+
+
+}
+
+
+
+.panel h2 {
+
+
+    color:#d4af37;
+
+    border-bottom:
+
+    1px solid #b87333;
+
+    padding-bottom:10px;
+
+
+}
+
+
+
+/* =========================================
+ SERVER STATUS
+========================================= */
+
+
+.status-box {
+
+
+    display:grid;
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(200px,1fr));
+
+
+    gap:15px;
+
+
+}
+
+
+
+.status-box p {
+
+
+    background:#111;
+
+    padding:15px;
+
+    border-left:
+
+    4px solid #00a8ff;
+
+
+}
+
+
+
+
+
+/* =========================================
+ ECONOMY
+========================================= */
+
+
+.economy {
+
+
+    text-align:center;
+
+
+}
+
+
+
+.economy h3 {
+
+
+    font-size:45px;
+
+    color:#d4af37;
+
+
+    text-shadow:
+
+    0 0 15px #b87333;
+
+
+}
+
+
+
+
+/* =========================================
+ TABLES
+========================================= */
+
+
+table {
+
+
+    width:100%;
+
+    border-collapse:collapse;
+
+
+}
+
+
+
+th {
+
+
+    background:#8b0000;
+
+    color:white;
+
+    padding:15px;
+
+
+}
+
+
+
+td {
+
+
+    padding:15px;
+
+    text-align:center;
+
+
+    border-bottom:
+
+    1px solid #444;
+
+
+}
+
+
+
+tr:hover {
+
+
+    background:#222;
+
+
+}
+
+
+
+/* =========================================
+ RANK DISPLAY
+========================================= */
+
+
+.ranks {
+
+
+    font-size:22px;
+
+    text-align:center;
+
+    color:#d4af37;
+
+
+}
+
+
+
+
+/* =========================================
+ FOOTER
+========================================= */
+
+
+footer {
+
+
+    margin-top:50px;
+
+    padding:30px;
+
+    text-align:center;
+
+
+    background:#0b0b0b;
+
+
+    border-top:
+
+    3px solid #b87333;
+
+
+    color:#888;
+
+
+}
+
+
+
+
+/* =========================================
+ INDUSTRIAL EFFECTS
+========================================= */
+
+
+.panel:hover {
+
+
+    border-color:#d4af37;
+
+
+    box-shadow:
+
+    0 0 25px rgba(212,175,55,.3);
+
+
+    transition:.3s;
+
+
+}
+
+
+
+
+/* MOBILE */
+
+
+@media(max-width:700px){
+
+
+.hero h1{
+
+font-size:40px;
+
+}
+
+
+nav a{
+
+display:block;
+
+margin:10px;
+
+}
+
+
+
+}
