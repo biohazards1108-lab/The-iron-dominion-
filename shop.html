@@ -5,6 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shops — Iron Dominion</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .crate-card {
+      background: #1a1a1a;
+      border: 2px solid #fca311;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .crate-card h3 {
+      color: #fca311;
+      margin-bottom: 10px;
+    }
+    .crate-card .price {
+      font-size: 18px;
+      color: #22c55e;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+    .crate-card .items {
+      list-style: none;
+      padding: 10px 0;
+      margin: 15px 0;
+      border-top: 1px solid #444;
+      border-bottom: 1px solid #444;
+    }
+    .crate-card .items li {
+      padding: 5px 0;
+      color: #ddd;
+    }
+    .crate-card button {
+      width: 100%;
+      padding: 10px;
+      background: #fca311;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .crate-card button:hover {
+      background: #ffb84d;
+    }
+    .crate-card button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
 </head>
 <body>
 <header class="hero">
@@ -23,12 +75,17 @@
 </nav>
 <main>
   <section class="panel">
-    <h2>Available Shops</h2>
-    <ul>
-      <li><strong>General Goods</strong> — Tools, food, and basic materials.</li>
-      <li><strong>Industrial Supplies</strong> — Machines, gears, and power components.</li>
-      <li><strong>Rare Items</strong> — Auction-only items and event rewards.</li>
-    </ul>
+    <h2>🎁 Buy Crates with Dominion Tokens</h2>
+    <div id="shop-container"></div>
+  </section>
+  <section class="panel">
+    <h2>📊 How it Works</h2>
+    <ol>
+      <li>View available crates and their prices in Dominion Tokens</li>
+      <li>Click "Buy Crate" and enter your in-game username</li>
+      <li>The purchase is processed and tokens are deducted from your account</li>
+      <li>Your items are delivered to your in-game inventory or mail</li>
+    </ol>
   </section>
   <section class="panel">
     <h2>How to Sell</h2>
@@ -39,5 +96,6 @@
   <p>⚒ Iron Dominion © 2026</p>
 </footer>
 <script src="js/economy.js"></script>
+<script src="js/shop.js"></script>
 </body>
 </html>
