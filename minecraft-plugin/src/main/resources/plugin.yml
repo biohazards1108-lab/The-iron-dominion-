@@ -1,0 +1,19 @@
+name: IronDominionShop
+version: 1.0.0
+main: com.irondom.shop.IronDominionShop
+description: Shop system for Iron Dominion server
+author: IronDom Team
+
+commands:
+  domshop:
+    description: Check your token balance and shop
+    usage: /domshop
+  domadmin:
+    description: Admin commands for the shop
+    usage: /domadmin <addtokens|checktxn|sync> <args>
+    permission: irondom.admin
+
+permissions:
+  irondom.admin:
+    description: Admin access to Iron Dominion commands
+    default: op
