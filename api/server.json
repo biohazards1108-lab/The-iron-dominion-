@@ -1,7 +1,6 @@
 {
-    "online": true,
-    "players": 0,
-    "maxPlayers": 100,
-    "version": "Tekkit 1.6.4",
-    "tps": 20.0
+  "online": true,
+  "players": 42,
+  "maxPlayers": 100,
+  "tps": 19.8
 }
