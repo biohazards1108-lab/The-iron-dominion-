@@ -1,9 +1,10 @@
 # Iron Dominion Bridge configuration
 # NEVER commit real API keys or Tebex secrets here.
-# Set these values in the generated plugins/IronDominionBridge/config.yml on the server.
+# Set the api-key and Tebex secret in plugins/IronDominionBridge/config.yml on the server.
 
 api:
-  url: "https://REPLACE_WITH_PRODUCTION_API_HOST"
+  # Stable production Vercel alias. This is the same backend used by the main site/store integration.
+  url: "https://iron-dominion-wasteland-studios-projects.vercel.app"
   api-key: "REPLACE_ON_SERVER"
   connect-timeout-ms: 5000
   read-timeout-ms: 5000
@@ -18,8 +19,8 @@ status:
   update-seconds: 60
 
 delivery:
-  # Tebex tells clients the correct next-check interval. This value is only
-  # the initial safety interval before the first successful queue response.
+  # Tebex supplies the next queue-check interval after a successful response.
+  # This value is only the initial safety interval before the first response.
   poll-seconds: 90
 
 voting:
@@ -28,4 +29,5 @@ voting:
   duplicate-protection: true
 
 store:
+  # Enable only after api-key and Tebex secret are configured locally on the server.
   enabled: false
