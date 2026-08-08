@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>/</loc></url>
-  <url><loc>/join.html</loc></url>
-  <url><loc>/ranks.html</loc></url>
-  <url><loc>/economy.html</loc></url>
-  <url><loc>/leaderboard.html</loc></url>
-  <url><loc>/shop.html</loc></url>
-  <url><loc>/rules.html</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/join.html</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/ranks.html</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/economy.html</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/leaderboard.html</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/shop.html</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/vote.html</loc></url>
+  <url><loc>https://biohazards1108-lab.github.io/The-iron-dominion-/rules.html</loc></url>
 </urlset>
