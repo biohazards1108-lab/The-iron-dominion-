@@ -1,13 +1,13 @@
 name: IronDominionNPCs
 main: com.irondominion.npcs.IronDominionNPCs
-version: 1.0.0
+version: 1.0.1
 load: POSTWORLD
 author: Iron Dominion
 description: Custom interactive NPC system for Iron Dominion Tekkit 1.6.4.
 commands:
   idnpc:
     description: Manage Iron Dominion NPCs.
-    usage: /idnpc <list|create|remove|reload|respawn>
+    usage: /idnpc <version|debug|list|create|remove|reload|respawn>
     aliases: [domnpc]
 permissions:
   irondominion.npcs.admin:
