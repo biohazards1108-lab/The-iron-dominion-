@@ -3,67 +3,43 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.irondom</groupId>
-    <artifactId>IronDominionBridge</artifactId>
+    <artifactId>IronDominionTokens</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-
-    <name>Iron Dominion Bridge</name>
-    <description>Legacy Bukkit/Cauldron bridge for the Iron Dominion website backend</description>
-
+    <name>Iron Dominion Tokens</name>
+    <description>Legacy Dominion Token economy plugin for Tekkit 1.6.4/Cauldron</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-
     <repositories>
         <repository>
-            <id>md5-public</id>
-            <url>https://repo.md-5.net/content/repositories/public/</url>
+            <id>elmakers</id>
+            <url>https://maven.elmakers.com/repository/</url>
         </repository>
     </repositories>
-
     <dependencies>
-        <!-- Target the legacy Bukkit API used by the Tekkit 1.6.4/Cauldron environment. -->
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <artifactId>craftbukkit</artifactId>
             <version>1.6.4-R2.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version>
-        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
+                <configuration><source>1.8</source><target>1.8</target></configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <version>3.5.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals><goal>shade</goal></goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
