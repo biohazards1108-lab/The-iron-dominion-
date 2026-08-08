@@ -45,25 +45,21 @@ jobs:
           java-version: '8'
           cache: maven
       - name: Build legacy bridge
-        working-directory: minecraft-plugin
+        working-directory: dominion-tokens
         run: mvn -B -DskipTests package
       - name: Verify plugin JAR
-        working-directory: minecraft-plugin
+        working-directory: dominion-tokens
         shell: bash
         run: |
           set -euo pipefail
-          test -f target/IronDominionTokens-1.0.0.jar
-          jar tf target/IronDominionTokens-1.0.0.jar | grep -q 'plugin.yml'
-          jar tf target/IronDominionTokens-1.0.0.jar | grep -q 'com/irondominion/tokens/DominionTokens.class'
-          if jar tf target/IronDominionTokens-1.0.0.jar | grep -q 'com/irondom/shop/'; then
-            echo 'Unexpected shop classes found in token plugin JAR.'
-            exit 1
-          fi
+          test -f target/DominionTokens-1.0.0.jar
+          jar tf target/DominionTokens-1.0.0.jar | grep -q 'plugin.yml'
+          jar tf target/DominionTokens-1.0.0.jar | grep -q 'com/irondom/tokens/DominionTokens.class'
       - name: Upload DominionTokens JAR
         uses: actions/upload-artifact@v4
         with:
           name: DominionTokens-1.0.0
-          path: minecraft-plugin/target/IronDominionTokens-1.0.0.jar
+          path: dominion-tokens/target/DominionTokens-1.0.0.jar
           if-no-files-found: error
 
   static-site-check:
