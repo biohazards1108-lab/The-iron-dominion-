@@ -1,19 +1,15 @@
-name: IronDominionBridge
+name: DominionTokens
 version: 1.0.0
-main: com.irondom.shop.IronDominionShop
-description: Secure legacy-server bridge for the Iron Dominion website backend
+main: com.irondominion.tokens.DominionTokens
+description: Dominion Token economy for Iron Dominion Tekkit 1.6.4
+version: 1.0.0
 author: Iron Dominion
-
 commands:
-  domshop:
-    description: View the Dominion support/store integration status
-    usage: /domshop
-  domadmin:
-    description: Administrative Iron Dominion backend commands
-    usage: /domadmin <addtokens|status|sync>
-    permission: irondom.admin
-
+  dt:
+    description: View and manage Dominion Tokens
+    usage: /dt <balance|add|take|set> [player] [amount]
+    aliases: [dominiontokens, tokens]
 permissions:
-  irondom.admin:
-    description: Administrative access to Iron Dominion backend commands
+  dominiontokens.admin:
+    description: Allows administrative Dominion Token commands
     default: op
