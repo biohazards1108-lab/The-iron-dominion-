@@ -1,15 +1,17 @@
-name: DominionTokens
-version: 1.0.0
-main: com.irondominion.tokens.DominionTokens
-description: Dominion Token economy for Iron Dominion Tekkit 1.6.4
-version: 1.0.0
+name: IronDominionBridge
+version: 1.1.0
+main: com.irondom.shop.IronDominionShop
+description: Iron Dominion website status and secure Tebex bridge for Tekkit 1.6.4/Cauldron
 author: Iron Dominion
 commands:
-  dt:
-    description: View and manage Dominion Tokens
-    usage: /dt <balance|add|take|set> [player] [amount]
-    aliases: [dominiontokens, tokens]
+  domshop:
+    description: View Iron Dominion store information
+    usage: /domshop
+  domadmin:
+    description: Iron Dominion bridge administration
+    usage: /domadmin <status|reload>
+    permission: irondominion.admin
 permissions:
-  dominiontokens.admin:
-    description: Allows administrative Dominion Token commands
+  irondominion.admin:
+    description: Allows Iron Dominion bridge administration
     default: op
