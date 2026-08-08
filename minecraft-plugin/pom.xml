@@ -4,22 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.irondom</groupId>
-    <artifactId>IronDominionTokens</artifactId>
-    <version>1.0.0</version>
+    <artifactId>IronDominionBridge</artifactId>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
-    <name>Iron Dominion Tokens</name>
-    <description>Legacy Dominion Token economy plugin for Tekkit 1.6.4/Cauldron</description>
+    <name>Iron Dominion Bridge</name>
+    <description>Secure Tebex and website bridge for Iron Dominion Tekkit 1.6.4/Cauldron</description>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
     <repositories>
         <repository>
             <id>elmakers</id>
             <url>https://maven.elmakers.com/repository/</url>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -27,18 +30,26 @@
             <version>1.6.4-R2.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
     <build>
+        <finalName>IronDominionBridge-1.1.0</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <includes>
-                        <include>com/irondominion/tokens/DominionTokens.java</include>
+                        <include>com/irondom/shop/**/*.java</include>
                     </includes>
                 </configuration>
             </plugin>
@@ -47,9 +58,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <excludes>
-                        <exclude>com/irondom/shop/**</exclude>
-                    </excludes>
+                    <includes>
+                        <include>com/irondom/shop/**</include>
+                        <include>plugin.yml</include>
+                        <include>config.yml</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
