@@ -1,424 +1,170 @@
-# Iron Dominion Server Backend - Setup Guide
+# Iron Dominion API — Setup & Security
 
-## Prerequisites
+The API is a Node.js/Express service backed by SQLite. The production API deliberately separates public status endpoints from server/admin operations.
 
-- **Node.js** v16+ ([Download](https://nodejs.org/))
-- **npm** (comes with Node.js)
-- Your **Minecraft server** running (for RCON integration)
-- Basic knowledge of command line
+## 1. Requirements
 
----
+- Node.js 18+ (Node 20 recommended)
+- npm
+- HTTPS in production
+- The Iron Dominion Minecraft bridge configured with the same internal API key
 
-## Installation
-
-### 1. Install Dependencies
+## 2. Install
 
 ```bash
 cd server
 npm install
 ```
 
-This installs:
-- `express` - Web framework
-- `sqlite3` - Database
-- `cors` - Enable cross-origin requests
-- `axios` - HTTP client for API calls
-- `dotenv` - Environment variable management
+## 3. Configure secrets
 
-### 2. Configure Environment
+Copy the example file:
 
 ```bash
 cp .env.example .env
-nano .env
 ```
 
-Edit `.env` with your server details:
-```env
-MC_RCON_HOST=your-server-ip-or-domain
-MC_RCON_PORT=25575
-MC_RCON_PASSWORD=your_secure_password
+Generate two different random secrets. They must be at least 32 characters long:
+
+```bash
+openssl rand -hex 32
+openssl rand -hex 32
 ```
 
-### 3. Start the Server
+Put the first value in `INTERNAL_API_KEY` and the second in `ADMIN_API_KEY`.
 
-**Development** (with auto-reload):
+Never commit `.env`, RCON passwords, API keys, or the SQLite database.
+
+## 4. Start
+
+Development:
+
 ```bash
 npm run dev
 ```
 
-**Production**:
+Production:
+
 ```bash
 npm start
 ```
 
-You should see:
-```
-╔════════════════════════════════════════╗
-║   🏰 Iron Dominion Server API 🏰     ║
-║   Running on port 3000                 ║
-║   Environment: production              ║
-╚════════════════════════════════════════╝
-```
-
----
-
-## API Endpoints
-
-### Player Economy
-
-**Get Player Balance**
-```bash
-GET /api/player/{username}/balance
-
-# Response
-{
-  "balance": 500
-}
-```
-
-**Get Player Data**
-```bash
-GET /api/player/{username}
-
-# Response
-{
-  "player": {
-    "id": 1,
-    "username": "Steve",
-    "balance": 450,
-    "created_at": "2026-08-06T23:13:59Z"
-  },
-  "transactions": [
-    {
-      "id": 1,
-      "transaction_id": "TXN-1691358839634-abc123",
-      "type": "purchase",
-      "amount": 50,
-      "description": "Purchased Starter Crate",
-      "created_at": "2026-08-06T23:14:00Z"
-    }
-  ]
-}
-```
-
-### Shop Purchases
-
-**Purchase Crate**
-```bash
-POST /api/shop/purchase
-
-Request Body:
-{
-  "playerName": "Steve",
-  "crateId": "starter_crate",
-  "crateName": "Starter Crate",
-  "price": 100,
-  "items": ["Iron Pickaxe", "Coal x64", "Wood x32"],
-  "timestamp": "2026-08-06T23:14:00Z"
-}
-
-# Response
-{
-  "success": true,
-  "message": "Successfully purchased Starter Crate! Your items will arrive in your mailbox shortly.",
-  "transactionId": "TXN-1691358839634-abc123",
-  "newBalance": 400
-}
-```
-
-**Get Pending Deliveries** (for plugin)
-```bash
-GET /api/shop/pending-deliveries
-
-# Response
-[
-  {
-    "id": 1,
-    "transaction_id": "TXN-1691358839634-abc123",
-    "username": "Steve",
-    "crate_id": "starter_crate",
-    "crate_name": "Starter Crate",
-    "price": 100,
-    "items": ["Iron Pickaxe", "Coal x64", "Wood x32"],
-    "delivered": 0,
-    "created_at": "2026-08-06T23:14:00Z"
-  }
-]
-```
-
-**Mark Purchase as Delivered**
-```bash
-POST /api/shop/deliver/{transactionId}
-
-# Response
-{
-  "success": true,
-  "message": "Items delivered"
-}
-```
-
-### Server Status
-
-**Get Server Status**
-```bash
-GET /api/server/status
-
-# Response
-{
-  "online": true,
-  "players": 42,
-  "maxPlayers": 100,
-  "tps": 19.8
-}
-```
-
-**Update Server Status** (called by plugin/script)
-```bash
-POST /api/server/update
-
-Request Body:
-{
-  "players": 42,
-  "maxPlayers": 100,
-  "tps": 19.8,
-  "online": true
-}
-
-# Response
-{
-  "success": true,
-  "message": "Server status updated"
-}
-```
-
-### Admin Functions
-
-**Add Tokens to Player**
-```bash
-POST /api/admin/add-tokens
-
-Request Body:
-{
-  "playerName": "Steve",
-  "amount": 100,
-  "reason": "Daily login bonus"
-}
-
-# Response
-{
-  "success": true,
-  "message": "Added 100 tokens to Steve"
-}
-```
-
----
-
-## Minecraft Plugin Integration
-
-### Option 1: Java Plugin (Recommended)
-
-Create a **Spigot/Paper plugin** that calls the API endpoints:
-
-```java
-public class IronDominionShop extends JavaPlugin {
-    private String apiBase = "http://your-api-server:3000";
-    
-    @Override
-    public void onEnable() {
-        // Check for pending deliveries every 30 seconds
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, 
-            () -> checkAndDeliverItems(), 
-            0L, 600L); // 30 seconds = 600 ticks
-    }
-    
-    private void checkAndDeliverItems() {
-        // Fetch pending deliveries from API
-        // Give items to players
-        // Mark as delivered
-    }
-}
-```
-
-### Option 2: Command Block Script (Simple)
-
-Use command blocks with `/say` to trigger deliveries:
-
-```
-/say Checking for Iron Dominion deliveries...
-```
-
-### Option 3: External Scheduler
-
-Run a cron job or systemd timer that calls the API:
+Syntax-only validation:
 
 ```bash
-#!/bin/bash
-# check-deliveries.sh
-curl -X GET http://localhost:3000/api/shop/pending-deliveries | \
-  jq '.[] | .transaction_id' | \
-  while read txn; do
-    # Process delivery
-    curl -X POST http://localhost:3000/api/shop/deliver/$txn
-  done
+npm run check
 ```
 
-Add to crontab:
-```bash
-crontab -e
-# Add: */5 * * * * /path/to/check-deliveries.sh
+## API security model
+
+### Public
+
+`GET /health`
+
+Returns service health only.
+
+`GET /api/server/status`
+
+Returns the latest Minecraft server status. The website may consume this endpoint without an API key.
+
+### Internal key required
+
+Send:
+
+```http
+X-Iron-Dominion-Key: <INTERNAL_API_KEY>
 ```
 
----
+Required for:
+
+- `GET /api/player/:username/balance`
+- `GET /api/player/:username`
+- `POST /api/shop/purchase`
+- `GET /api/shop/pending-deliveries`
+- `POST /api/shop/deliver/:transactionId`
+- `POST /api/server/update`
+
+The browser must never contain this key. These endpoints are intended for the Minecraft bridge or another trusted server-side service.
+
+### Admin key required
+
+`POST /api/admin/add-tokens` requires `X-Iron-Dominion-Key` containing the `ADMIN_API_KEY`.
+
+Do not expose this key to the public website.
+
+## Economy protections
+
+The purchase endpoint does **not** trust price, crate name, or item lists supplied by the client. The server owns the crate catalog.
+
+Token deductions occur inside a SQLite `BEGIN IMMEDIATE` transaction and use a conditional balance update. This prevents concurrent requests from spending the same tokens twice or driving a balance negative.
+
+Balances are also capped by `TOKEN_MAX_BALANCE`.
+
+## Minecraft bridge configuration
+
+On the Minecraft server, configure:
+
+```yaml
+api:
+  url: "https://api.example.com"
+  api-key: "THE_SAME_INTERNAL_API_KEY"
+  connect-timeout-ms: 5000
+  read-timeout-ms: 5000
+  require-https: true
+```
+
+The repository's plugin configuration intentionally contains placeholders only.
+
+## Shop delivery
+
+The legacy Tekkit delivery processor remains disabled until the real Tekkit 1.6.4 item catalog and final store integration are verified. Pending purchases are **not** marked delivered automatically while delivery is unsupported.
 
 ## Database
 
-SQLite database automatically created at:
-```
-data/irondom.db
-```
+The API creates the SQLite database automatically at the configured `DB_PATH`.
 
-### View Database (Command Line)
+Runtime database files are ignored by Git. Back up the database using your hosting provider's backup system or a controlled SQLite backup process.
 
-```bash
-# Install sqlite3
-sqlite3 data/irondom.db
+## Reverse proxy / HTTPS
 
-# List tables
-.tables
+Run the Node API behind an HTTPS reverse proxy in production. Do not expose RCON directly to the public internet.
 
-# View players
-SELECT * FROM players;
+Example Nginx configuration:
 
-# View transactions
-SELECT * FROM transactions;
-
-# View purchases
-SELECT * FROM purchases;
-
-# Exit
-.quit
-```
-
-### View Database (GUI)
-
-Use [SQLite Browser](https://sqlitebrowser.org/) to view/edit database visually.
-
----
-
-## Deployment
-
-### Deploy to VPS (Ubuntu/Debian)
-
-1. **Install Node.js**:
-```bash
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-2. **Clone Repository**:
-```bash
-git clone https://github.com/biohazards1108-lab/The-iron-dominion-.git
-cd The-iron-dominion-/server
-npm install
-```
-
-3. **Configure**:
-```bash
-cp .env.example .env
-nano .env  # Add your settings
-```
-
-4. **Use PM2 for Process Management**:
-```bash
-npm install -g pm2
-pm2 start index.js --name "iron-dominion-api"
-pm2 save
-pm2 startup
-```
-
-5. **Setup Nginx Reverse Proxy**:
 ```nginx
 server {
-    listen 80;
-    server_name api.yourdomain.com;
+    listen 443 ssl http2;
+    server_name api.example.com;
 
     location / {
-        proxy_pass http://localhost:3000;
+        proxy_pass http://127.0.0.1:3000;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 }
 ```
 
-6. **Enable SSL (Let's Encrypt)**:
-```bash
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d api.yourdomain.com
-```
+Use your normal certificate automation for TLS.
 
----
+## Deployment checklist
 
-## Troubleshooting
+Before production:
 
-### "Cannot find module 'express'"
-```bash
-npm install
-```
+- [ ] `.env` exists only on the server.
+- [ ] `INTERNAL_API_KEY` is random and at least 32 characters.
+- [ ] `ADMIN_API_KEY` is different from the internal key.
+- [ ] Minecraft bridge and API use HTTPS.
+- [ ] The API is behind a firewall/reverse proxy.
+- [ ] RCON is not publicly exposed.
+- [ ] Store delivery remains disabled until item IDs are verified.
+- [ ] Database backups are configured.
+- [ ] CI passes.
+- [ ] API endpoints are tested with both missing and valid authentication.
 
-### Port 3000 already in use
-```bash
-# Change port in config.json or:
-PORT=3001 npm start
-```
+## Important limitation
 
-### Database locked error
-- Ensure only one instance of the server is running
-- Check `data/` directory permissions
+The website does not currently have a real player-login/authentication system. Therefore the trusted purchase and economy endpoints must not be called directly from browser JavaScript. A username typed into a public form is not proof that the requester owns that Minecraft account.
 
-### RCON connection fails
-- Verify RCON is enabled on your Minecraft server
-- Check `enable-rcon=true` in `server.properties`
-- Verify correct password in `.env`
-
----
-
-## Testing Endpoints
-
-### Using cURL
-
-```bash
-# Check server health
-curl http://localhost:3000/health
-
-# Get player balance
-curl http://localhost:3000/api/player/Steve/balance
-
-# Test purchase
-curl -X POST http://localhost:3000/api/shop/purchase \
-  -H "Content-Type: application/json" \
-  -d '{
-    "playerName": "Steve",
-    "crateId": "starter_crate",
-    "crateName": "Starter Crate",
-    "price": 100,
-    "items": ["Iron Pickaxe", "Coal x64"]
-  }'
-```
-
-### Using Postman
-
-1. Download [Postman](https://www.postman.com/)
-2. Create requests for each endpoint
-3. Test and debug
-
----
-
-## Support
-
-For issues or questions:
-- Check server logs: `npm start` output
-- View database: `sqlite3 data/irondom.db`
-- Check network: `curl http://localhost:3000/health`
+When a real authenticated web checkout is added, it should establish a server-side identity before allowing balance-changing operations.
