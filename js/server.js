@@ -4,7 +4,8 @@
   const statusEl = document.getElementById('server-status');
   const playersEl = document.getElementById('players');
   const tpsEl = document.getElementById('tps');
-  const source = 'api/server.json';
+  // GitHub Pages serves the JSON file; Vercel serves the serverless fallback.
+  const sources = ['api/server.json', 'api/server-status'];
   const POLL_MS = 15000;
   const REQUEST_TIMEOUT_MS = 7000;
 
@@ -45,6 +46,20 @@
     render({ live: false });
   }
 
+  async function fetchJson(url, controller) {
+    const response = await fetch(`${url}?t=${Date.now()}`, {
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+      signal: controller.signal
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+      throw new Error('Invalid status payload');
+    }
+    return data;
+  }
+
   async function fetchServer() {
     if (requestInFlight || document.visibilityState === 'hidden') return;
     requestInFlight = true;
@@ -55,18 +70,17 @@
     const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
-      const response = await fetch(`${source}?t=${Date.now()}`, {
-        cache: 'no-store',
-        headers: { Accept: 'application/json' },
-        signal: controller.signal
-      });
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      if (!data || typeof data !== 'object' || Array.isArray(data)) {
-        throw new Error('Invalid status payload');
+      let lastError = null;
+      for (const source of sources) {
+        try {
+          render(await fetchJson(source, controller));
+          return;
+        } catch (error) {
+          lastError = error;
+          if (error && error.name === 'AbortError') throw error;
+        }
       }
-      render(data);
+      throw lastError || new Error('No status source available');
     } catch (error) {
       if (error && error.name !== 'AbortError') {
         console.warn('Iron Dominion server status unavailable:', error);
