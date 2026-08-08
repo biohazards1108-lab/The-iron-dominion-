@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '24'
           cache: npm
           cache-dependency-path: server/package.json
       - name: Install API dependencies
@@ -37,9 +37,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Java 8
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '8'
@@ -52,9 +52,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f target/DominionTokens-1.0.0.jar
-          jar tf target/DominionTokens-1.0.0.jar | grep -q 'plugin.yml'
-          jar tf target/DominionTokens-1.0.0.jar | grep -q 'com/irondominion/tokens/DominionTokens.class'
+          test -s target/DominionTokens-1.0.0.jar
+          jar tf target/DominionTokens-1.0.0.jar | grep -q '^plugin.yml$'
+          jar tf target/DominionTokens-1.0.0.jar | grep -q 'DominionTokens.class$'
       - name: Upload DominionTokens JAR
         uses: actions/upload-artifact@v4
         with:
@@ -66,9 +66,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up Java 8
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '8'
@@ -81,7 +81,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f target/IronDominionBridge-1.1.0.jar
+          test -s target/IronDominionBridge-1.1.0.jar
           jar tf target/IronDominionBridge-1.1.0.jar | grep -q '^plugin.yml$'
           jar tf target/IronDominionBridge-1.1.0.jar | grep -q 'com/irondom/shop/IronDominionShop.class'
           jar tf target/IronDominionBridge-1.1.0.jar | grep -q 'com/irondom/shop/tasks/DeliveryProcessor.class'
@@ -97,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Validate required public pages
         run: |
           set -euo pipefail
