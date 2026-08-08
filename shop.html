@@ -1,78 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Iron Dominion Shop</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#111; color:#eee; }
-    .container { max-width: 600px; margin: 40px auto; padding: 20px; background:#222; border-radius:8px; }
-    input, button { padding: 10px; margin: 5px 0; width: 100%; }
-    button { cursor: pointer; }
-  </style>
-</head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Iron Dominion shop and future Dominion Token rewards."><title>Shop | Iron Dominion</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
-  <div class="container">
-    <h1>Iron Dominion Shop</h1>
-
-    <!-- "Login" with Minecraft username -->
-    <h2>Step 1: Identify yourself</h2>
-    <p>Enter your Minecraft username so we know who to credit tokens to:</p>
-    <input id="mcName" type="text" placeholder="Minecraft username">
-    <button id="saveNameBtn">Save Name</button>
-    <p id="savedNameMsg"></p>
-
-    <!-- Donation / token packages -->
-    <h2>Step 2: Choose a token package</h2>
-    <p>After you click a package, you’ll be taken to our secure Tebex store.</p>
-
-    <button class="packageBtn" data-url="https://YOUR-TEBEX-STORE.tebex.io/package/100">
-      Buy 100 Tokens
-    </button>
-
-    <button class="packageBtn" data-url="https://YOUR-TEBEX-STORE.tebex.io/package/500">
-      Buy 500 Tokens
-    </button>
-
-    <p style="margin-top:20px;font-size:0.9em;">
-      Make sure you’re logged into Minecraft with the same username when you join the server.
-    </p>
-  </div>
-
-  <script>
-    // Load saved name on page load
-    const nameInput = document.getElementById('mcName');
-    const savedMsg = document.getElementById('savedNameMsg');
-    const savedName = localStorage.getItem('ironDominion_mcName');
-    if (savedName) {
-      nameInput.value = savedName;
-      savedMsg.textContent = "Saved name: " + savedName;
-    }
-
-    // Save name
-    document.getElementById('saveNameBtn').addEventListener('click', () => {
-      const name = nameInput.value.trim();
-      if (!name) {
-        savedMsg.textContent = "Please enter a valid Minecraft username.";
-        return;
-      }
-      localStorage.setItem('ironDominion_mcName', name);
-      savedMsg.textContent = "Saved name: " + name;
-    });
-
-    // When user clicks a package, send them to Tebex
-    document.querySelectorAll('.packageBtn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const name = nameInput.value.trim();
-        if (!name) {
-          alert("Please enter and save your Minecraft username first.");
-          return;
-        }
-        // Optional: append ?username=NAME to Tebex URL for your own tracking
-        const baseUrl = btn.getAttribute('data-url');
-        const url = baseUrl + "?username=" + encodeURIComponent(name);
-        window.location.href = url;
-      });
-    });
-  </script>
-</body>
-</html>
+<header class="hero"><div class="overlay"><h1>🏪 DOMINION SHOP</h1><p>Special rewards, crates, and future community services.</p></div></header>
+<nav aria-label="Main navigation"><a href="index.html">🏰 Home</a><a href="join.html">▶ Join</a><a href="ranks.html">🛡 Ranks</a><a href="economy.html">⛁ Economy</a><a href="leaderboard.html">🏆 Leaderboard</a><a class="active" href="shop.html">🏪 Shop</a><a href="rules.html">📜 Rules</a></nav>
+<main>
+<section class="panel"><h2>🎁 Dominion Crates</h2><div class="grid"><article class="card"><h3>⚙ Tech Cache</h3><p>A future token-powered crate containing useful Tekkit-related resources and equipment.</p><p class="notice">Reward table is still being finalized.</p></article><article class="card"><h3>💎 Dominion Cache</h3><p>A higher-tier crate intended for rarer resources and special rewards.</p><p class="notice">Reward table is still being finalized.</p></article><article class="card"><h3>🎉 Event Crates</h3><p>Limited-time crates tied to server events and community activities.</p><p class="notice">Coming with the event system.</p></article></div></section>
+<section class="panel"><h2>◆ Dominion Tokens</h2><p>Tokens are planned as a separate server currency for special rewards. They are not the same thing as normal survival economy credits.</p><div class="callout"><strong>Current status:</strong> The token backend and final reward rules have not been connected to this website yet, so there are no purchase buttons pretending to process real transactions.</div></section>
+<section class="panel"><h2>🛒 Website Purchases</h2><p>Online purchases will only be enabled after the official store provider, token delivery system, and server-side verification are configured.</p><p class="notice">Never enter payment information into an unfinished or placeholder store page.</p></section>
+</main>
+<footer><p>⚒ Iron Dominion © 2026</p><p>Secure store integration will be added after the server economy is finalized.</p></footer>
+</body></html>
