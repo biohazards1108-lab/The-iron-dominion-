@@ -37,9 +37,9 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <excludes>
-                        <exclude>com/irondom/shop/**</exclude>
-                    </excludes>
+                    <includes>
+                        <include>com/irondominion/tokens/DominionTokens.java</include>
+                    </includes>
                 </configuration>
             </plugin>
             <plugin>
