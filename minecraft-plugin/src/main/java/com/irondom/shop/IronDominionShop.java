@@ -38,10 +38,10 @@ public class IronDominionShop extends JavaPlugin {
                 new ServerStatusUpdater(this), 20L, statusPeriod);
 
         if (getConfig().getBoolean("store.enabled", false)) {
-            long deliveryPeriod = Math.max(20L, getConfig().getLong("delivery.poll-seconds", 90L) * 20L);
-            getServer().getScheduler().scheduleSyncRepeatingTask(this,
-                    new DeliveryProcessor(this), 40L, deliveryPeriod);
-            getLogger().info("Tebex rank delivery polling is enabled. The bridge will only execute the seven configured Iron Dominion rank commands.");
+            long initialDelay = Math.max(20L, getConfig().getLong("delivery.poll-seconds", 90L) * 20L);
+            getServer().getScheduler().scheduleSyncDelayedTask(this,
+                    new DeliveryProcessor(this), initialDelay);
+            getLogger().info("Tebex rank delivery polling is enabled. The bridge honors Tebex's server-provided queue interval and only executes the seven configured Iron Dominion rank commands.");
         } else {
             getLogger().info("Tebex rank delivery is disabled. Set store.enabled=true after configuring the Tebex Game Server secret locally.");
         }
