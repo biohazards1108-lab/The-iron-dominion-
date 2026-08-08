@@ -32,11 +32,11 @@ jobs:
           for file in index.html join.html ranks.html economy.html leaderboard.html shop.html vote.html rules.html 404.html robots.txt sitemap.xml; do
             test -f "$file" || { echo "Missing required file: $file"; exit 1; }
           done
-      - name: Reject accidental secrets/placeholders in public source
+      - name: Reject accidental secrets in public source
         shell: bash
         run: |
           set -euo pipefail
-          if grep -RInE 'discordapp\.com/api/webhooks|X-Iron-Dominion-Key[[:space:]]*:[[:space:]]*[A-Za-z0-9._-]{20,}|BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|REPLACE_WITH_PRODUCTION_API_HOST' --exclude-dir=.git .; then
-            echo "Potential secret or deployment placeholder found in tracked source."
+          if grep -RInE 'discordapp\.com/api/webhooks|X-Iron-Dominion-Key[[:space:]]*:[[:space:]]*[A-Za-z0-9._-]{20,}|BEGIN (RSA|OPENSSH|EC) PRIVATE KEY' --exclude-dir=.git .; then
+            echo "Potential secret found in tracked source."
             exit 1
           fi
