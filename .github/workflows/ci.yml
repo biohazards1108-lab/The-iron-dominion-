@@ -30,6 +30,8 @@ jobs:
           grep -q 'X-Iron-Dominion-Key' server/index.js
           grep -q 'BEGIN IMMEDIATE TRANSACTION' server/index.js
           grep -q 'balance >= ?' server/index.js
+          grep -q "app.disable('x-powered-by')" server/index.js
+          grep -q "express.json({ limit: '16kb'" server/index.js
 
   legacy-bridge-build:
     runs-on: ubuntu-latest
@@ -72,7 +74,7 @@ jobs:
       - name: Validate required public pages
         run: |
           set -euo pipefail
-          for file in index.html join.html ranks.html economy.html leaderboard.html shop.html vote.html rules.html 404.html robots.txt sitemap.xml; do
+          for file in index.html join.html ranks.html economy.html leaderboard.html shop.html vote.html rules.html 404.html robots.txt sitemap.xml favicon.svg manifest.webmanifest; do
             test -f "$file" || { echo "Missing required file: $file"; exit 1; }
           done
       - name: Validate local links and assets
@@ -82,18 +84,62 @@ jobs:
           import re
           root = Path('.')
           missing = []
+          bad = []
           for page in root.glob('*.html'):
               text = page.read_text(encoding='utf-8')
               for attr in ('href', 'src'):
                   for value in re.findall(rf'{attr}=["\']([^"\']+)["\']', text, re.I):
-                      if value.startswith(('#', 'http://', 'https://', 'mailto:', 'javascript:')):
+                      if value.startswith(('#', 'http://', 'https://', 'mailto:', 'tel:', 'javascript:')):
                           continue
                       value = value.split('?', 1)[0].split('#', 1)[0]
-                      if value and not (root / value).exists():
+                      if not value:
+                          continue
+                      target = root / value
+                      if not target.exists():
                           missing.append(f'{page}: {value}')
-          if missing:
-              print('\n'.join(missing))
+                      elif target.is_dir():
+                          bad.append(f'{page}: {value} resolves to a directory')
+          if missing or bad:
+              if missing:
+                  print('\n'.join(missing))
+              if bad:
+                  print('\n'.join(bad))
               raise SystemExit('Broken local links/assets detected')
+          PY
+      - name: Validate sitemap and robots.txt
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          sitemap = Path('sitemap.xml')
+          root = ET.parse(sitemap).getroot()
+          urls = [node.text.strip() for node in root.iter('{http://www.sitemaps.org/schemas/sitemap/0.9}loc') if node.text]
+          expected = {
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/',
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/join.html',
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/ranks.html',
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/economy.html',
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/leaderboard.html',
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/shop.html',
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/vote.html',
+              'https://biohazards1108-lab.github.io/The-iron-dominion-/rules.html',
+          }
+          if set(urls) != expected:
+              raise SystemExit(f'Sitemap mismatch. Found: {urls}')
+          if 'Sitemap: https://biohazards1108-lab.github.io/The-iron-dominion-/sitemap.xml' not in Path('robots.txt').read_text(encoding='utf-8'):
+              raise SystemExit('robots.txt does not advertise the canonical sitemap')
+          PY
+      - name: Validate external security attributes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          for page in Path('.').glob('*.html'):
+              text = page.read_text(encoding='utf-8')
+              for match in re.finditer(r'<a\b[^>]*\btarget=["\']_blank["\'][^>]*>', text, re.I):
+                  tag = match.group(0)
+                  if not re.search(r'\brel=["\'][^"\']*(?:noopener|noreferrer)', tag, re.I):
+                      raise SystemExit(f'{page}: target="_blank" link missing noopener/noreferrer')
           PY
       - name: Reject accidental secrets
         run: |
