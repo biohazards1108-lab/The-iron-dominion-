@@ -1,19 +1,19 @@
-name: IronDominionShop
+name: IronDominionBridge
 version: 1.0.0
 main: com.irondom.shop.IronDominionShop
-description: Shop system for Iron Dominion server
-author: IronDom Team
+description: Secure legacy-server bridge for the Iron Dominion website backend
+author: Iron Dominion
 
 commands:
   domshop:
-    description: Check your token balance and shop
+    description: View the Dominion support/store integration status
     usage: /domshop
   domadmin:
-    description: Admin commands for the shop
-    usage: /domadmin <addtokens|checktxn|sync> <args>
+    description: Administrative Iron Dominion backend commands
+    usage: /domadmin <addtokens|status|sync>
     permission: irondom.admin
 
 permissions:
   irondom.admin:
-    description: Admin access to Iron Dominion commands
+    description: Administrative access to Iron Dominion backend commands
     default: op
