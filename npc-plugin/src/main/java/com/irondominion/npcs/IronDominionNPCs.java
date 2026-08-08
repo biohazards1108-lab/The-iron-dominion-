@@ -2,7 +2,6 @@ package com.irondominion.npcs;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -20,7 +19,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public final class IronDominionNPCs extends JavaPlugin implements Listener {
     private final Map<String, Entity> live = new HashMap<String, Entity>();
@@ -33,14 +31,12 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
         getLogger().info("IronDominionNPCs enabled.");
     }
 
-    @Override public void onDisable() {
-        live.clear();
-        cooldowns.clear();
-    }
+    @Override public void onDisable() { live.clear(); cooldowns.clear(); }
 
     private String color(String s) { return ChatColor.translateAlternateColorCodes('&', s); }
 
     private void respawnAll() {
+        if (!getConfig().isConfigurationSection("npcs")) return;
         for (String id : getConfig().getConfigurationSection("npcs").getKeys(false)) spawn(id);
     }
 
@@ -48,11 +44,35 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
         String path = "npcs." + id;
         String worldName = getConfig().getString(path + ".world");
         World world = getServer().getWorld(worldName);
-        if (world == null) { getLogger().warning("NPC " + id + " references missing world " + worldName); return false; }
-        Location loc = new Location(world, getConfig().getDouble(path + ".x"), getConfig().getDouble(path + ".y"), getConfig().getDouble(path + ".z"), (float)getConfig().getDouble(path + ".yaw"), (float)getConfig().getDouble(path + ".pitch"));
+        if (world == null) {
+            getLogger().warning("NPC " + id + " references missing world " + worldName);
+            return false;
+        }
+
+        double x = getConfig().getDouble(path + ".x");
+        double y = getConfig().getDouble(path + ".y") + 0.05D;
+        double z = getConfig().getDouble(path + ".z");
+        float yaw = (float)getConfig().getDouble(path + ".yaw");
+        float pitch = (float)getConfig().getDouble(path + ".pitch");
+        Location loc = new Location(world, x, y, z, yaw, pitch);
+
+        world.loadChunk(loc.getBlockX() >> 4, loc.getBlockZ() >> 4);
         Entity old = live.remove(id);
         if (old != null && !old.isDead()) old.remove();
-        Entity entity = world.spawnEntity(loc, EntityType.VILLAGER);
+
+        Entity entity;
+        try {
+            // spawnCreature is the legacy Bukkit API path intended for 1.6.x.
+            entity = world.spawnCreature(loc, EntityType.VILLAGER);
+        } catch (Throwable t) {
+            getLogger().warning("Could not spawn NPC " + id + ": " + t.getClass().getName() + ": " + t.getMessage());
+            return false;
+        }
+        if (entity == null || entity.isDead()) {
+            getLogger().warning("NPC " + id + " was not created by the server.");
+            return false;
+        }
+
         Villager v = (Villager) entity;
         v.setCustomName(color(getConfig().getString(path + ".name", id)));
         v.setCustomNameVisible(true);
@@ -60,6 +80,7 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
         String profession = getConfig().getString(path + ".profession", "LIBRARIAN");
         try { v.setProfession(Villager.Profession.valueOf(profession.toUpperCase())); } catch (IllegalArgumentException ignored) { }
         live.put(id, entity);
+        getLogger().info("Spawned NPC '" + id + "' as entity #" + entity.getEntityId() + " at " + world.getName() + " " + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
         return true;
     }
 
@@ -120,7 +141,10 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
             getConfig().set(path + ".name", "&6" + id); getConfig().set(path + ".profession", "LIBRARIAN");
             getConfig().set(path + ".lines", java.util.Arrays.asList("&eWelcome to Iron Dominion!"));
             getConfig().set(path + ".commands", java.util.Collections.emptyList()); getConfig().set(path + ".permission", "");
-            saveConfig(); spawn(id); p.sendMessage(color("&aCreated NPC &e" + id)); return true;
+            saveConfig();
+            if (spawn(id)) p.sendMessage(color("&aCreated NPC &e" + id + " &7and spawned it."));
+            else p.sendMessage(color("&cNPC &e" + id + " &ccould not be spawned. Check the server console."));
+            return true;
         }
         if (args[0].equalsIgnoreCase("remove") && args.length >= 2) {
             String id = args[1].toLowerCase(); Entity e = live.remove(id); if (e != null && !e.isDead()) e.remove();
