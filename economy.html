@@ -3,38 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Economy — Iron Dominion</title>
+  <meta name="description" content="Learn how the Iron Dominion economy works.">
+  <title>Economy | Iron Dominion</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<header class="hero">
-  <div class="overlay">
-    <h1>⛁ Dominion Economy</h1>
-    <p>Manage your credits and trade with the community.</p>
-  </div>
-</header>
-<nav>
-  <a href="index.html">🏰 Home</a>
-  <a href="ranks.html">🛡 Ranks</a>
-  <a href="economy.html">⛁ Economy</a>
-  <a href="leaderboard.html">🏆 Leaderboard</a>
-  <a href="shop.html">🏪 Shops</a>
-  <a href="rules.html">📜 Rules</a>
+<header class="hero"><div class="overlay"><h1>⛁ DOMINION ECONOMY</h1><p>Mine resources. Trade intelligently. Build your wealth.</p></div></header>
+<nav aria-label="Main navigation">
+  <a href="index.html">🏰 Home</a><a href="join.html">▶ Join</a><a href="ranks.html">🛡 Ranks</a><a class="active" href="economy.html">⛁ Economy</a><a href="leaderboard.html">🏆 Leaderboard</a><a href="shop.html">🏪 Shop</a><a href="rules.html">📜 Rules</a>
 </nav>
 <main>
-  <section class="panel">
-    <h2>Your Balance</h2>
-    <p>Current balance: <strong>⛁ <span id="balance">0</span> Dominion Credits</strong></p>
-    <p>Ways to earn: mining, factory production, trading, events.</p>
-  </section>
-  <section class="panel">
-    <h2>Banking & Taxes</h2>
-    <p>Guilds may set taxes. Store credits in secure guild banks and participate in auctions to increase wealth.</p>
-  </section>
+  <section class="panel"><h2>💰 Two-Part Currency System</h2><div class="grid-2">
+    <article class="card"><h3>⛁ Dominion Credits</h3><p>The normal server economy currency. Use it for everyday trading, shops, and other economy systems.</p><p class="notice">Your live balance will appear here once authenticated economy data is connected.</p><p><strong>Balance:</strong> <span id="balance">—</span></p></article>
+    <article class="card"><h3>◆ Dominion Tokens</h3><p>A separate server-wide reward currency planned for special crates, events, progression systems, and future community features.</p><p class="notice">Token balances will be connected to the server when the token backend is finalized.</p></article>
+  </div></section>
+  <section class="panel"><h2>⛏ How to Build Wealth</h2><div class="grid"><article class="card"><h3>Mine</h3><p>Gather valuable ores and resources in survival.</p></article><article class="card"><h3>Trade</h3><p>Sell resources and participate in the player economy.</p></article><article class="card"><h3>Progress</h3><p>Use your wealth to expand your operations and move through server progression.</p></article></div></section>
+  <section class="panel"><h2>🎁 Dominion Tokens</h2><p>Future token systems will connect voting, events, crates, and special server rewards without replacing the normal survival economy.</p><div class="callout"><strong>Design goal:</strong> keep rewards exciting without turning Iron Dominion into a pay-to-win server.</div></section>
 </main>
-<footer>
-  <p>⚒ Iron Dominion © 2026</p>
-</footer>
+<footer><p>⚒ Iron Dominion © 2026</p><p>Tekkit 1.6.4 • Industrial survival with a player-driven economy.</p></footer>
 <script src="js/economy.js"></script>
 </body>
 </html>
