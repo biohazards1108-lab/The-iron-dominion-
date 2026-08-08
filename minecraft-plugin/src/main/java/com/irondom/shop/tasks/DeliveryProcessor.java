@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.irondom.shop.IronDominionShop;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
@@ -17,8 +18,7 @@ import java.util.regex.Pattern;
  * Delivers Tebex Game Server API commands on the legacy server.
  *
  * Security: the bridge does not blindly execute arbitrary remote commands.
- * Only the seven Iron Dominion supporter-rank commands are accepted. This
- * protects the legacy server if a package is accidentally misconfigured.
+ * Only the seven Iron Dominion supporter-rank commands are accepted.
  */
 public class DeliveryProcessor implements Runnable {
     private static final Pattern RANK_COMMAND = Pattern.compile(
@@ -63,17 +63,17 @@ public class DeliveryProcessor implements Runnable {
         JsonObject payload = gson.fromJson(plugin.getApiClient().getTebexOfflineCommands(), JsonObject.class);
         JsonArray commands = payload != null && payload.has("commands") && payload.get("commands").isJsonArray()
                 ? payload.getAsJsonArray("commands") : new JsonArray();
-        processCommands(commands, false, null);
+        processCommands(commands, null);
     }
 
     private void processOnlineCommands(String playerId, String playerName) throws Exception {
         JsonObject payload = gson.fromJson(plugin.getApiClient().getTebexOnlineCommands(playerId), JsonObject.class);
         JsonArray commands = payload != null && payload.has("commands") && payload.get("commands").isJsonArray()
                 ? payload.getAsJsonArray("commands") : new JsonArray();
-        processCommands(commands, true, playerName);
+        processCommands(commands, playerName);
     }
 
-    private void processCommands(JsonArray commands, boolean onlineOnly, String fallbackName) {
+    private void processCommands(JsonArray commands, String fallbackName) {
         if (commands == null || commands.size() == 0) return;
 
         JsonArray completedIds = new JsonArray();
@@ -88,7 +88,7 @@ public class DeliveryProcessor implements Runnable {
             JsonObject player = item.has("player") && item.get("player").isJsonObject()
                     ? item.getAsJsonObject("player") : null;
             String playerName = player == null ? fallbackName : string(player, "name");
-            if (playerName.isEmpty()) playerName = fallbackName;
+            if (playerName == null || playerName.isEmpty()) playerName = fallbackName;
 
             if (id.isEmpty() || command.isEmpty() || playerName == null || playerName.isEmpty()) continue;
             if (!seen.add(id)) continue;
@@ -114,7 +114,7 @@ public class DeliveryProcessor implements Runnable {
                     plugin.getLogger().warning("GroupManager rejected Tebex rank command " + id + " for " + playerName);
                     continue;
                 }
-                completedIds.add(id);
+                completedIds.add(new JsonPrimitive(id));
                 plugin.getLogger().info("Delivered Tebex rank " + matcher.group(2) + " to " + playerName + " (command " + id + ").");
             } catch (Exception e) {
                 plugin.getLogger().warning("Failed to execute Tebex command " + id + ": " + e.getMessage());
