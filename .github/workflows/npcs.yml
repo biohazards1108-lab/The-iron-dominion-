@@ -30,14 +30,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f target/IronDominionNPCs-1.0.0.jar
-          jar tf target/IronDominionNPCs-1.0.0.jar | grep -q 'plugin.yml'
-          jar tf target/IronDominionNPCs-1.0.0.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
-          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.0.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
+          test -f target/IronDominionNPCs-1.0.1.jar
+          jar tf target/IronDominionNPCs-1.0.1.jar | grep -q 'plugin.yml'
+          jar tf target/IronDominionNPCs-1.0.1.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
+          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.1.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
           test "$major" = "50"
+      - name: Verify diagnostic strings are present
+        working-directory: npc-plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          strings target/IronDominionNPCs-1.0.1.jar | grep -q 'IronDominionNPCs v1.0.1 enabled'
+          strings target/IronDominionNPCs-1.0.1.jar | grep -q 'NPC SPAWN SUCCESS'
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
-          name: IronDominionNPCs-1.0.0
-          path: npc-plugin/target/IronDominionNPCs-1.0.0.jar
+          name: IronDominionNPCs-1.0.1
+          path: npc-plugin/target/IronDominionNPCs-1.0.1.jar
           if-no-files-found: error
