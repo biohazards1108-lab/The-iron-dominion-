@@ -1,8 +1,8 @@
 package com.irondom.shop.api;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.Gson;
 import com.irondom.shop.IronDominionShop;
 
 import java.io.BufferedReader;
@@ -226,7 +226,7 @@ public class ApiClient {
 
     public boolean isConnected() {
         try {
-            return websiteRequest("GET", "/health", null) != null;
+            return websiteRequest("GET", "/api/health", null) != null;
         } catch (Exception e) {
             return false;
         }
