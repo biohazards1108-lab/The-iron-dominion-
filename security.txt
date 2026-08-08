@@ -1,0 +1,5 @@
+# Iron Dominion security contact
+# Publish this file at /.well-known/security.txt when deploying to production.
+Contact: REPLACE_WITH_SECURITY_CONTACT
+Preferred-Languages: en
+Policy: /rules.html
