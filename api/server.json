@@ -1,6 +1,6 @@
 {
-  "online": true,
-  "players": 42,
-  "maxPlayers": 100,
-  "tps": 19.8
+  "online": false,
+  "players": 0,
+  "maxPlayers": 0,
+  "tps": null
 }
