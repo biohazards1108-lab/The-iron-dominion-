@@ -1,0 +1,13 @@
+name: DominionTokens
+version: 1.0.0
+main: com.irondom.tokens.DominionTokens
+author: Iron Dominion
+description: UUID-backed Dominion Token economy for legacy Bukkit/Cauldron 1.6.4
+commands:
+  dt:
+    description: View or administer Dominion Tokens
+    usage: /dt balance [player] | /dt add|take|set <player> <amount>
+permissions:
+  dominiontokens.admin:
+    description: Modify Dominion Token balances
+    default: op
