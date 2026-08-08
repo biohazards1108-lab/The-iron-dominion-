@@ -54,12 +54,43 @@ jobs:
           set -euo pipefail
           test -f target/DominionTokens-1.0.0.jar
           jar tf target/DominionTokens-1.0.0.jar | grep -q 'plugin.yml'
-          jar tf target/DominionTokens-1.0.0.jar | grep -q 'com/irondom/tokens/DominionTokens.class'
+          jar tf target/DominionTokens-1.0.0.jar | grep -q 'com/irondominion/tokens/DominionTokens.class'
       - name: Upload DominionTokens JAR
         uses: actions/upload-artifact@v4
         with:
           name: DominionTokens-1.0.0
           path: dominion-tokens/target/DominionTokens-1.0.0.jar
+          if-no-files-found: error
+
+  tebex-bridge-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+      - name: Build Iron Dominion Tebex bridge
+        working-directory: minecraft-plugin
+        run: mvn -B -DskipTests clean package
+      - name: Verify bridge JAR
+        working-directory: minecraft-plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f target/IronDominionBridge-1.1.0.jar
+          jar tf target/IronDominionBridge-1.1.0.jar | grep -q '^plugin.yml$'
+          jar tf target/IronDominionBridge-1.1.0.jar | grep -q 'com/irondom/shop/IronDominionShop.class'
+          jar tf target/IronDominionBridge-1.1.0.jar | grep -q 'com/irondom/shop/tasks/DeliveryProcessor.class'
+          jar tf target/IronDominionBridge-1.1.0.jar | grep -q 'config.yml'
+      - name: Upload Iron Dominion bridge
+        uses: actions/upload-artifact@v4
+        with:
+          name: IronDominionBridge-1.1.0
+          path: minecraft-plugin/target/IronDominionBridge-1.1.0.jar
           if-no-files-found: error
 
   static-site-check:
