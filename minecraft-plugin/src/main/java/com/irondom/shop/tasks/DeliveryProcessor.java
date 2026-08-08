@@ -19,6 +19,9 @@ import java.util.regex.Pattern;
  *
  * Security: the bridge does not blindly execute arbitrary remote commands.
  * Only the seven Iron Dominion supporter-rank commands are accepted.
+ *
+ * The Tebex API controls the polling cadence through meta.next_check. We
+ * honor that value rather than hammering the queue at a fixed interval.
  */
 public class DeliveryProcessor implements Runnable {
     private static final Pattern RANK_COMMAND = Pattern.compile(
