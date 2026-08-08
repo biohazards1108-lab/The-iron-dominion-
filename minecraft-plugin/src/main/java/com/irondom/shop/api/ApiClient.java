@@ -1,6 +1,7 @@
 package com.irondom.shop.api;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.irondom.shop.IronDominionShop;
 
@@ -14,37 +15,38 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Small authenticated HTTP client for the Iron Dominion website backend.
- *
- * Security properties:
- * - HTTPS is required by default.
- * - The API key is read from server-local configuration, never from the website.
- * - Player names and transaction IDs are URL encoded before entering paths.
- * - Requests have bounded connect/read timeouts.
- * - Only 2xx responses are treated as successful.
+ * Authenticated HTTP client for the Iron Dominion website backend and Tebex
+ * Game Server Plugin API. Secrets are read only from server-local config.
  */
 public class ApiClient {
+    private static final String TEBEX_QUEUE_URL = "https://plugin.tebex.io/queue";
+
     private final String apiUrl;
     private final String apiKey;
+    private final String tebexSecret;
     private final int connectTimeoutMs;
     private final int readTimeoutMs;
     private final boolean requireHttps;
-    private final Gson gson = new Gson();
     private final IronDominionShop plugin;
+    private final Gson gson = new Gson();
 
     public ApiClient(String apiUrl, IronDominionShop plugin) {
         this.apiUrl = normalizeBaseUrl(apiUrl);
         this.apiKey = plugin.getConfig().getString("api.api-key", "").trim();
+        this.tebexSecret = plugin.getConfig().getString("tebex.secret", "").trim();
         this.connectTimeoutMs = Math.max(1000, plugin.getConfig().getInt("api.connect-timeout-ms", 5000));
         this.readTimeoutMs = Math.max(1000, plugin.getConfig().getInt("api.read-timeout-ms", 5000));
         this.requireHttps = plugin.getConfig().getBoolean("api.require-https", true);
         this.plugin = plugin;
 
-        if (this.requireHttps && !this.apiUrl.startsWith("https://")) {
-            plugin.getLogger().severe("API HTTPS is required, but the configured API URL is not HTTPS. Backend calls are disabled.");
+        if (this.requireHttps && !this.apiUrl.isEmpty() && !this.apiUrl.startsWith("https://")) {
+            plugin.getLogger().severe("API HTTPS is required, but the configured API URL is not HTTPS.");
         }
         if (this.apiKey.isEmpty() || this.apiKey.startsWith("REPLACE_")) {
-            plugin.getLogger().warning("No production API key is configured. Backend calls are disabled until one is supplied on the server.");
+            plugin.getLogger().info("Website API key is not configured; website-only bridge features remain disabled.");
+        }
+        if (this.tebexSecret.isEmpty() || this.tebexSecret.startsWith("REPLACE_")) {
+            plugin.getLogger().warning("Tebex Game Server secret is not configured. Store delivery is disabled until it is supplied in config.yml.");
         }
     }
 
@@ -55,29 +57,33 @@ public class ApiClient {
         return trimmed;
     }
 
-    private boolean ready() {
+    private boolean websiteReady() {
         return !apiUrl.isEmpty()
                 && !apiKey.isEmpty()
                 && !apiKey.startsWith("REPLACE_")
                 && (!requireHttps || apiUrl.startsWith("https://"));
     }
 
+    public boolean tebexReady() {
+        return !tebexSecret.isEmpty() && !tebexSecret.startsWith("REPLACE_");
+    }
+
     private String encode(String value) throws Exception {
         return URLEncoder.encode(value == null ? "" : value, "UTF-8");
     }
 
-    private String request(String method, String path, String jsonBody) throws Exception {
-        if (!ready()) return null;
-
-        URL url = new URL(apiUrl + (path.startsWith("/") ? path : "/" + path));
+    private String request(String method, String urlString, String jsonBody, String authHeaderName, String authHeaderValue) throws Exception {
+        URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod(method);
         connection.setConnectTimeout(connectTimeoutMs);
         connection.setReadTimeout(readTimeoutMs);
         connection.setUseCaches(false);
         connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestProperty("User-Agent", "IronDominionBridge/1.0");
-        connection.setRequestProperty("X-Iron-Dominion-Key", apiKey);
+        connection.setRequestProperty("User-Agent", "IronDominionBridge/1.1");
+        if (authHeaderName != null && authHeaderValue != null && !authHeaderValue.isEmpty()) {
+            connection.setRequestProperty(authHeaderName, authHeaderValue);
+        }
 
         if (jsonBody != null) {
             byte[] payload = jsonBody.getBytes(StandardCharsets.UTF_8);
@@ -103,14 +109,26 @@ public class ApiClient {
         connection.disconnect();
 
         if (status < 200 || status >= 300) {
-            throw new IllegalStateException("HTTP " + status);
+            throw new IllegalStateException("HTTP " + status + ": " + response);
         }
         return response;
     }
 
+    private String websiteRequest(String method, String path, String jsonBody) throws Exception {
+        if (!websiteReady()) return null;
+        return request(method, apiUrl + (path.startsWith("/") ? path : "/" + path), jsonBody,
+                "X-Iron-Dominion-Key", apiKey);
+    }
+
+    private String tebexRequest(String method, String path, String jsonBody) throws Exception {
+        if (!tebexReady()) return null;
+        return request(method, TEBEX_QUEUE_URL + (path.startsWith("/") ? path : "/" + path), jsonBody,
+                "X-Tebex-Secret", tebexSecret);
+    }
+
     public int getPlayerBalance(String playerName) {
         try {
-            String response = request("GET", "/api/player/" + encode(playerName) + "/balance", null);
+            String response = websiteRequest("GET", "/api/player/" + encode(playerName) + "/balance", null);
             if (response == null) return -1;
             JsonObject json = gson.fromJson(response, JsonObject.class);
             return json.has("balance") ? json.get("balance").getAsInt() : -1;
@@ -120,19 +138,52 @@ public class ApiClient {
         }
     }
 
+    public String getTebexDuePlayers() {
+        try {
+            String response = tebexRequest("GET", "", null);
+            return response == null ? "{\"players\":[],\"meta\":{\"next_check\":90}}" : response;
+        } catch (Exception e) {
+            plugin.getLogger().warning("Unable to fetch Tebex command queue: " + e.getMessage());
+            return "{\"players\":[],\"meta\":{\"next_check\":90}}";
+        }
+    }
+
+    public String getTebexOfflineCommands() throws Exception {
+        String response = tebexRequest("GET", "/offline-commands", null);
+        return response == null ? "{\"commands\":[]}" : response;
+    }
+
+    public String getTebexOnlineCommands(String playerId) throws Exception {
+        String response = tebexRequest("GET", "/online-commands/" + encode(playerId), null);
+        return response == null ? "{\"commands\":[]}" : response;
+    }
+
+    public boolean deleteTebexCommands(JsonArray ids) {
+        if (!tebexReady() || ids == null || ids.size() == 0) return false;
+        try {
+            JsonObject body = new JsonObject();
+            body.add("ids", ids);
+            tebexRequest("DELETE", "", gson.toJson(body));
+            return true;
+        } catch (Exception e) {
+            plugin.getLogger().warning("Unable to acknowledge Tebex commands: " + e.getMessage());
+            return false;
+        }
+    }
+
     public String getPendingDeliveries() {
         try {
-            String response = request("GET", "/api/shop/pending-deliveries", null);
+            String response = websiteRequest("GET", "/api/shop/pending-deliveries", null);
             return response == null ? "[]" : response;
         } catch (Exception e) {
-            plugin.getLogger().warning("Unable to fetch pending deliveries: " + e.getMessage());
+            plugin.getLogger().warning("Unable to fetch website pending deliveries: " + e.getMessage());
             return "[]";
         }
     }
 
     public boolean markDelivered(String transactionId) {
         try {
-            request("POST", "/api/shop/deliver/" + encode(transactionId), "{}");
+            websiteRequest("POST", "/api/shop/deliver/" + encode(transactionId), "{}");
             return true;
         } catch (Exception e) {
             plugin.getLogger().warning("Unable to mark delivery complete: " + e.getMessage());
@@ -141,7 +192,7 @@ public class ApiClient {
     }
 
     public boolean updateServerStatus(int players, int maxPlayers, double tps, boolean online) {
-        if (players < 0 || maxPlayers < 0 || players > maxPlayers || Double.isNaN(tps) || Double.isInfinite(tps)) {
+        if (!websiteReady() || players < 0 || maxPlayers < 0 || players > maxPlayers || Double.isNaN(tps) || Double.isInfinite(tps)) {
             return false;
         }
         try {
@@ -150,7 +201,7 @@ public class ApiClient {
             body.addProperty("maxPlayers", maxPlayers);
             body.addProperty("tps", Math.max(0.0D, Math.min(100.0D, tps)));
             body.addProperty("online", online);
-            request("POST", "/api/server/update", gson.toJson(body));
+            websiteRequest("POST", "/api/server/update", gson.toJson(body));
             return true;
         } catch (Exception e) {
             plugin.getLogger().warning("Unable to update server status: " + e.getMessage());
@@ -159,14 +210,13 @@ public class ApiClient {
     }
 
     public boolean addPlayerTokens(String playerName, int amount, String reason) {
-        if (amount <= 0 || amount > 1000000) return false;
+        if (!websiteReady() || amount <= 0 || amount > 1000000) return false;
         try {
             JsonObject body = new JsonObject();
             body.addProperty("playerName", playerName);
             body.addProperty("amount", amount);
             body.addProperty("reason", reason == null ? "" : reason);
-            request("POST", "/api/admin/add-tokens", gson.toJson(body));
-            plugin.getLogger().info("Token grant accepted by backend for " + playerName);
+            websiteRequest("POST", "/api/admin/add-tokens", gson.toJson(body));
             return true;
         } catch (Exception e) {
             plugin.getLogger().warning("Unable to grant tokens: " + e.getMessage());
@@ -176,7 +226,7 @@ public class ApiClient {
 
     public boolean isConnected() {
         try {
-            return request("GET", "/health", null) != null;
+            return websiteRequest("GET", "/health", null) != null;
         } catch (Exception e) {
             return false;
         }
