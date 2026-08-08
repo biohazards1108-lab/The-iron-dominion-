@@ -8,10 +8,11 @@ import com.irondom.shop.tasks.ServerStatusUpdater;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * Iron Dominion's legacy-server bridge.
+ * Iron Dominion's legacy-server bridge for Tekkit 1.6.4/Cauldron.
  *
- * This plugin is intentionally small: the browser never receives the API key,
- * and sensitive rewards are granted only by authenticated server-side calls.
+ * Tebex delivery is performed through Tebex's Game Server Plugin API rather
+ * than the incompatible modern Tebex plugin. The browser never receives the
+ * Tebex server secret.
  */
 public class IronDominionShop extends JavaPlugin {
     private static IronDominionShop instance;
@@ -33,18 +34,21 @@ public class IronDominionShop extends JavaPlugin {
         }
 
         long statusPeriod = Math.max(20L, getConfig().getLong("status.update-seconds", 60L) * 20L);
-        // Capture server state on the server thread; the updater moves network I/O off-thread.
         getServer().getScheduler().scheduleSyncRepeatingTask(this,
                 new ServerStatusUpdater(this), 20L, statusPeriod);
 
         if (getConfig().getBoolean("store.enabled", false)) {
-            long deliveryPeriod = Math.max(20L, getConfig().getLong("delivery.poll-seconds", 30L) * 20L);
+            long deliveryPeriod = Math.max(20L, getConfig().getLong("delivery.poll-seconds", 90L) * 20L);
             getServer().getScheduler().scheduleSyncRepeatingTask(this,
-                    new DeliveryProcessor(this), 20L, deliveryPeriod);
-            getLogger().warning("Store delivery polling is enabled, but item delivery remains intentionally disabled until the legacy catalog is verified.");
+                    new DeliveryProcessor(this), 40L, deliveryPeriod);
+            getLogger().info("Tebex rank delivery polling is enabled. The bridge will only execute the seven configured Iron Dominion rank commands.");
+        } else {
+            getLogger().info("Tebex rank delivery is disabled. Set store.enabled=true after configuring the Tebex Game Server secret locally.");
         }
 
-        getLogger().info("Iron Dominion Bridge enabled. API endpoint: " + (apiUrl.isEmpty() ? "NOT CONFIGURED" : apiUrl));
+        getLogger().info("Iron Dominion Bridge enabled. Website API: "
+                + (apiUrl.isEmpty() ? "NOT CONFIGURED" : apiUrl)
+                + "; Tebex API: " + (apiClient.tebexReady() ? "CONFIGURED" : "NOT CONFIGURED"));
     }
 
     @Override
