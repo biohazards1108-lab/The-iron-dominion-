@@ -1,13 +1,12 @@
 package com.irondom.shop.commands;
 
 import com.irondom.shop.IronDominionShop;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class AdminCommand implements CommandExecutor {
-    private IronDominionShop plugin;
+    private final IronDominionShop plugin;
 
     public AdminCommand(IronDominionShop plugin) {
         this.plugin = plugin;
@@ -15,16 +14,16 @@ public class AdminCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("irondom.admin")) {
+        if (!sender.hasPermission("irondominion.admin")) {
             sender.sendMessage("§c✗ You don't have permission to use this command.");
-            return false;
+            return true;
         }
 
         if (args.length == 0) {
             sender.sendMessage("§6Usage: /domadmin <addtokens|sync|status>");
             sender.sendMessage("§6  /domadmin addtokens <player> <amount> <reason>");
-            sender.sendMessage("§6  /domadmin sync - Sync pending deliveries");
-            sender.sendMessage("§6  /domadmin status - Check API status");
+            sender.sendMessage("§6  /domadmin sync - Sync pending Tebex deliveries");
+            sender.sendMessage("§6  /domadmin status - Check website API status");
             return true;
         }
 
@@ -35,7 +34,7 @@ public class AdminCommand implements CommandExecutor {
                 sender.sendMessage("§cUsage: /domadmin addtokens <player> <amount> [reason]");
                 return false;
             }
-            
+
             String playerName = args[1];
             int amount;
             try {
@@ -45,32 +44,29 @@ public class AdminCommand implements CommandExecutor {
                 return false;
             }
 
-            String reason = args.length > 3 ? String.join(" ", java.util.Arrays.copyOfRange(args, 3, args.length)) : "Admin reward";
+            String reason = args.length > 3
+                    ? String.join(" ", java.util.Arrays.copyOfRange(args, 3, args.length))
+                    : "Admin reward";
 
             boolean success = plugin.getApiClient().addPlayerTokens(playerName, amount, reason);
             if (success) {
                 sender.sendMessage("§a✓ Added " + amount + " tokens to " + playerName);
-                Bukkit.getServer().broadcastMessage("§6" + playerName + " received " + amount + " Dominion Tokens!");
             } else {
-                sender.sendMessage("§c✗ Failed to add tokens.");
+                sender.sendMessage("§c✗ Failed to add tokens. Check the backend/API configuration.");
             }
             return true;
         }
 
         if (subcommand.equals("sync")) {
-            sender.sendMessage("§6Syncing pending deliveries...");
-            // This is handled by the DeliveryProcessor task
-            sender.sendMessage("§aDeliveries will be processed shortly.");
+            sender.sendMessage("§6The Tebex queue is checked automatically. Use /domadmin status to verify the bridge.");
             return true;
         }
 
         if (subcommand.equals("status")) {
-            boolean connected = plugin.getApiClient().isConnected();
-            if (connected) {
-                sender.sendMessage("§a✓ API Server Status: CONNECTED");
-            } else {
-                sender.sendMessage("§c✗ API Server Status: DISCONNECTED");
-            }
+            boolean websiteConnected = plugin.getApiClient().isConnected();
+            boolean tebexConnected = plugin.getApiClient().tebexReady();
+            sender.sendMessage("§6Website API: " + (websiteConnected ? "§aCONNECTED" : "§cDISCONNECTED"));
+            sender.sendMessage("§6Tebex Game Server API: " + (tebexConnected ? "§aCONFIGURED" : "§cNOT CONFIGURED"));
             return true;
         }
 
