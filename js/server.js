@@ -1,57 +1,42 @@
-// Server status updater — now fetches real data from /api/server.json with a simulated fallback
-(function(){
+(function () {
   const statusEl = document.getElementById('server-status');
   const playersEl = document.getElementById('players');
   const tpsEl = document.getElementById('tps');
+  const source = 'api/server.json';
 
-  // initial demo values
-  let players = 0;
-  let tps = 20.0;
-  let online = true;
+  if (!statusEl && !playersEl && !tpsEl) return;
 
-  // apply current values to the DOM
-  function render(){
-    statusEl.textContent = online ? 'ONLINE' : 'OFFLINE';
-    statusEl.style.color = online ? '#22c55e' : '#ef4444';
-    playersEl.textContent = players + ' / 100';
-    tpsEl.textContent = tps;
+  function render(data) {
+    const online = data.online === true;
+    const players = Number.isFinite(Number(data.players)) ? Number(data.players) : 0;
+    const maxPlayers = Number.isFinite(Number(data.maxPlayers)) ? Number(data.maxPlayers) : 0;
+    const tps = Number.isFinite(Number(data.tps)) ? Number(data.tps) : null;
+
+    if (statusEl) {
+      statusEl.textContent = online ? 'ONLINE' : 'OFFLINE';
+      statusEl.classList.toggle('online', online);
+      statusEl.classList.toggle('offline', !online);
+    }
+    if (playersEl) playersEl.textContent = maxPlayers ? `${players} / ${maxPlayers}` : String(players);
+    if (tpsEl) tpsEl.textContent = tps === null ? '—' : tps.toFixed(1);
   }
 
-  // small random fluctuations for fallback simulation
-  function randomTick(){
-    players = Math.max(0, Math.min(100, players + Math.floor(Math.random()*5)-2));
-    tps = Math.max(0, Math.min(20, Number((20 + (Math.random()*0.6-0.3)).toFixed(1))));
-    online = Math.random() > 0.02; // mostly online
-    render();
+  function renderError() {
+    render({ online: false, players: 0, maxPlayers: 0, tps: null });
   }
 
-  // Try fetching real server data from the repo's api endpoint
-  async function fetchServer(){
-    try{
-      const res = await fetch('api/server.json', {cache: 'no-store'});
-      if(!res.ok) throw new Error('non-OK response');
-      const data = await res.json();
-      // defensive parsing
-      online = Boolean(data.online);
-      players = Number.isFinite(Number(data.players)) ? Number(data.players) : players;
-      // maxPlayers might be provided; if so, show players / maxPlayers
-      const maxPlayers = Number.isFinite(Number(data.maxPlayers)) ? Number(data.maxPlayers) : 100;
-      tps = Number.isFinite(Number(data.tps)) ? Number(data.tps) : tps;
-
-      // render players with max when present
-      playersEl.textContent = players + ' / ' + maxPlayers;
-      render();
-    }catch(err){
-      // fetch failed — fall back to simulation for this tick
-      randomTick();
+  async function fetchServer() {
+    try {
+      const response = await fetch(`${source}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      render(data);
+    } catch (error) {
+      console.warn('Iron Dominion server status unavailable:', error);
+      renderError();
     }
   }
 
-  // initial seeding
-  players = Math.floor(Math.random()*10);
-  render();
-
-  // Start by attempting to fetch immediately, then poll every 5s
   fetchServer();
-  setInterval(fetchServer, 5000);
+  window.setInterval(fetchServer, 15000);
 })();
