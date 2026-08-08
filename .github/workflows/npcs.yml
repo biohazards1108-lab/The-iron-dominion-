@@ -40,8 +40,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          strings target/IronDominionNPCs-1.0.1.jar | grep -q 'IronDominionNPCs v1.0.1 enabled'
-          strings target/IronDominionNPCs-1.0.1.jar | grep -q 'NPC SPAWN SUCCESS'
+          javap -classpath target/IronDominionNPCs-1.0.1.jar -c -p com.irondominion.npcs.IronDominionNPCs > /tmp/npc-bytecode.txt
+          grep -q 'IronDominionNPCs v1.0.1 enabled' /tmp/npc-bytecode.txt
+          grep -q 'NPC SPAWN SUCCESS' /tmp/npc-bytecode.txt
+          grep -q 'NPC CREATE REQUEST' /tmp/npc-bytecode.txt
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
