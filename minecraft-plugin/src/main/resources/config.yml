@@ -1,5 +1,7 @@
 # Iron Dominion Bridge configuration
-# Do not put real secrets in source control. Replace these values only on the server.
+# NEVER commit real API keys or Tebex secrets here.
+# Set these values in the generated plugins/IronDominionBridge/config.yml on the server.
+
 api:
   url: "https://REPLACE_WITH_PRODUCTION_API_HOST"
   api-key: "REPLACE_ON_SERVER"
@@ -7,11 +9,18 @@ api:
   read-timeout-ms: 5000
   require-https: true
 
+tebex:
+  # Game Server secret from Tebex Creator Panel -> Game Servers -> Edit.
+  # Keep this server-local. It is NOT the webhook secret.
+  secret: "REPLACE_ON_SERVER"
+
 status:
   update-seconds: 60
 
 delivery:
-  poll-seconds: 30
+  # Tebex tells clients the correct next-check interval. This value is only
+  # the initial safety interval before the first successful queue response.
+  poll-seconds: 90
 
 voting:
   enabled: false
