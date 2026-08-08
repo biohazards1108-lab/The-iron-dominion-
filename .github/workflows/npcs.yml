@@ -1,0 +1,43 @@
+name: Iron Dominion NPCs CI
+
+on:
+  push:
+    paths:
+      - 'npc-plugin/**'
+      - '.github/workflows/npcs.yml'
+  pull_request:
+    paths:
+      - 'npc-plugin/**'
+      - '.github/workflows/npcs.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+      - name: Build NPC plugin
+        working-directory: npc-plugin
+        run: mvn -B -DskipTests package
+      - name: Verify legacy bytecode and plugin contents
+        working-directory: npc-plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f target/IronDominionNPCs-1.0.0.jar
+          jar tf target/IronDominionNPCs-1.0.0.jar | grep -q 'plugin.yml'
+          jar tf target/IronDominionNPCs-1.0.0.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
+          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.0.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
+          test "$major" = "50"
+      - name: Upload NPC plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: IronDominionNPCs-1.0.0
+          path: npc-plugin/target/IronDominionNPCs-1.0.0.jar
+          if-no-files-found: error
