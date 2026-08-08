@@ -34,16 +34,19 @@ button, .button { font: inherit; }
 
 .hero {
   position: relative;
-  min-height: 430px;
+  min-height: 560px;
   display: grid;
   place-items: center;
-  padding: 70px 20px;
+  padding: 52px 20px;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.88)),
-    radial-gradient(circle at 50% 40%, rgba(245,158,11,.15), transparent 28rem),
-    linear-gradient(135deg, #111820, #050608 65%);
-  border-bottom: 1px solid var(--line);
+  isolation: isolate;
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.20) 40%, rgba(0,0,0,.88) 100%),
+    url("../assets/iron-dominion-banner.svg");
+  background-size: cover;
+  background-position: center 44%;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid rgba(245,158,11,.24);
 }
 .hero::before,
 .hero::after {
@@ -53,29 +56,49 @@ button, .button { font: inherit; }
   pointer-events: none;
 }
 .hero::before {
-  opacity: .13;
-  background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
-  background-size: 38px 38px;
-  transform: perspective(500px) rotateX(55deg) scale(1.7) translateY(28%);
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 43%, rgba(245,158,11,.16), transparent 32%),
+    linear-gradient(90deg, rgba(0,0,0,.48), transparent 25%, transparent 75%, rgba(0,0,0,.48));
 }
-.hero::after { box-shadow: inset 0 -80px 100px rgba(0,0,0,.7); }
+.hero::after {
+  box-shadow: inset 0 -100px 110px rgba(0,0,0,.72), inset 0 0 70px rgba(0,0,0,.45);
+}
 
 .overlay {
   position: relative;
   z-index: 1;
-  width: min(900px, 100%);
-  padding: 44px 30px;
+  width: min(920px, 100%);
+  padding: 34px 30px 30px;
   text-align: center;
-  background: linear-gradient(180deg, rgba(10,14,18,.78), rgba(10,14,18,.56));
-  border: 1px solid rgba(245,158,11,.18);
+  background: linear-gradient(180deg, rgba(7,10,13,.78), rgba(7,10,13,.54));
+  border: 1px solid rgba(245,158,11,.30);
   border-radius: 22px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 25px 70px rgba(0,0,0,.58), inset 0 1px rgba(255,255,255,.08);
+  backdrop-filter: blur(5px);
 }
 
-.hero h1 { margin: 0; font-size: clamp(2.2rem, 7vw, 5rem); line-height: 1; letter-spacing: .08em; text-shadow: 0 0 30px rgba(245,158,11,.16); }
-.hero h2 { margin: 18px 0 8px; color: #d7dde2; font-size: clamp(1.05rem, 2vw, 1.45rem); font-weight: 600; }
-.hero p { margin: 0 auto 24px; max-width: 680px; color: var(--muted); }
+.badge {
+  display: inline-block;
+  margin-bottom: 16px;
+  padding: 7px 13px;
+  color: #f8fafc;
+  background: rgba(0,0,0,.62);
+  border: 1px solid rgba(245,158,11,.38);
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 850;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+
+.hero h1 { margin: 0; font-size: clamp(2.2rem, 7vw, 5rem); line-height: 1; letter-spacing: .08em; text-shadow: 0 0 30px rgba(245,158,11,.16), 0 4px 18px rgba(0,0,0,.85); }
+.hero h2 { margin: 18px 0 8px; color: #fff; font-size: clamp(1.05rem, 2vw, 1.55rem); font-weight: 800; text-shadow: 0 3px 12px rgba(0,0,0,.9); }
+.hero p { margin: 0 auto 24px; max-width: 680px; color: #d4d9de; text-shadow: 0 2px 10px rgba(0,0,0,.9); }
+.hero-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+.hero .button { border: 1px solid rgba(255,255,255,.10); }
+.hero .button:first-child { box-shadow: 0 10px 30px rgba(217,119,6,.34); }
 
 nav {
   position: sticky;
@@ -141,8 +164,10 @@ main { width: min(1120px, 100%); margin: 0 auto; padding: 38px 18px 10px; }
   text-decoration: none;
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(217,119,6,.18);
+  transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
 }
 .button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.button:focus-visible { outline: 3px solid rgba(245,158,11,.55); outline-offset: 3px; }
 .button.secondary { color: var(--text); background: rgba(255,255,255,.06); border: 1px solid var(--line); box-shadow: none; }
 
 .callout { padding: 18px; border-left: 3px solid var(--accent); background: rgba(245,158,11,.055); border-radius: 10px; }
@@ -168,12 +193,22 @@ footer p { margin: 4px 0; }
 .notice { color: var(--muted); font-size: .92rem; }
 .empty-state { text-align: center; padding: 30px; color: var(--muted); }
 
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .button { transition: none; }
+}
+
 @media (max-width: 850px) {
   .grid, .status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 620px) {
-  .hero { min-height: 360px; padding: 42px 14px; }
-  .overlay { padding: 32px 18px; }
+  .hero { min-height: 500px; padding: 28px 12px; background-position: center center; }
+  .overlay { padding: 26px 16px 22px; background: linear-gradient(180deg, rgba(7,10,13,.84), rgba(7,10,13,.62)); }
+  .badge { font-size: .68rem; letter-spacing: .08em; }
+  .hero h1 { font-size: clamp(2rem, 13vw, 3.4rem); }
+  .hero h2 { margin-top: 13px; }
+  .hero-actions { display: grid; grid-template-columns: 1fr; }
+  .hero-actions .button { width: 100%; }
   nav { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
   nav a { white-space: nowrap; }
   main { padding-top: 24px; }
