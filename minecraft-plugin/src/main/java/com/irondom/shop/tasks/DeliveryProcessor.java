@@ -20,13 +20,15 @@ import java.util.regex.Pattern;
  * Security: the bridge does not blindly execute arbitrary remote commands.
  * Only the seven Iron Dominion supporter-rank commands are accepted.
  *
- * The Tebex API controls the polling cadence through meta.next_check. We
- * honor that value rather than hammering the queue at a fixed interval.
+ * Tebex controls the polling cadence through meta.next_check. We honor that
+ * value rather than repeatedly polling the queue at a fixed interval.
  */
 public class DeliveryProcessor implements Runnable {
     private static final Pattern RANK_COMMAND = Pattern.compile(
             "^manuadd\\s+([^\\s]+)\\s+(Iron|Steel|Titanium|Diamond|Obsidian|Dominion|Overlord)$",
             Pattern.CASE_INSENSITIVE);
+    private static final long MIN_RETRY_SECONDS = 30L;
+    private static final long MAX_RETRY_SECONDS = 300L;
 
     private final IronDominionShop plugin;
     private final Gson gson = new Gson();
@@ -40,10 +42,12 @@ public class DeliveryProcessor implements Runnable {
         if (!plugin.getConfig().getBoolean("store.enabled", false)) return;
         if (!plugin.getApiClient().tebexReady()) return;
 
+        long nextCheckSeconds = getFallbackPollSeconds();
         try {
             processOfflineCommands();
 
             JsonObject due = gson.fromJson(plugin.getApiClient().getTebexDuePlayers(), JsonObject.class);
+            nextCheckSeconds = nextCheckSeconds(due);
             JsonArray players = due != null && due.has("players") && due.get("players").isJsonArray()
                     ? due.getAsJsonArray("players") : new JsonArray();
 
@@ -59,6 +63,35 @@ public class DeliveryProcessor implements Runnable {
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Tebex delivery check failed: " + e.getMessage());
+            nextCheckSeconds = getFallbackPollSeconds();
+        } finally {
+            scheduleNext(nextCheckSeconds);
+        }
+    }
+
+    private void scheduleNext(long seconds) {
+        long boundedSeconds = Math.max(MIN_RETRY_SECONDS, Math.min(MAX_RETRY_SECONDS, seconds));
+        long ticks = Math.max(20L, boundedSeconds * 20L);
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DeliveryProcessor(plugin), ticks);
+    }
+
+    private long getFallbackPollSeconds() {
+        return Math.max(MIN_RETRY_SECONDS, plugin.getConfig().getLong("delivery.poll-seconds", 90L));
+    }
+
+    private long nextCheckSeconds(JsonObject due) {
+        if (due == null || !due.has("meta") || !due.get("meta").isJsonObject()) {
+            return getFallbackPollSeconds();
+        }
+        JsonObject meta = due.getAsJsonObject("meta");
+        if (!meta.has("next_check") || !meta.get("next_check").isJsonPrimitive()) {
+            return getFallbackPollSeconds();
+        }
+        try {
+            long value = meta.get("next_check").getAsLong();
+            return value > 0 ? value : getFallbackPollSeconds();
+        } catch (Exception ignored) {
+            return getFallbackPollSeconds();
         }
     }
 
