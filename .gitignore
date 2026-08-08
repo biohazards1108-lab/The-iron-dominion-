@@ -1,0 +1,24 @@
+.env
+*.env
+.env.*
+!.env.example
+
+# Runtime data
+/data/
+server/data/
+*.db
+*.db-shm
+*.db-wal
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Java/Maven
+**/target/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
