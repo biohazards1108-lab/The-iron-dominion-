@@ -1,6 +1,9 @@
 {
+  "live": false,
   "online": false,
-  "players": 0,
-  "maxPlayers": 0,
-  "tps": null
+  "players": null,
+  "maxPlayers": null,
+  "tps": null,
+  "updatedAt": null,
+  "source": "placeholder"
 }
