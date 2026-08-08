@@ -13,7 +13,7 @@ public class ServerStatusUpdater implements Runnable {
 
     @Override
     public void run() {
-        final int playerCount = Bukkit.getOnlinePlayers().size();
+        final int playerCount = Bukkit.getOnlinePlayers().length;
         final int maxPlayers = Bukkit.getMaxPlayers();
         final double tps = getTPS();
 
@@ -37,7 +37,7 @@ public class ServerStatusUpdater implements Runnable {
                 }
             }
             if (value instanceof Number) {
-                return Math.max(0.0D, Math.min(20.0D, ((Number) value).doubleValue()));
+                return Math.max(0.0D, Math.min(20.0D, ((Number) value).doubleValue());
             }
         } catch (Exception ignored) {
             // No standardized TPS method on this server fork.
