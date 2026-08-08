@@ -17,21 +17,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class IronDominionNPCs extends JavaPlugin implements Listener {
     private final Map<String, Entity> live = new HashMap<String, Entity>();
     private final Map<String, Long> cooldowns = new HashMap<String, Long>();
+    private final Map<Integer, String> pendingSpawns = new HashMap<Integer, String>();
 
     @Override public void onEnable() {
         saveDefaultConfig();
         getServer().getPluginManager().registerEvents(this, this);
-        getLogger().info("IronDominionNPCs v1.0.1 enabled. Legacy spawn diagnostics active.");
+        getLogger().info("IronDominionNPCs v1.0.2 enabled. Legacy spawn diagnostics active.");
         respawnAll();
     }
 
-    @Override public void onDisable() { live.clear(); cooldowns.clear(); }
+    @Override public void onDisable() { live.clear(); cooldowns.clear(); pendingSpawns.clear(); }
 
     private String color(String s) { return ChatColor.translateAlternateColorCodes('&', s); }
 
@@ -49,7 +51,7 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
             return false;
         }
         double x = getConfig().getDouble(path + ".x");
-        double y = getConfig().getDouble(path + ".y") + 0.05D;
+        double y = getConfig().getDouble(path + ".y") + 1.0D;
         double z = getConfig().getDouble(path + ".z");
         float yaw = (float)getConfig().getDouble(path + ".yaw");
         float pitch = (float)getConfig().getDouble(path + ".pitch");
@@ -57,15 +59,39 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
         world.loadChunk(loc.getBlockX() >> 4, loc.getBlockZ() >> 4);
         Entity old = live.remove(id);
         if (old != null && !old.isDead()) old.remove();
-        Entity entity;
+
+        getLogger().info("NPC SPAWN ATTEMPT: id=" + id + ", world=" + world.getName() + ", location=" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
+        Entity entity = null;
+        Throwable firstFailure = null;
         try {
-            entity = world.spawnCreature(loc, EntityType.VILLAGER);
+            entity = world.spawnEntity(loc, EntityType.VILLAGER);
         } catch (Throwable t) {
-            getLogger().warning("NPC " + id + " spawn exception: " + t.getClass().getName() + ": " + t.getMessage());
-            return false;
+            firstFailure = t;
+            getLogger().warning("NPC " + id + " spawnEntity failed: " + t.getClass().getName() + ": " + t.getMessage());
         }
         if (entity == null || entity.isDead()) {
-            getLogger().warning("NPC " + id + " spawn returned no live entity.");
+            try {
+                entity = world.spawnCreature(loc, EntityType.VILLAGER);
+            } catch (Throwable t) {
+                getLogger().warning("NPC " + id + " spawnCreature failed: " + t.getClass().getName() + ": " + t.getMessage());
+                if (firstFailure != null) getLogger().warning("First spawn failure was: " + firstFailure.getClass().getName() + ": " + firstFailure.getMessage());
+                return false;
+            }
+        }
+        if (entity == null) {
+            getLogger().warning("NPC " + id + " spawn returned null from both Bukkit spawn APIs.");
+            return false;
+        }
+        pendingSpawns.put(Integer.valueOf(entity.getEntityId()), id);
+        if (entity.isDead()) {
+            getLogger().warning("NPC " + id + " spawn returned a DEAD entity. A spawn listener or server/mod may be cancelling/removing villagers.");
+            pendingSpawns.remove(Integer.valueOf(entity.getEntityId()));
+            return false;
+        }
+        if (!(entity instanceof Villager)) {
+            getLogger().warning("NPC " + id + " spawned entity type " + entity.getType().name() + " instead of VILLAGER.");
+            pendingSpawns.remove(Integer.valueOf(entity.getEntityId()));
+            entity.remove();
             return false;
         }
         Villager v = (Villager) entity;
@@ -75,8 +101,17 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
         String profession = getConfig().getString(path + ".profession", "LIBRARIAN");
         try { v.setProfession(Villager.Profession.valueOf(profession.toUpperCase())); } catch (IllegalArgumentException ignored) { }
         live.put(id, entity);
+        pendingSpawns.remove(Integer.valueOf(entity.getEntityId()));
         getLogger().info("NPC SPAWN SUCCESS: id=" + id + ", entityId=" + entity.getEntityId() + ", world=" + world.getName() + ", location=" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
         return true;
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+    public void onEntitySpawn(EntitySpawnEvent event) {
+        String id = pendingSpawns.get(Integer.valueOf(event.getEntity().getEntityId()));
+        if (id == null) return;
+        if (event.isCancelled()) getLogger().warning("NPC SPAWN CANCELLED: id=" + id + ", entityId=" + event.getEntity().getEntityId() + ". Another plugin/mod cancelled EntitySpawnEvent.");
+        else getLogger().info("NPC EntitySpawnEvent accepted: id=" + id + ", entityId=" + event.getEntity().getEntityId());
     }
 
     private String npcId(Entity entity) {
@@ -119,10 +154,10 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
             if (!getConfig().isConfigurationSection("npcs")) { sender.sendMessage("No NPCs configured."); return true; }
             sender.sendMessage(color("&6Iron Dominion NPCs:"));
-            for (String id : getConfig().getConfigurationSection("npcs").getKeys(false)) sender.sendMessage(color("&e- " + id));
+            for (String id : getConfig().getConfigurationSection("npcs").getKeys(false).getKeys(false)) sender.sendMessage(color("&e- " + id));
             return true;
         }
-        if (args[0].equalsIgnoreCase("version")) { sender.sendMessage(color("&6IronDominionNPCs &ev1.0.1 &7| legacy 1.6.4 spawn engine")); return true; }
+        if (args[0].equalsIgnoreCase("version")) { sender.sendMessage(color("&6IronDominionNPCs &ev1.0.2 &7| legacy 1.6.4 spawn engine")); return true; }
         if (args[0].equalsIgnoreCase("debug")) {
             sender.sendMessage(color("&6NPC plugin: &e" + getDescription().getVersion()));
             sender.sendMessage(color("&6Configured NPCs: &e" + (getConfig().isConfigurationSection("npcs") ? getConfig().getConfigurationSection("npcs").getKeys(false).size() : 0)));
@@ -149,7 +184,7 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
             getConfig().set(path + ".commands", java.util.Collections.emptyList()); getConfig().set(path + ".permission", "");
             saveConfig();
             getLogger().info("NPC CREATE REQUEST: id=" + id + " from=" + p.getName());
-            if (spawn(id)) p.sendMessage(color("&aCreated NPC &e" + id + " &7and spawned it. Plugin v1.0.1"));
+            if (spawn(id)) p.sendMessage(color("&aCreated NPC &e" + id + " &7and spawned it. Plugin v1.0.2"));
             else p.sendMessage(color("&cNPC &e" + id + " &ccould not be spawned. Check the server console."));
             return true;
         }
