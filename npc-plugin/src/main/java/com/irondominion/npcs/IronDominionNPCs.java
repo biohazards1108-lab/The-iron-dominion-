@@ -154,7 +154,7 @@ public final class IronDominionNPCs extends JavaPlugin implements Listener {
         if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
             if (!getConfig().isConfigurationSection("npcs")) { sender.sendMessage("No NPCs configured."); return true; }
             sender.sendMessage(color("&6Iron Dominion NPCs:"));
-            for (String id : getConfig().getConfigurationSection("npcs").getKeys(false).getKeys(false)) sender.sendMessage(color("&e- " + id));
+            for (String id : getConfig().getConfigurationSection("npcs").getKeys(false)) sender.sendMessage(color("&e- " + id));
             return true;
         }
         if (args[0].equalsIgnoreCase("version")) { sender.sendMessage(color("&6IronDominionNPCs &ev1.0.2 &7| legacy 1.6.4 spawn engine")); return true; }
