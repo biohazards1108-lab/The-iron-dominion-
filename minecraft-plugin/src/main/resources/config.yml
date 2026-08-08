@@ -1,0 +1,22 @@
+# Iron Dominion Bridge configuration
+# Do not put real secrets in source control. Replace these values only on the server.
+api:
+  url: "https://REPLACE_WITH_PRODUCTION_API_HOST"
+  api-key: "REPLACE_ON_SERVER"
+  connect-timeout-ms: 5000
+  read-timeout-ms: 5000
+  require-https: true
+
+status:
+  update-seconds: 60
+
+delivery:
+  poll-seconds: 30
+
+voting:
+  enabled: false
+  tokens-per-verified-vote: 1
+  duplicate-protection: true
+
+store:
+  enabled: false
