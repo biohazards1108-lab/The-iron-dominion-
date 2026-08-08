@@ -56,7 +56,7 @@ Secrets must remain server-side. Discord webhook URLs, Tebex credentials, Votifi
 
 `minecraft-plugin/` contains the legacy Bukkit-compatible bridge intended for the Tekkit 1.6.4/Cauldron environment.
 
-The build targets Bukkit `1.6.4-R2.0`, not modern Paper. The bridge uses HTTPS by default, an API key stored in the server-local configuration, bounded network timeouts, URL encoding, and server-side validation. citeturn1search0
+The build targets Bukkit `1.6.4-R2.0`, not modern Paper. The bridge uses HTTPS by default, an API key stored in the server-local configuration, bounded network timeouts, URL encoding, and server-side validation.
 
 The bridge intentionally does **not** activate store item delivery by default. The legacy Tekkit item catalog must be mapped and tested before any paid product is allowed to deliver in game.
 
@@ -72,7 +72,7 @@ The initial listing targets are:
 - Planet Minecraft
 - Minecraft-MP
 
-Exact Iron Dominion vote URLs will only be inserted after the server listings exist. Minecraft-MP supports Votifier and provides an API for vote-related integrations. citeturn0search0turn0search6
+Exact Iron Dominion vote URLs will only be inserted after the server listings exist. Minecraft-MP supports Votifier and provides an API for vote-related integrations.
 
 ## Production launch checklist
 
