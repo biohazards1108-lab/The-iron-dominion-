@@ -1,26 +1,13 @@
-// Populate leaderboard with demo entries
-(function(){
+(function () {
   const table = document.getElementById('leaderboard-table');
+  if (!table) return;
 
-  // sample demo data
-  const sample = [
-    {rank:'🥇', name:'IronLord', wealth:'12,432'},
-    {rank:'🥈', name:'ForgeMaster', wealth:'9,210'},
-    {rank:'🥉', name:'SteelSmith', wealth:'7,005'},
-    {rank:'4', name:'Wasteland', wealth:'5,900'},
-    {rank:'5', name:'Miner42', wealth:'4,450'}
-  ];
+  const body = table.tBodies[0] || table.createTBody();
+  while (body.rows.length) body.deleteRow(0);
 
-  // remove all rows except header
-  while(table.rows.length > 1) table.deleteRow(1);
-
-  sample.forEach(entry=>{
-    const r = table.insertRow(-1);
-    const c1 = r.insertCell(0);
-    const c2 = r.insertCell(1);
-    const c3 = r.insertCell(2);
-    c1.textContent = entry.rank;
-    c2.textContent = entry.name;
-    c3.textContent = entry.wealth;
-  });
+  const row = body.insertRow();
+  const cell = row.insertCell();
+  cell.colSpan = 3;
+  cell.className = 'empty-state';
+  cell.textContent = 'Leaderboard data will appear here when the server API is connected.';
 })();
