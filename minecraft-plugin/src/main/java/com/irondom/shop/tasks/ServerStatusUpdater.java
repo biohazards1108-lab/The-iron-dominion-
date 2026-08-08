@@ -37,7 +37,7 @@ public class ServerStatusUpdater implements Runnable {
                 }
             }
             if (value instanceof Number) {
-                return Math.max(0.0D, Math.min(20.0D, ((Number) value).doubleValue());
+                return Math.max(0.0D, Math.min(20.0D, ((Number) value).doubleValue()));
             }
         } catch (Exception ignored) {
             // No standardized TPS method on this server fork.
