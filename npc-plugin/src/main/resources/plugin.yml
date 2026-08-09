@@ -1,7 +1,8 @@
 name: IronDominionNPCs
 main: com.irondominion.npcs.IronDominionNPCs
-version: 1.0.4
+version: 1.0.5
 load: POSTWORLD
+softdepend: [Citizens]
 author: Iron Dominion
 description: Custom interactive NPC system for Iron Dominion Tekkit 1.6.4.
 commands:
