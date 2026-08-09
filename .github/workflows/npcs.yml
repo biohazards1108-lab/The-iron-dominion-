@@ -30,25 +30,27 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f target/IronDominionNPCs-1.0.2.jar
-          jar tf target/IronDominionNPCs-1.0.2.jar | grep -q 'plugin.yml'
-          jar tf target/IronDominionNPCs-1.0.2.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
-          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.2.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
+          test -f target/IronDominionNPCs-1.0.3.jar
+          jar tf target/IronDominionNPCs-1.0.3.jar | grep -q 'plugin.yml'
+          jar tf target/IronDominionNPCs-1.0.3.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
+          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.3.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
           test "$major" = "50"
-      - name: Verify 1.0.2 diagnostics
+      - name: Verify 1.0.3 diagnostics
         working-directory: npc-plugin
         shell: bash
         run: |
           set -euo pipefail
-          javap -classpath target/IronDominionNPCs-1.0.2.jar -c -p com.irondominion.npcs.IronDominionNPCs > /tmp/npc-bytecode.txt
-          grep -q 'IronDominionNPCs v1.0.2 enabled' /tmp/npc-bytecode.txt
+          javap -classpath target/IronDominionNPCs-1.0.3.jar -c -p com.irondominion.npcs.IronDominionNPCs > /tmp/npc-bytecode.txt
+          grep -q 'IronDominionNPCs v1.0.3 enabled' /tmp/npc-bytecode.txt
           grep -q 'NPC SPAWN ATTEMPT' /tmp/npc-bytecode.txt
-          grep -q 'NPC SPAWN CANCELLED' /tmp/npc-bytecode.txt
+          grep -q 'NPC SPAWN CANCELLED by another plugin/mod' /tmp/npc-bytecode.txt
+          grep -q 'NPC SPAWN POST-TICK DEAD' /tmp/npc-bytecode.txt
+          grep -q 'NPC SPAWN POST-TICK ALIVE' /tmp/npc-bytecode.txt
           grep -q 'spawnEntity' /tmp/npc-bytecode.txt
           grep -q 'spawnCreature' /tmp/npc-bytecode.txt
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
-          name: IronDominionNPCs-1.0.2
-          path: npc-plugin/target/IronDominionNPCs-1.0.2.jar
+          name: IronDominionNPCs-1.0.3
+          path: npc-plugin/target/IronDominionNPCs-1.0.3.jar
           if-no-files-found: error
