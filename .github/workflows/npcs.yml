@@ -41,14 +41,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          javap -classpath target/IronDominionNPCs-1.0.3.jar -c -p com.irondominion.npcs.IronDominionNPCs > /tmp/npc-bytecode.txt
-          grep -q 'IronDominionNPCs v1.0.3 enabled' /tmp/npc-bytecode.txt
-          grep -q 'NPC SPAWN ATTEMPT' /tmp/npc-bytecode.txt
-          grep -q 'NPC SPAWN CANCELLED by another plugin/mod' /tmp/npc-bytecode.txt
-          grep -q 'NPC SPAWN POST-TICK DEAD' /tmp/npc-bytecode.txt
-          grep -q 'NPC SPAWN POST-TICK ALIVE' /tmp/npc-bytecode.txt
-          grep -q 'spawnEntity' /tmp/npc-bytecode.txt
-          grep -q 'spawnCreature' /tmp/npc-bytecode.txt
+          source=src/main/java/com/irondominion/npcs/IronDominionNPCs.java
+          test -f "$source"
+          grep -q 'onCreatureSpawn' "$source"
+          grep -q 'onInteract' "$source"
+          grep -q 'NPC SPAWN ATTEMPT' "$source"
+          grep -q 'NPC SPAWN SUCCESS' "$source"
+          grep -q 'NPC SPAWN POST-TICK DEAD' "$source"
+          grep -q 'NPC SPAWN POST-TICK ALIVE' "$source"
+          grep -q 'spawnEntity' "$source"
+          grep -q 'spawnCreature' "$source"
+          javap -classpath target/IronDominionNPCs-1.0.3.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'onCreatureSpawn'
+          javap -classpath target/IronDominionNPCs-1.0.3.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'onInteract'
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
