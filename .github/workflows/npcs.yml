@@ -37,22 +37,20 @@ jobs:
           major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.5.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
           test "$major" = "50"
           unzip -p target/IronDominionNPCs-1.0.5.jar plugin.yml | grep -q '^version: 1.0.5$'
-          unzip -p target/IronDominionNPCs-1.0.5.jar plugin.yml | grep -q '^softdepend: \[Citizens\]$'
-      - name: Verify Citizens-backed engine
+      - name: Verify native NMS engine
         working-directory: npc-plugin
         shell: bash
         run: |
           set -euo pipefail
           source=src/main/java/com/irondominion/npcs/IronDominionNPCs.java
           test -f "$source"
-          grep -q 'CitizensAPI' "$source"
-          grep -q 'getNPCRegistry' "$source"
-          grep -q 'createNPC' "$source"
-          grep -q 'CITIZENS NPC SPAWN SUCCESS' "$source"
-          grep -q 'CITIZENS NPC POST-TICK ALIVE' "$source"
-          grep -q 'Citizens detected' "$source"
-          javap -classpath target/IronDominionNPCs-1.0.5.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnWithCitizens'
-          javap -classpath target/IronDominionNPCs-1.0.5.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'destroyCitizensNpc'
+          grep -q 'EntityVillager' "$source"
+          grep -q 'WorldServer' "$source"
+          grep -q 'addEntity' "$source"
+          grep -q 'getBukkitEntity' "$source"
+          grep -q 'NMS NPC SPAWN SUCCESS' "$source"
+          grep -q 'NMS NPC POST-TICK ALIVE' "$source"
+          javap -classpath target/IronDominionNPCs-1.0.5.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnNms'
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
