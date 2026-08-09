@@ -30,32 +30,32 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f target/IronDominionNPCs-1.0.3.jar
-          jar tf target/IronDominionNPCs-1.0.3.jar | grep -q 'plugin.yml'
-          jar tf target/IronDominionNPCs-1.0.3.jar | grep -q 'config.yml'
-          jar tf target/IronDominionNPCs-1.0.3.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
-          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.3.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
+          test -f target/IronDominionNPCs-1.0.4.jar
+          jar tf target/IronDominionNPCs-1.0.4.jar | grep -q 'plugin.yml'
+          jar tf target/IronDominionNPCs-1.0.4.jar | grep -q 'config.yml'
+          jar tf target/IronDominionNPCs-1.0.4.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
+          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.4.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
           test "$major" = "50"
-      - name: Verify 1.0.3 diagnostics
+          unzip -p target/IronDominionNPCs-1.0.4.jar plugin.yml | grep -q '^version: 1.0.4$'
+      - name: Verify 1.0.4 diagnostics
         working-directory: npc-plugin
         shell: bash
         run: |
           set -euo pipefail
           source=src/main/java/com/irondominion/npcs/IronDominionNPCs.java
           test -f "$source"
-          grep -q 'onCreatureSpawn' "$source"
-          grep -q 'onInteract' "$source"
+          grep -q 'safeLocation' "$source"
           grep -q 'NPC SPAWN ATTEMPT' "$source"
           grep -q 'NPC SPAWN SUCCESS' "$source"
           grep -q 'NPC SPAWN POST-TICK DEAD' "$source"
           grep -q 'NPC SPAWN POST-TICK ALIVE' "$source"
           grep -q 'spawnEntity' "$source"
           grep -q 'spawnCreature' "$source"
-          javap -classpath target/IronDominionNPCs-1.0.3.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'onCreatureSpawn'
-          javap -classpath target/IronDominionNPCs-1.0.3.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'onInteract'
+          javap -classpath target/IronDominionNPCs-1.0.4.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'safeLocation'
+          javap -classpath target/IronDominionNPCs-1.0.4.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawn'
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
-          name: IronDominionNPCs-1.0.3
-          path: npc-plugin/target/IronDominionNPCs-1.0.3.jar
+          name: IronDominionNPCs-1.0.4
+          path: npc-plugin/target/IronDominionNPCs-1.0.4.jar
           if-no-files-found: error
