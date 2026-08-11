@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.irondominion</groupId>
   <artifactId>IronDominionNPCs</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
   <packaging>jar</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,7 +27,7 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId><artifactId>maven-jar-plugin</artifactId><version>3.5.0</version>
-        <configuration><finalName>IronDominionNPCs-1.0.6</finalName></configuration>
+        <configuration><finalName>IronDominionNPCs-1.0.7</finalName></configuration>
       </plugin>
     </plugins>
   </build>
