@@ -30,13 +30,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f target/IronDominionNPCs-1.0.7.jar
-          jar tf target/IronDominionNPCs-1.0.7.jar | grep -q 'plugin.yml'
-          jar tf target/IronDominionNPCs-1.0.7.jar | grep -q 'config.yml'
-          jar tf target/IronDominionNPCs-1.0.7.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
-          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.7.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
+          test -f target/IronDominionNPCs-1.0.8.jar
+          jar tf target/IronDominionNPCs-1.0.8.jar | grep -q 'plugin.yml'
+          jar tf target/IronDominionNPCs-1.0.8.jar | grep -q 'config.yml'
+          jar tf target/IronDominionNPCs-1.0.8.jar | grep -q 'com/irondominion/npcs/IronDominionNPCs.class'
+          major=$(javap -verbose -classpath target/IronDominionNPCs-1.0.8.jar com.irondominion.npcs.IronDominionNPCs | awk '/major version/ {print $3; exit}')
           test "$major" = "50"
-          unzip -p target/IronDominionNPCs-1.0.7.jar plugin.yml | grep -q '^version: 1.0.7$'
+          unzip -p target/IronDominionNPCs-1.0.8.jar plugin.yml | grep -q '^version: 1.0.8$'
       - name: Verify Forge/Cauldron 1.6.4 engine
         working-directory: npc-plugin
         shell: bash
@@ -50,13 +50,16 @@ jobs:
           grep -q 'spawnEntityInWorld' "$source"
           grep -q 'getBukkitEntity' "$source"
           grep -q 'getHandle' "$source"
+          grep -q 'findMethod' "$source"
+          grep -q 'setLocationAndAngles' "$source"
+          grep -q 'setPositionAndRotation' "$source"
           grep -q 'NMS NPC WORLD HANDLE' "$source"
           grep -q 'NMS NPC SPAWN SUCCESS' "$source"
           grep -q 'NMS NPC POST-TICK ALIVE' "$source"
-          javap -classpath target/IronDominionNPCs-1.0.7.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnNms'
+          javap -classpath target/IronDominionNPCs-1.0.8.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnNms'
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
-          name: IronDominionNPCs-1.0.7
-          path: npc-plugin/target/IronDominionNPCs-1.0.7.jar
+          name: IronDominionNPCs-1.0.8
+          path: npc-plugin/target/IronDominionNPCs-1.0.8.jar
           if-no-files-found: error
