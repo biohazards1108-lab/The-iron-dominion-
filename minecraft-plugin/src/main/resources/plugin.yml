@@ -1,17 +1,23 @@
 name: IronDominionBridge
 version: 1.1.0
 main: com.irondom.shop.IronDominionShop
-description: Iron Dominion website status and secure Tebex bridge for Tekkit 1.6.4/Cauldron
+description: Iron Dominion website status, secure Tebex bridge, and rank management for Tekkit 1.6.4/Cauldron
 author: Iron Dominion
 commands:
   domshop:
     description: View Iron Dominion store information
     usage: /domshop
+  dominion:
+    description: Iron Dominion rank information and administration
+    usage: /dominion <rank|ranks>
   domadmin:
     description: Iron Dominion bridge administration
-    usage: /domadmin <status|reload>
+    usage: /domadmin <addtokens|sync|status>
     permission: irondominion.admin
 permissions:
   irondominion.admin:
     description: Allows Iron Dominion bridge administration
+    default: op
+  irondominion.rank.admin:
+    description: Allows Iron Dominion rank assignment and removal
     default: op
