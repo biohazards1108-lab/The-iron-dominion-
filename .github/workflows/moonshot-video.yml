@@ -1,0 +1,91 @@
+name: Build Moon Shot Trailer
+
+on:
+  push:
+    paths-ignore:
+      - 'assets/Iron_Dominion_MOON_SHOT.mp4'
+      - 'assets/Iron_Dominion_MOON_SHOT.sha256'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-moonshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install trailer tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak
+
+      - name: Build narration
+        shell: bash
+        run: |
+          cat > /tmp/moonshot.txt <<'EOF'
+          What if your Minecraft world became an empire?
+          Welcome to Iron Dominion.
+          Tekkit 1.6.4 survival built for builders, engineers, explorers, and creators.
+          Build massive factories. Automate your production. Explore the world and forge your own empire.
+          Rise through the Dominion ranks, from Iron to Overlord.
+          Join the community, shape the world, and build something worth remembering.
+          Visit the website. Check the store. Then join the Dominion.
+          The Dominion awaits.
+          EOF
+          espeak -s 150 -p 28 -a 150 -w /tmp/voice.wav -f /tmp/moonshot.txt
+
+      - name: Build original industrial music
+        shell: bash
+        run: |
+          ffmpeg -y \
+            -f lavfi -i "sine=frequency=55:sample_rate=44100:duration=30" \
+            -f lavfi -i "sine=frequency=110:sample_rate=44100:duration=30" \
+            -f lavfi -i "sine=frequency=220:sample_rate=44100:duration=30" \
+            -filter_complex "[0:a]volume=0.10[a0];[1:a]volume=0.045[a1];[2:a]volume=0.018[a2];[a0][a1][a2]amix=inputs=3:duration=longest,afade=t=in:st=0:d=1,afade=t=out:st=27:d=3,loudnorm=I=-24:TP=-2:LRA=8" \
+            -c:a pcm_s16le /tmp/music.wav
+
+      - name: Render Moon Shot trailer
+        shell: bash
+        run: |
+          mkdir -p assets
+          ffmpeg -y \
+            -loop 1 -i assets/iron-dominion-banner.svg \
+            -i /tmp/voice.wav -i /tmp/music.wav \
+            -filter_complex "\
+              [0:v]scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,zoompan=z='min(zoom+0.00035,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=900:s=1280x720:fps=30,\
+              drawbox=x=0:y=0:w=1280:h=720:color=black@0.12:t=fill,\
+              drawbox=x=0:y=0:w=1280:h=92:color=black@0.28:t=fill,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='IRON DOMINION':fontcolor=white:fontsize=42:x=34:y=28:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='TEKKIT 1.6.4  •  SURVIVAL  •  TECHNOLOGY':fontcolor=0x78e8ff:fontsize=21:x=36:y=72:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='BUILD  •  AUTOMATE  •  CONQUER':fontcolor=0xffb23e:fontsize=24:x=w-tw-34:y=36:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='WHAT IF YOUR MINECRAFT WORLD BECAME AN EMPIRE?':fontcolor=white:fontsize=30:x=(w-tw)/2:y=520:enable='between(t,0,5)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='ENGINEER. AUTOMATE. BUILD BIG.':fontcolor=0xffb23e:fontsize=34:x=(w-tw)/2:y=520:enable='between(t,5,10)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='EXPLORE. SURVIVE. FORGE YOUR EMPIRE.':fontcolor=white:fontsize=32:x=(w-tw)/2:y=520:enable='between(t,10,15)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='RISE: IRON  •  STEEL  •  TITANIUM  •  DIAMOND':fontcolor=0x78e8ff:fontsize=25:x=(w-tw)/2:y=520:enable='between(t,15,20)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='OBSIDIAN  •  DOMINION  •  OVERLORD':fontcolor=0xffb23e:fontsize=29:x=(w-tw)/2:y=520:enable='between(t,20,24)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='JOIN THE DOMINION':fontcolor=white:fontsize=50:x=(w-tw)/2:y=490:enable='between(t,24,30)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='biohazards1108-lab.github.io/The-iron-dominion-':fontcolor=white:fontsize=20:x=(w-tw)/2:y=555:enable='between(t,24,30)':shadowcolor=black@0.9:shadowx=2:shadowy=2,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='the-iron-dominion-dev.g.akliz.net  •  TEBEX STORE':fontcolor=0xffb23e:fontsize=22:x=(w-tw)/2:y=590:enable='between(t,24,30)':shadowcolor=black@0.9:shadowx=2:shadowy=2[v];\
+              [1:a]volume=0.92,highpass=f=75,lowpass=f=10500,acompressor=threshold=-18dB:ratio=3:attack=8:release=120[vo];\
+              [2:a]volume=0.28[mus];\
+              [vo][mus]amix=inputs=2:duration=longest,loudnorm=I=-14:TP=-1.5:LRA=8[a]" \
+            -map "[v]" -map "[a]" -t 30 \
+            -c:v libx264 -preset medium -crf 27 -pix_fmt yuv420p \
+            -c:a aac -b:a 128k -movflags +faststart \
+            assets/Iron_Dominion_MOON_SHOT.mp4
+          sha256sum assets/Iron_Dominion_MOON_SHOT.mp4 > assets/Iron_Dominion_MOON_SHOT.sha256
+
+      - name: Commit trailer to website
+        shell: bash
+        run: |
+          git config user.name 'Iron Dominion Build Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/Iron_Dominion_MOON_SHOT.mp4 assets/Iron_Dominion_MOON_SHOT.sha256
+          git diff --cached --quiet && exit 0
+          git commit -m 'Add Moon Shot website trailer'
+          git push
