@@ -58,16 +58,19 @@ jobs:
         shell: bash
         run: |
           mkdir -p assets
+          # Use a deterministic, browser-safe image-to-video pipeline. The previous
+          # zoompan chain could leave the workflow rendering for too long; this keeps
+          # the video stream simple and reliable while preserving cinematic overlays.
           ffmpeg -y \
             -loop 1 -framerate 30 -i assets/iron-dominion-banner.webp \
             -i /tmp/voice.mp3 -i /tmp/music.wav \
             -filter_complex "\
-              [0:v]scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,zoompan=z='min(zoom+0.00035,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=900:s=1280x720:fps=30,format=yuv420p,\
-              drawbox=x=0:y=0:w=1280:h=720:color=black@0.12:t=fill,\
-              drawbox=x=0:y=0:w=1280:h=92:color=black@0.28:t=fill,\
-              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='IRON DOMINION':fontcolor=white:fontsize=42:x=34:y=28:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
-              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='TEKKIT 1.6.4  •  SURVIVAL  •  TECHNOLOGY':fontcolor=0x78e8ff:fontsize=21:x=36:y=72:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
-              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='BUILD  •  AUTOMATE  •  CONQUER':fontcolor=0xffb23e:fontsize=24:x=w-tw-34:y=36:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
+              [0:v]scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,format=yuv420p,\
+              drawbox=x=0:y=0:w=1280:h=720:color=black@0.10:t=fill,\
+              drawbox=x=0:y=0:w=1280:h=88:color=black@0.20:t=fill,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='IRON DOMINION':fontcolor=white:fontsize=42:x=34:y=24:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='TEKKIT 1.6.4  •  SURVIVAL  •  TECHNOLOGY':fontcolor=0x78e8ff:fontsize=21:x=36:y=68:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
+              drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='BUILD  •  AUTOMATE  •  CONQUER':fontcolor=0xffb23e:fontsize=24:x=w-tw-34:y=31:shadowcolor=black@0.85:shadowx=2:shadowy=2,\
               drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='WHAT IF YOUR MINECRAFT WORLD BECAME AN EMPIRE?':fontcolor=white:fontsize=30:x=(w-tw)/2:y=520:enable='between(t,0,5)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
               drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='ENGINEER. AUTOMATE. BUILD BIG.':fontcolor=0xffb23e:fontsize=34:x=(w-tw)/2:y=520:enable='between(t,5,10)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
               drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='EXPLORE. SURVIVE. FORGE YOUR EMPIRE.':fontcolor=white:fontsize=32:x=(w-tw)/2:y=520:enable='between(t,10,15)':shadowcolor=black@0.9:shadowx=3:shadowy=3,\
@@ -80,7 +83,7 @@ jobs:
               [2:a]volume=0.28[mus];\
               [vo][mus]amix=inputs=2:duration=longest,loudnorm=I=-14:TP=-1.5:LRA=8[a]" \
             -map "[v]" -map "[a]" -t 30 -r 30 \
-            -c:v libx264 -profile:v high -level 4.0 -preset medium -crf 23 -pix_fmt yuv420p -tag:v avc1 \
+            -c:v libx264 -profile:v high -level 4.0 -preset fast -crf 23 -pix_fmt yuv420p -tag:v avc1 \
             -c:a aac -b:a 160k -ar 48000 -movflags +faststart \
             assets/Iron_Dominion_OFFICIAL_TRAILER.mp4
 
@@ -88,9 +91,12 @@ jobs:
           ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,codec_type,width,height,avg_frame_rate -of default=noprint_wrappers=1 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4
           echo '--- AUDIO STREAM ---'
           ffprobe -v error -select_streams a:0 -show_entries stream=codec_name,codec_type,sample_rate,channels -of default=noprint_wrappers=1 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4
+          echo '--- DURATION ---'
+          ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4
 
           test "$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_type -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4)" = "video"
           test "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4)" = "audio"
+          test "$(ffprobe -v error -show_entries format=duration -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4 | awk '{exit !($1 >= 29.9 && $1 <= 30.2)}')"
           sha256sum assets/Iron_Dominion_OFFICIAL_TRAILER.mp4 > assets/Iron_Dominion_OFFICIAL_TRAILER.sha256
 
       - name: Commit trailer to website
@@ -101,5 +107,5 @@ jobs:
           git rm -f assets/Iron_Dominion_MOON_SHOT.mp4 assets/Iron_Dominion_MOON_SHOT.sha256 2>/dev/null || true
           git add assets/Iron_Dominion_OFFICIAL_TRAILER.mp4 assets/Iron_Dominion_OFFICIAL_TRAILER.sha256
           git diff --cached --quiet && exit 0
-          git commit -m 'Replace trailer voice and video render'
+          git commit -m 'Fix official trailer video rendering'
           git push
