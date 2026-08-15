@@ -50,7 +50,7 @@ jobs:
           grep -q 'spawnEntityInWorld' "$source"
           grep -q 'getBukkitEntity' "$source"
           grep -q 'getHandle' "$source"
-          grep -q 'findMethod' "$source"
+          grep -q 'private Method method' "$source"
           grep -q 'setLocationAndAngles' "$source"
           grep -q 'setPositionAndRotation' "$source"
           grep -q 'posX' "$source"
