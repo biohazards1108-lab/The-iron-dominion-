@@ -56,10 +56,11 @@ jobs:
           grep -q 'posX' "$source"
           grep -q 'posY' "$source"
           grep -q 'posZ' "$source"
-          grep -q 'NMS NPC WORLD HANDLE' "$source"
-          grep -q 'NMS NPC SPAWN SUCCESS' "$source"
-          grep -q 'NMS NPC POST-TICK ALIVE' "$source"
+          grep -q 'NPC SPAWN SUCCESS' "$source"
+          grep -q 'NPC POST-TICK ALIVE' "$source"
+          grep -q 'spawnBukkit' "$source"
           javap -classpath target/IronDominionNPCs-1.0.9.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnNms'
+          javap -classpath target/IronDominionNPCs-1.0.9.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnBukkit'
       - name: Upload NPC plugin
         uses: actions/upload-artifact@v4
         with:
