@@ -1,0 +1,20 @@
+/* Restored homepage hero behavior: no image banner and no oversized blank viewport. */
+.hero {
+  min-height: 0 !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 28px 20px !important;
+  background: #070a0d !important;
+  border-bottom: 1px solid rgba(245,158,11,.32);
+}
+.hero::before,
+.hero::after {
+  animation: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+.hero .overlay {
+  margin: 0 auto;
+  animation: none !important;
+}
