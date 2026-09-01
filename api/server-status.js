@@ -1,93 +1,44 @@
-// Live Minecraft 1.6.4 status endpoint using the legacy server-list ping.
-// This does not expose server credentials; it only queries public status.
+// Live Minecraft 1.6.4 status endpoint for the Iron Dominion website.
+// The server address is public status information; no server credentials are used.
 
 const HOST = 'the-iron-dominion-dev.g.akliz.net';
-const PORT = 25565;
-const TIMEOUT_MS = 5000;
+const STATUS_URL = `https://api.mcsrvstat.us/3/${HOST}`;
+const TIMEOUT_MS = 7000;
 
-function parseLegacyResponse(buffer) {
-  // Legacy ping response: FF + UTF-16BE payload beginning with §1.
-  if (!buffer || buffer.length < 3 || buffer[0] !== 0xff) return null;
-  const payload = buffer.subarray(3).toString('utf16le').replace(/\u0000/g, '');
-  const parts = payload.split('\u0000');
-  if (parts.length < 6) return null;
+async function queryServer() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-  // Depending on Node/version and server implementation, the UTF-16 byte order
-  // may arrive reversed; fall back to decoding the raw bytes as BE code units.
-  return parts;
-}
+  try {
+    const response = await fetch(STATUS_URL, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'User-Agent': 'Iron-Dominion-Website/1.0'
+      },
+      signal: controller.signal,
+      cache: 'no-store'
+    });
 
-function decodePayload(buffer) {
-  if (!buffer || buffer[0] !== 0xff) return null;
-  const bytes = buffer.subarray(3);
-  let text = '';
-  for (let i = 0; i + 1 < bytes.length; i += 2) {
-    text += String.fromCharCode((bytes[i] << 8) | bytes[i + 1]);
-  }
-  return text.replace(/\u0000/g, '').split('\u0000');
-}
+    if (!response.ok) throw new Error(`Status provider returned HTTP ${response.status}`);
+    const data = await response.json();
 
-function queryServer() {
-  return new Promise((resolve) => {
-    const net = require('net');
-    const socket = new net.Socket();
-    const chunks = [];
-    let settled = false;
-
-    const finish = (result) => {
-      if (settled) return;
-      settled = true;
-      socket.destroy();
-      resolve(result);
+    return {
+      live: true,
+      online: data.online === true,
+      players: data.players && Number.isFinite(Number(data.players.online))
+        ? Number(data.players.online)
+        : null,
+      maxPlayers: data.players && Number.isFinite(Number(data.players.max))
+        ? Number(data.players.max)
+        : null,
+      version: data.version || null,
+      motd: data.motd && data.motd.clean ? data.motd.clean : null,
+      source: 'mcsrvstat'
     };
-
-    const timer = setTimeout(() => finish(null), TIMEOUT_MS);
-
-    socket.once('error', () => {
-      clearTimeout(timer);
-      finish(null);
-    });
-
-    socket.once('close', () => {
-      clearTimeout(timer);
-      if (!settled && chunks.length) {
-        const parsed = decodePayload(Buffer.concat(chunks));
-        if (parsed && parsed.length >= 6 && parsed[0] === '§1') {
-          const online = Number(parsed[4]);
-          const maxPlayers = Number(parsed[5]);
-          finish({
-            live: true,
-            online: Number.isFinite(online),
-            players: Number.isFinite(online) ? online : null,
-            maxPlayers: Number.isFinite(maxPlayers) ? maxPlayers : null
-          });
-        } else {
-          finish(null);
-        }
-      }
-    });
-
-    socket.on('data', (chunk) => {
-      chunks.push(chunk);
-      // A legacy ping response is small; process it as soon as it arrives.
-      const parsed = decodePayload(Buffer.concat(chunks));
-      if (parsed && parsed.length >= 6 && parsed[0] === '§1') {
-        clearTimeout(timer);
-        const online = Number(parsed[4]);
-        const maxPlayers = Number(parsed[5]);
-        finish({
-          live: true,
-          online: Number.isFinite(online) ? online >= 0 : false,
-          players: Number.isFinite(online) ? online : null,
-          maxPlayers: Number.isFinite(maxPlayers) ? maxPlayers : null
-        });
-      }
-    });
-
-    socket.connect(PORT, HOST, () => {
-      socket.write(Buffer.from([0xfe, 0x01]));
-    });
-  });
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 module.exports = async function handler(req, res) {
@@ -96,18 +47,36 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Cache-Control', 'public, max-age=20, stale-while-revalidate=40');
   res.setHeader('X-Content-Type-Options', 'nosniff');
 
-  const result = await queryServer();
-  return res.status(200).json({
-    live: Boolean(result),
-    online: result ? Boolean(result.online) : false,
-    players: result ? result.players : null,
-    maxPlayers: result ? result.maxPlayers : null,
-    tps: null,
-    updatedAt: new Date().toISOString(),
-    source: result ? 'minecraft-legacy-ping' : 'minecraft-unreachable',
-    server: HOST
-  });
+  try {
+    const result = await queryServer();
+    return res.status(200).json({
+      live: result.live,
+      online: result.online,
+      players: result.players,
+      maxPlayers: result.maxPlayers,
+      tps: null,
+      version: result.version,
+      motd: result.motd,
+      updatedAt: new Date().toISOString(),
+      source: result.source,
+      server: HOST
+    });
+  } catch (error) {
+    console.warn('Iron Dominion status check failed:', error);
+    return res.status(200).json({
+      live: false,
+      online: false,
+      players: null,
+      maxPlayers: null,
+      tps: null,
+      version: null,
+      motd: null,
+      updatedAt: new Date().toISOString(),
+      source: 'status-provider-unavailable',
+      server: HOST
+    });
+  }
 };
