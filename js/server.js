@@ -4,17 +4,19 @@
   const statusEl = document.getElementById('server-status');
   const playersEl = document.getElementById('players');
   const tpsEl = document.getElementById('tps');
-  // Vercel provides the live status endpoint. Do not use the static placeholder
-  // JSON on Vercel, otherwise the widget would stop before reaching the live API.
-  const sources = ['/api/server-status'];
-  const POLL_MS = 30000;
-  const REQUEST_TIMEOUT_MS = 7000;
+
+  // GitHub Pages is a static host, so the site cannot execute /api/server-status.
+  // Read the public Minecraft status API directly from the browser instead.
+  const SERVER_HOST = 'the-iron-dominion-dev.g.akliz.net';
+  const STATUS_URL = `https://api.mcsrvstat.us/3/${encodeURIComponent(SERVER_HOST)}`;
+  const POLL_MS = 60000;
+  const REQUEST_TIMEOUT_MS = 8000;
 
   if (!statusEl && !playersEl && !tpsEl) return;
 
-  let requestController = null;
   let pollTimer = null;
   let requestInFlight = false;
+  let requestController = null;
 
   function finiteNumber(value) {
     const number = Number(value);
@@ -22,43 +24,33 @@
   }
 
   function render(data) {
-    const hasLiveData = data && data.live === true;
-    const online = hasLiveData && data.online === true;
-    const players = hasLiveData ? finiteNumber(data.players) : null;
-    const maxPlayers = hasLiveData ? finiteNumber(data.maxPlayers) : null;
-    const tps = hasLiveData ? finiteNumber(data.tps) : null;
+    const online = data && data.online === true;
+    const players = online ? finiteNumber(data.players && data.players.online) : null;
+    const maxPlayers = online ? finiteNumber(data.players && data.players.max) : null;
+    const tps = online ? finiteNumber(data.tps) : null;
 
     if (statusEl) {
-      statusEl.textContent = hasLiveData ? (online ? 'ONLINE' : 'OFFLINE') : 'UNAVAILABLE';
-      statusEl.classList.toggle('online', hasLiveData && online);
-      statusEl.classList.toggle('offline', hasLiveData && !online);
+      statusEl.textContent = online ? 'ONLINE' : 'OFFLINE';
+      statusEl.classList.toggle('online', online);
+      statusEl.classList.toggle('offline', !online);
     }
 
     if (playersEl) {
       playersEl.textContent = players === null
-        ? '—'
+        ? '0'
         : (maxPlayers === null ? String(players) : `${players} / ${maxPlayers}`);
     }
 
     if (tpsEl) tpsEl.textContent = tps === null ? '—' : tps.toFixed(1);
   }
 
-  function renderError() {
-    render({ live: false });
-  }
-
-  async function fetchJson(url, controller) {
-    const response = await fetch(`${url}?t=${Date.now()}`, {
-      cache: 'no-store',
-      headers: { Accept: 'application/json' },
-      signal: controller.signal
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    if (!data || typeof data !== 'object' || Array.isArray(data)) {
-      throw new Error('Invalid status payload');
+  function renderUnavailable() {
+    if (statusEl) {
+      statusEl.textContent = 'UNAVAILABLE';
+      statusEl.classList.remove('online', 'offline');
     }
-    return data;
+    if (playersEl) playersEl.textContent = '—';
+    if (tpsEl) tpsEl.textContent = '—';
   }
 
   async function fetchServer() {
@@ -71,11 +63,21 @@
     const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
-      render(await fetchJson(sources[0], controller));
+      const response = await fetch(`${STATUS_URL}?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' },
+        signal: controller.signal
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('Invalid status payload');
+      }
+      render(data);
     } catch (error) {
       if (error && error.name !== 'AbortError') {
         console.warn('Iron Dominion live server status unavailable:', error);
-        renderError();
+        renderUnavailable();
       }
     } finally {
       window.clearTimeout(timeout);
