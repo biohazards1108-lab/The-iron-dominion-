@@ -1,0 +1,108 @@
+/* Iron Dominion mobile/responsive layer. Keeps the static GitHub Pages site clean on phones and tablets. */
+@media (max-width: 760px) {
+  .hero {
+    min-height: 0 !important;
+    height: auto !important;
+    align-items: center !important;
+    padding: 18px 12px !important;
+  }
+
+  .hero .overlay {
+    width: 100%;
+    padding: 18px 14px !important;
+    border-radius: 14px;
+  }
+
+  .hero-actions,
+  .trailer-actions {
+    flex-direction: column;
+  }
+
+  .hero-actions .button,
+  .trailer-actions .button {
+    width: 100%;
+  }
+
+  nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding: 8px 10px;
+  }
+
+  nav a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  main {
+    padding: 22px 12px 8px;
+  }
+
+  .panel {
+    padding: 20px 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+  }
+
+  .quick-actions,
+  .grid,
+  .grid-2,
+  .mod-grid,
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .discord-feature,
+  .mods-header,
+  .trailer-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .discord-button,
+  .trailer-badge {
+    width: 100%;
+    text-align: center;
+  }
+
+  .trailer-frame video {
+    aspect-ratio: 16 / 9;
+  }
+
+  .connect-box {
+    align-items: stretch;
+  }
+
+  .connect-box > div {
+    flex-basis: 100%;
+  }
+
+  .connect-box .button {
+    width: 100%;
+  }
+
+  .server-address {
+    width: 100%;
+    font-size: .9rem;
+  }
+
+  footer {
+    padding: 24px 12px 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
