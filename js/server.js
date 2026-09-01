@@ -4,9 +4,10 @@
   const statusEl = document.getElementById('server-status');
   const playersEl = document.getElementById('players');
   const tpsEl = document.getElementById('tps');
-  // GitHub Pages serves the JSON file; Vercel serves the serverless fallback.
-  const sources = ['api/server.json', 'api/server-status'];
-  const POLL_MS = 15000;
+  // Vercel provides the live status endpoint. Do not use the static placeholder
+  // JSON on Vercel, otherwise the widget would stop before reaching the live API.
+  const sources = ['/api/server-status'];
+  const POLL_MS = 30000;
   const REQUEST_TIMEOUT_MS = 7000;
 
   if (!statusEl && !playersEl && !tpsEl) return;
@@ -70,20 +71,10 @@
     const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
-      let lastError = null;
-      for (const source of sources) {
-        try {
-          render(await fetchJson(source, controller));
-          return;
-        } catch (error) {
-          lastError = error;
-          if (error && error.name === 'AbortError') throw error;
-        }
-      }
-      throw lastError || new Error('No status source available');
+      render(await fetchJson(sources[0], controller));
     } catch (error) {
       if (error && error.name !== 'AbortError') {
-        console.warn('Iron Dominion server status unavailable:', error);
+        console.warn('Iron Dominion live server status unavailable:', error);
         renderError();
       }
     } finally {
