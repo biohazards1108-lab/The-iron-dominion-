@@ -5,10 +5,10 @@
   const playersEl = document.getElementById('players');
   const tpsEl = document.getElementById('tps');
 
-  // GitHub Pages is a static host, so the site cannot execute /api/server-status.
-  // Read the public Minecraft status API directly from the browser instead.
+  // The official site is hosted on GitHub Pages, so use a browser-safe public
+  // status service instead of a serverless /api route that GitHub Pages cannot run.
   const SERVER_HOST = 'the-iron-dominion-dev.g.akliz.net';
-  const STATUS_URL = `https://api.mcsrvstat.us/3/${encodeURIComponent(SERVER_HOST)}`;
+  const STATUS_URL = `https://api.mcstatus.io/v2/status/java/${encodeURIComponent(SERVER_HOST)}?query=false&timeout=5`;
   const POLL_MS = 60000;
   const REQUEST_TIMEOUT_MS = 8000;
 
@@ -63,7 +63,7 @@
     const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
     try {
-      const response = await fetch(`${STATUS_URL}?t=${Date.now()}`, {
+      const response = await fetch(`${STATUS_URL}&t=${Date.now()}`, {
         cache: 'no-store',
         headers: { Accept: 'application/json' },
         signal: controller.signal
