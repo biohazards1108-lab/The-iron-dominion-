@@ -1,14 +1,12 @@
-name: Build Dominion Tokens
+name: "Legacy: Build Dominion Tokens (manual only)"
 on:
-  push:
-    paths:
-      - 'dominion-tokens/**'
-      - '.github/workflows/build-dominion-tokens.yml'
   workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Legacy compatibility warning
+        run: echo "This is an old Bukkit/Cauldron-era plugin. It is not compatible with Bedrock Dominion and must not be installed on the new server."
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
