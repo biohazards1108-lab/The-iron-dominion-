@@ -39,6 +39,8 @@ Bedrock Dominion is **in development**. The website is being prepared while the 
 
 `assets/Iron_Dominion_OFFICIAL_TRAILER.mp4` is an older trailer for the previous server concept and is not linked from the current website. Do not use it to advertise Bedrock Dominion. The updated development-teaser workflow is manual-only and avoids claiming that unverified server features are live.
 
+- `server/ARCHITECTURE.md` — server model decision guide and launch checklist
+
 ## Legacy integrations — not Bedrock-ready
 
 The repository still contains earlier Java/Bukkit-era integrations under `minecraft-plugin/`, `dominion-tokens/`, `npc-plugin/`, and parts of `server/` and `api/`. These were built for an older Bukkit/Cauldron/Tekkit environment and **must not be installed on Bedrock Dominion or treated as compatible with Bedrock**.
