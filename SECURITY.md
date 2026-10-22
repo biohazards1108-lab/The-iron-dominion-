@@ -1,48 +1,31 @@
 # Iron Dominion Website Security Model
 
+## Current status
+
+Bedrock Dominion is in development. The existing Java/Bukkit-era bridge, token plugin, and backend code are legacy references and are not approved for use with Bedrock Dominion.
+
 ## Production rules
 
-- Never place Discord webhook URLs, API keys, store secrets, Votifier private keys, or database credentials in frontend HTML/JavaScript.
-- The browser must never be trusted to award Dominion Tokens, confirm votes, confirm purchases, or set player balances.
-- Vote events must be verified server-side and deduplicated before rewards are granted.
-- Payment fulfillment must be verified by the store provider/server integration rather than a browser redirect.
-- Live server status should be read from a controlled backend endpoint, not from client-supplied data.
-- CORS should be restricted to the final production website origin once a domain exists.
-- Rate-limit public API endpoints and reject oversized/unexpected request bodies.
-- Validate Minecraft usernames server-side before using them in commands, SQL, logs, or API requests.
-- Use parameterized database queries if a database is introduced.
-- Never execute arbitrary commands supplied by HTTP requests.
-- Never expose stack traces, plugin configuration, environment variables, filesystem paths, or internal exception details through the public API.
-- Use HTTPS in production and security headers including Content-Security-Policy, Referrer-Policy, X-Content-Type-Options, and frame protections.
-- Keep server-side secrets in environment variables or the hosting provider's secret store.
+- Never commit Discord webhook URLs, API keys, store secrets, voting private keys, or database credentials.
+- Never trust browser-side actions to award tokens, verify votes, confirm purchases, or set player balances.
+- Verify voting events server-side and prevent duplicate/replayed rewards before granting anything.
+- Verify store-provider webhooks and entitlements server-side; never fulfill purchases from a browser redirect alone.
+- Publish live server status only from a verified integration for the actual Bedrock Dominion server.
+- Restrict CORS to the production website origin when the API is configured.
+- Rate-limit public API endpoints and reject unexpected or oversized request bodies.
+- Validate player identifiers before using them in commands, SQL, logs, or API requests.
+- Use parameterized database queries and never execute arbitrary commands supplied over HTTP.
+- Never expose stack traces, plugin configuration, environment variables, filesystem paths, or internal exceptions through public APIs.
+- Use HTTPS, security headers, server-side secrets, backups, and a tested rollback procedure.
 
-## Voting architecture
+## Before launch
 
-`Voting Site -> Votifier/NuVotifier -> Server Vote Listener -> Verified Reward -> Dominion Token Ledger`
-
-The website is informational and should link players to the official listing vote URLs. It must not accept a client-side "vote completed" request as proof.
-
-NuVotifier documentation notes that its public/private keys and service tokens are security-sensitive and that vote listeners are responsible for processing rewards. Final legacy-server plugin versions must therefore be compatibility-tested before production use.
-
-## Store architecture
-
-`Player -> Store Provider Checkout -> Provider Verification/Webhook -> Server Delivery -> Audit Log`
-
-Do not put a store API secret in static website code. Do not grant ranks, tokens, or other products merely because a user returns from a checkout page.
-
-## Launch checklist
-
-- [ ] Final website domain selected
-- [ ] HTTPS enabled
-- [ ] Final server-status backend connected
-- [ ] Final vote listings published
-- [ ] NuVotifier/Votifier compatibility tested on Tekkit 1.6.4/Cauldron
-- [ ] Token ledger/reward listener tested for duplicate and replayed votes
-- [ ] Store provider compatibility tested on the legacy server
-- [ ] Store webhook/signature verification tested
-- [ ] Discord public invite verified
-- [ ] Discord webhooks kept server-side
-- [ ] Security headers verified
-- [ ] Public API rate limits verified
-- [ ] Error responses checked for information leakage
-- [ ] Backup and rollback procedure tested
+- [ ] Confirm server software and Java/Bedrock compatibility.
+- [ ] Verify public domain and HTTPS configuration.
+- [ ] Replace legacy status integrations and verify the new server.
+- [ ] Publish actual vote listing links only after listings exist.
+- [ ] Review and test any vote listener, rewards ledger, store, and delivery integration for the selected server software.
+- [ ] Verify store webhook signatures and delivery/audit logs.
+- [ ] Keep secrets server-side.
+- [ ] Test authorization, rate limits, error handling, backups, and rollback.
+- [ ] Confirm the official Discord invite.
