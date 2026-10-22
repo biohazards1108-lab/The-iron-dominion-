@@ -1,0 +1,25 @@
+/* Page-specific styling from index.html */
+:root{--accent:#c62832;--accent-bright:#ff5252;--steel:#b8c4d4}
+.hero{min-height:68vh;display:flex;align-items:center;background:linear-gradient(110deg,rgba(5,8,12,.96),rgba(9,13,19,.72),rgba(91,15,21,.38)),url('assets/iron-dominion-banner.svg') center/cover no-repeat;border-bottom:1px solid rgba(255,75,75,.35);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 75% 30%,rgba(255,64,64,.16),transparent 45%);animation:dominionPulse 7s ease-in-out infinite alternate}
+.hero .overlay{position:relative;z-index:1;max-width:1100px;width:100%;margin:auto;padding:clamp(2rem,6vw,5rem)}
+.hero h1{font-size:clamp(2.5rem,7vw,5.8rem);line-height:.98;letter-spacing:.035em;text-shadow:0 4px 25px #000;margin:.6rem 0;color:#fff}
+.hero h1 span{display:block;color:#ff5757;font-size:.52em;letter-spacing:.12em;margin-top:.8rem}
+.hero .overlay>p{font-size:clamp(1rem,2vw,1.35rem);max-width:700px;color:#d6dde7}
+.badge,.trailer-badge{border-color:rgba(255,80,80,.4);background:rgba(125,22,29,.28)}
+.button{background:linear-gradient(135deg,#a71925,#e23a42);border:1px solid rgba(255,180,180,.25);box-shadow:0 8px 24px rgba(130,15,25,.2)}
+.button.secondary{background:rgba(21,28,37,.88)}
+.dom-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.dom-card{background:linear-gradient(145deg,rgba(30,38,49,.95),rgba(12,16,22,.97));border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1.4rem;box-shadow:0 14px 34px #0003}
+.dom-card h3{margin-top:.4rem}.dom-icon{font-size:2rem}.coming{display:inline-block;padding:.3rem .65rem;border:1px solid #ff525266;border-radius:999px;color:#ffb3b8;background:#e23a4212;font-size:.78rem;font-weight:800;letter-spacing:.08em}
+.server-callout{border:1px solid #e23a4266;background:linear-gradient(120deg,#43151b88,#131820ee);border-radius:16px;padding:clamp(1.2rem,3vw,2rem)}
+@keyframes dominionPulse{from{opacity:.45}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
+
+/* Page-specific styling from join.html */
+:root{--accent:#c62832;--accent-bright:#ff5252}.hero{min-height:40vh;background:linear-gradient(115deg,#080b10f2,#171c25e8,#55151bea),url('assets/iron-dominion-banner.svg') center/cover}.soon{display:inline-block;padding:.35rem .7rem;border-radius:999px;color:#ffb3b8;background:#e23a4215;border:1px solid #ff525266;font-weight:800;font-size:.8rem;letter-spacing:.08em}
+
+/* Page-specific styling from mods.html */
+:root{--accent:#c62832;--accent-bright:#ff5252}.hero{min-height:42vh;background:linear-gradient(115deg,#080b10f2,#171c25e8,#55151bea),url('assets/iron-dominion-banner.svg') center/cover}.status{display:inline-block;padding:.35rem .7rem;border-radius:999px;color:#ffb3b8;background:#e23a4215;border:1px solid #ff525266;font-weight:800;font-size:.8rem;letter-spacing:.08em}.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.feature-card{padding:1.4rem;border:1px solid #ffffff18;border-radius:14px;background:linear-gradient(145deg,#1d2632,#0d1117)}.feature-card .icon{font-size:2rem}
+
+.error-panel{margin-top:10vh;text-align:center}
