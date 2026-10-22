@@ -34,7 +34,7 @@ const INTERNAL_API_KEY = String(process.env.INTERNAL_API_KEY || '').trim();
 const ADMIN_API_KEY = String(process.env.ADMIN_API_KEY || '').trim();
 const STARTING_BALANCE = Math.max(0, Number(process.env.TOKEN_STARTING_BALANCE || 500));
 const MAX_BALANCE = Math.max(STARTING_BALANCE, Number(process.env.TOKEN_MAX_BALANCE || 999999));
-const SHOP_ENABLED = String(process.env.SHOP_ENABLED || 'true').toLowerCase() === 'true';
+const SHOP_ENABLED = String(process.env.SHOP_ENABLED || 'false').toLowerCase() === 'true';
 const ALLOWED_ORIGINS = String(process.env.ALLOWED_ORIGINS || '').split(',').map(v => v.trim()).filter(Boolean);
 
 const SHOP_CRATES = Object.freeze({
