@@ -290,6 +290,27 @@ async function recordTransaction(playerId, username, type, amount, description, 
   );
 }
 
+// sqlite3 uses one connection here. Serialize multi-statement transactions so
+// concurrent requests cannot accidentally share, commit, or roll back each
+// other's transaction on that connection.
+let transactionQueue = Promise.resolve();
+function withTransaction(work) {
+  const operation = transactionQueue.then(async () => {
+    await run('BEGIN IMMEDIATE TRANSACTION');
+    try {
+      const result = await work();
+      await run('COMMIT');
+      return result;
+    } catch (err) {
+      try { await run('ROLLBACK'); } catch (_) { /* transaction may already be closed */ }
+      throw err;
+    }
+  });
+  transactionQueue = operation.catch(() => {});
+  return operation;
+}
+
+
 // -------------------- PUBLIC ENDPOINTS --------------------
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'iron-dominion-api', timestamp: new Date().toISOString() });
@@ -350,53 +371,51 @@ app.post('/api/shop/purchase', requireInternalKey, async (req, res) => {
   const username = normalizeUsername(req.body && req.body.playerName);
   const crateId = typeof (req.body && req.body.crateId) === 'string' ? req.body.crateId.trim() : '';
   const crate = SHOP_CRATES[crateId];
-
   if (!username || !crate) return res.status(400).json({ message: 'Invalid purchase request' });
 
-  const player = await getOrCreatePlayer(username);
-  const transactionId = generateTransactionId();
-
   try {
-    await run('BEGIN IMMEDIATE TRANSACTION');
+    const player = await getOrCreatePlayer(username);
+    const transactionId = generateTransactionId();
+    const result = await withTransaction(async () => {
+      const deduction = await run(
+        'UPDATE players SET balance = balance - ? WHERE id = ? AND balance >= ?',
+        [crate.price, player.id, crate.price]
+      );
+      if (deduction.changes !== 1) {
+        const err = new Error('Insufficient Dominion Tokens');
+        err.statusCode = 400;
+        const current = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
+        err.availableBalance = current ? current.balance : 0;
+        err.requiredBalance = crate.price;
+        throw err;
+      }
 
-    // The database performs the balance check and deduction atomically. The
-    // client cannot choose a price, item list, or crate name.
-    const deduction = await run(
-      'UPDATE players SET balance = balance - ? WHERE id = ? AND balance >= ? AND balance - ? <= ?',
-      [crate.price, player.id, crate.price, crate.price, MAX_BALANCE]
-    );
+      await recordTransaction(player.id, player.username, 'purchase', -crate.price, `Purchased ${crate.name}`, transactionId);
+      await run(
+        `INSERT INTO purchases (transaction_id, player_id, username, crate_id, crate_name, price, items)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [transactionId, player.id, player.username, crateId, crate.name, crate.price, JSON.stringify(crate.items)]
+      );
+      const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
+      return updated.balance;
+    });
 
-    if (deduction.changes !== 1) {
-      await run('ROLLBACK');
-      const current = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
-      return res.status(400).json({
-        message: `Insufficient Dominion Tokens. Required: ${crate.price}, Available: ${current ? current.balance : 0}`
-      });
-    }
-
-    await recordTransaction(player.id, player.username, 'purchase', -crate.price, `Purchased ${crate.name}`, transactionId);
-    await run(
-      `INSERT INTO purchases (transaction_id, player_id, username, crate_id, crate_name, price, items)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [transactionId, player.id, player.username, crateId, crate.name, crate.price, JSON.stringify(crate.items)]
-    );
-
-    await run('COMMIT');
-
-    const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
     res.status(201).json({
       success: true,
       message: `Successfully purchased ${crate.name}. Your items are queued for delivery.`,
       transactionId,
-      newBalance: updated.balance
+      newBalance: result
     });
   } catch (err) {
-    try { await run('ROLLBACK'); } catch (_) { /* transaction may already be closed */ }
+    if (err.statusCode === 400) {
+      return res.status(400).json({
+        message: `Insufficient Dominion Tokens. Required: ${err.requiredBalance}, Available: ${err.availableBalance}`
+      });
+    }
     console.error('Purchase error:', err);
     res.status(500).json({ message: 'Purchase failed' });
   }
 });
-
 app.get('/api/shop/pending-deliveries', requireInternalKey, async (req, res) => {
   try {
     const rows = await all(
@@ -473,30 +492,32 @@ app.post('/api/admin/add-tokens', requireAdminKey, async (req, res) => {
 
   try {
     const player = await getOrCreatePlayer(username);
-    await run('BEGIN IMMEDIATE TRANSACTION');
-    const result = await run(
-      'UPDATE players SET balance = balance + ? WHERE id = ? AND balance + ? <= ?',
-      [amount, player.id, amount, MAX_BALANCE]
-    );
+    const transactionId = generateTransactionId();
+    const balance = await withTransaction(async () => {
+      const result = await run(
+        'UPDATE players SET balance = balance + ? WHERE id = ? AND balance + ? <= ?',
+        [amount, player.id, amount, MAX_BALANCE]
+      );
+      if (result.changes !== 1) {
+        const err = new Error('Token grant would exceed the maximum balance');
+        err.statusCode = 409;
+        throw err;
+      }
 
-    if (result.changes !== 1) {
-      await run('ROLLBACK');
+      await recordTransaction(player.id, player.username, 'reward', amount, reason, transactionId);
+      const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
+      return updated.balance;
+    });
+
+    res.status(201).json({ success: true, transactionId, username: player.username, balance });
+  } catch (err) {
+    if (err.statusCode === 409) {
       return res.status(409).json({ message: 'Token grant would exceed the maximum balance' });
     }
-
-    const transactionId = generateTransactionId();
-    await recordTransaction(player.id, player.username, 'reward', amount, reason, transactionId);
-    await run('COMMIT');
-
-    const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
-    res.status(201).json({ success: true, transactionId, username: player.username, balance: updated.balance });
-  } catch (err) {
-    try { await run('ROLLBACK'); } catch (_) { /* transaction may already be closed */ }
     console.error('Admin token error:', err);
     res.status(500).json({ message: 'Token grant failed' });
   }
 });
-
 // -------------------- ERROR HANDLING --------------------
 app.use((req, res) => res.status(404).json({ message: 'Endpoint not found' }));
 app.use((err, req, res, next) => {
