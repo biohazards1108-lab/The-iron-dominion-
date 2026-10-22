@@ -4,6 +4,9 @@
   "players": null,
   "maxPlayers": null,
   "tps": null,
+  "version": null,
+  "motd": null,
   "updatedAt": null,
-  "source": "placeholder"
+  "source": "development-placeholder",
+  "status": "Bedrock Dominion is in development"
 }
