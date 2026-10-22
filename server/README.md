@@ -1,128 +1,20 @@
-# Iron Dominion Server Backend
+# Iron Dominion Backend — Legacy Reference
 
-API server for managing player economy, shop purchases, and server data for the Iron Dominion Minecraft server.
+This Node.js backend was originally written for the previous Iron Dominion server integrations. It is **not a ready-to-launch backend for Bedrock Dominion**.
 
-## Quick Start
+Do not deploy it as production infrastructure or connect it to the new server without a fresh review. Some routes and delivery workflows assume older Java/Bukkit-era systems and may not match the future Bedrock server architecture.
 
-### Installation
+## Before reuse
 
-```bash
-cd server
-npm install
-cp .env.example .env
-```
+1. Confirm the selected Bedrock server software and its supported integration model.
+2. Review every route for authentication, authorization, input validation, rate limiting, and logging.
+3. Replace any legacy server-status targets with a verified Bedrock Dominion status integration.
+4. Keep all credentials in server-side environment variables; never place them in browser code or Git.
+5. Design and test purchase fulfillment, rewards, economy changes, and audit logging before enabling them.
+6. Run automated tests and security review before deployment.
 
-### Configuration
+## Local development
 
-Edit `.env` with your server details:
-```env
-MC_RCON_HOST=your-server-ip
-MC_RCON_PORT=25575
-MC_RCON_PASSWORD=your_password
-```
+Use `npm install`, copy `.env.example` to `.env`, and configure unique random secrets locally. Never commit `.env` or a real database.
 
-### Run
-
-**Development:**
-```bash
-npm run dev
-```
-
-**Production:**
-```bash
-npm start
-```
-
-Server runs on `http://localhost:3000`
-
----
-
-## Features
-
-✅ Player token economy system  
-✅ Shop system with crate purchases  
-✅ Automatic item delivery to players  
-✅ Server status monitoring  
-✅ Transaction logging  
-✅ Admin reward system  
-
----
-
-## API Endpoints
-
-### Player API
-- `GET /api/player/:username/balance` - Get player balance
-- `GET /api/player/:username` - Get player data and history
-
-### Shop API
-- `POST /api/shop/purchase` - Purchase a crate
-- `GET /api/shop/pending-deliveries` - Get items to deliver
-- `POST /api/shop/deliver/:transactionId` - Mark as delivered
-
-### Server API
-- `GET /api/server/status` - Get server status
-- `POST /api/server/update` - Update server stats
-
-### Admin API
-- `POST /api/admin/add-tokens` - Add tokens to player
-
----
-
-## Database
-
-SQLite database with tables:
-- `players` - Player accounts and balances
-- `transactions` - Token transactions
-- `purchases` - Shop purchases
-- `server_status` - Server metrics
-
----
-
-## Minecraft Integration
-
-See `minecraft-plugin-example.js` for how to integrate with your Minecraft server.
-
-### Key Integration Points
-
-1. **Pending Deliveries**: Poll `/api/shop/pending-deliveries` every 30 seconds
-2. **Item Delivery**: Use RCON or direct database to give items to players
-3. **Mark Delivered**: Call `/api/shop/deliver/:transactionId` when done
-4. **Server Status**: Post to `/api/server/update` with current server stats
-
----
-
-## Deployment
-
-See `SETUP.md` for detailed deployment instructions for:
-- Local development
-- VPS deployment (Ubuntu/Debian)
-- Using PM2 for process management
-- Nginx reverse proxy setup
-- SSL/TLS with Let's Encrypt
-
----
-
-## File Structure
-
-```
-server/
-├── index.js                      # Main server
-├── config.json                   # Configuration
-├── package.json                  # Dependencies
-├── .env.example                  # Environment template
-├── minecraft-plugin-example.js   # Plugin integration guide
-├── SETUP.md                      # Detailed setup guide
-└── README.md                     # This file
-```
-
----
-
-## Contributing
-
-Contributions welcome! Feel free to submit issues and pull requests.
-
----
-
-## License
-
-Iron Dominion © 2026
+The example configuration and API documentation are development references, not confirmation that production endpoints or server integrations are live.
