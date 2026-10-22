@@ -1,19 +1,14 @@
-name: Iron Dominion NPCs CI
+name: "Legacy: Iron Dominion NPC plugin (manual only)"
 
 on:
-  push:
-    paths:
-      - 'npc-plugin/**'
-      - '.github/workflows/npcs.yml'
-  pull_request:
-    paths:
-      - 'npc-plugin/**'
-      - '.github/workflows/npcs.yml'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Legacy compatibility warning
+        run: echo "This NPC plugin targets the old Bukkit/Cauldron 1.6.4 environment. It is not compatible with Bedrock Dominion."
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Java 8
