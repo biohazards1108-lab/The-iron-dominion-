@@ -101,22 +101,24 @@ module.exports = async function handler(req, res) {
     return json(res, 400, { error: 'Webhook is missing id or type' });
   }
 
-  // Payment fulfillment is intentionally not performed here yet. The event is
-  // authenticated above, but durable idempotency/storage and the Minecraft
-  // fulfillment bridge must be configured before any purchase can grant items.
+  // This repository does not have durable payment idempotency or a verified
+  // Bedrock Dominion fulfillment bridge. Never acknowledge a completed payment
+  // as successful until both exist; 503 asks the provider to retry rather than
+  // silently losing the purchase event.
   if (payload.type === 'payment.completed') {
-    console.log(JSON.stringify({
-      event: 'tebex.payment.completed.accepted',
+    console.warn(JSON.stringify({
+      event: 'tebex.payment.fulfillment_disabled',
       webhookId: payload.id,
-      transactionId: payload.subject && payload.subject.transaction_id || null,
-      productCount: Array.isArray(payload.subject && payload.subject.products)
-        ? payload.subject.products.length
-        : 0,
     }));
-  } else {
-    console.log(JSON.stringify({ event: 'tebex.webhook.accepted', webhookId: payload.id, type: payload.type }));
+    return json(res, 503, { error: 'Purchase fulfillment is not enabled' });
   }
 
+  // Ignore other authenticated event types without granting products or rewards.
+  console.log(JSON.stringify({
+    event: 'tebex.webhook.ignored',
+    webhookId: payload.id,
+    type: payload.type,
+  }));
   return json(res, 200, { received: true, id: payload.id });
 };
 
