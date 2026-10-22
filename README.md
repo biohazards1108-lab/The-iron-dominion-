@@ -35,11 +35,13 @@ Bedrock Dominion is **in development**. The website is being prepared while the 
 - `js/server.js` — deliberately shows development status until the new server is verified
 - `api/server.json` — non-live placeholder status payload
 
+## Server planning
+
+- `server/ARCHITECTURE.md` — server model decision guide, trade-offs, security baseline, and launch checklist
+
 ## Historical media
 
 `assets/Iron_Dominion_OFFICIAL_TRAILER.mp4` is an older trailer for the previous server concept and is not linked from the current website. Do not use it to advertise Bedrock Dominion. The updated development-teaser workflow is manual-only and avoids claiming that unverified server features are live.
-
-- `server/ARCHITECTURE.md` — server model decision guide and launch checklist
 
 ## Legacy integrations — not Bedrock-ready
 
