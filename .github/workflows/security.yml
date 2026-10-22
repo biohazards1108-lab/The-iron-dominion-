@@ -36,9 +36,33 @@ jobs:
       - name: Analyze JavaScript
         uses: github/codeql-action/analyze@v4
 
+  dependency-audit:
+    name: Audit API dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Generate temporary lockfile
+        run: npm install --package-lock-only --ignore-scripts --no-audit
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
   dependency-review:
     name: Review dependency changes
-    if: github.event_name == 'pull_request'
+    # The dependency-review API requires GitHub's dependency graph to be enabled.
+    # Set repository variable DEPENDENCY_GRAPH_ENABLED=true after enabling it in
+    # Settings > Security to activate this additional PR-diff check.
+    if: github.event_name == 'pull_request' && vars.DEPENDENCY_GRAPH_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
