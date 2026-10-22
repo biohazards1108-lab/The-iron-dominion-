@@ -165,8 +165,8 @@ jobs:
           grep -q 'NOW ON BEDROCK' index.html
           grep -q 'Bedrock Dominion is in development' api/server.json
           grep -q 'IN DEVELOPMENT' js/server.js
-          if grep -RInE 'the-iron-dominion-dev\.g\.akliz\.net|builder\.tebex\.io|biohazards1108-lab\.github\.io/The-iron-dominion-' --include='*.html' --include='robots.txt' --include='sitemap.xml' .; then
-            echo 'Legacy public server/store/domain reference found.'
+          if grep -RInE 'the-iron-dominion-dev\.g\.akliz\.net|iron-dominion-wasteland-studios-projects\.vercel\.app|builder\.tebex\.io|biohazards1108-lab\.github\.io/The-iron-dominion-' --exclude-dir=.git --exclude='*.mp4' .; then
+            echo 'Legacy server host, store, or public-domain reference found.'
             exit 1
           fi
 
