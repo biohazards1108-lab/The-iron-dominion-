@@ -1,22 +1,24 @@
-name: Build Official Iron Dominion Trailer
+name: Build Bedrock Dominion Development Teaser
 
+# This is manual-only. A normal website edit must never regenerate or overwrite
+# a video with unverified server claims.
 on:
-  push:
-    paths-ignore:
-      - 'assets/Iron_Dominion_OFFICIAL_TRAILER.mp4'
-      - 'assets/Iron_Dominion_OFFICIAL_TRAILER.sha256'
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: bedrock-dominion-teaser
+  cancel-in-progress: false
+
 jobs:
-  build-trailer:
+  build-teaser:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -26,22 +28,22 @@ jobs:
           sudo apt-get install -y ffmpeg
           python3 -m pip install --break-system-packages edge-tts
 
-      - name: Build neural narration
+      - name: Build narration
         run: |
-          cat > /tmp/iron_dominion.txt <<'EOF'
-          What if your Minecraft world became an empire?
-          Welcome to Iron Dominion.
-          Tekkit 1.6.4 survival built for builders, engineers, explorers, and creators.
-          Build massive factories. Automate your production. Explore the world. Forge your own empire.
-          Rise through the Dominion ranks, from Iron to Overlord.
-          Join the community. Shape the world. Build something worth remembering.
-          Visit the website. Check the store. Then join the Dominion.
-          The Dominion awaits.
+          cat > /tmp/bedrock_dominion.txt <<'EOF'
+          A new world is taking shape.
+          Welcome to the Iron Dominion.
+          Meet Bedrock Dominion, our next Minecraft server project.
+          A new realm. A growing community. A world still being forged.
+          Custom features are in development.
+          Server details will be shared after they are tested and confirmed.
+          Follow the journey. Join the community.
+          The Dominion is being built.
           EOF
-          python3 -m edge_tts -f /tmp/iron_dominion.txt --voice en-US-ChristopherNeural --rate=-8% --pitch=-8Hz --write-media /tmp/voice.mp3
+          python3 -m edge_tts -f /tmp/bedrock_dominion.txt --voice en-US-ChristopherNeural --rate=-8% --pitch=-8Hz --write-media /tmp/voice.mp3
           test -s /tmp/voice.mp3
 
-      - name: Build original industrial music
+      - name: Build original atmospheric music
         run: |
           ffmpeg -y -hide_banner -loglevel error \
             -f lavfi -i "sine=frequency=55:sample_rate=44100:duration=30" \
@@ -51,12 +53,11 @@ jobs:
             -c:a pcm_s16le /tmp/music.wav
           test -s /tmp/music.wav
 
-      - name: Render self-contained trailer video
+      - name: Render development teaser
         run: |
-          rm -f assets/Iron_Dominion_OFFICIAL_TRAILER.mp4
           ffmpeg -y -hide_banner -loglevel error \
-            -f lavfi -i "color=c=0x070b10:s=1280x720:r=30:d=30" \
-            -vf "drawbox=x=0:y=0:w=1280:h=720:color=0x0f2533@0.55:t=fill,drawbox=x=38:y=38:w=1204:h=644:color=0x173c4d@0.55:t=4,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='IRON DOMINION':fontcolor=white:fontsize=64:x=(w-tw)/2:y=155:shadowcolor=black@0.9:shadowx=3:shadowy=3,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='TEKKIT 1.6.4  •  SURVIVAL  •  TECHNOLOGY':fontcolor=0x78e8ff:fontsize=25:x=(w-tw)/2:y=240:shadowcolor=black@0.9:shadowx=2:shadowy=2,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='BUILD  •  AUTOMATE  •  CONQUER':fontcolor=0xffb23e:fontsize=30:x=(w-tw)/2:y=335:shadowcolor=black@0.9:shadowx=2:shadowy=2,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='Forge your empire.':fontcolor=white:fontsize=34:x=(w-tw)/2:y=410:enable='between(t,0,30)',drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='IRON DOMINION':fontcolor=0x78e8ff:fontsize=22:x=(w-tw)/2:y=610:shadowcolor=black@0.8:shadowx=2:shadowy=2,format=yuv420p" \
+            -f lavfi -i "color=c=0x070a0d:s=1280x720:r=30:d=30" \
+            -vf "drawbox=x=0:y=0:w=1280:h=720:color=0x17090c@0.72:t=fill,drawbox=x=38:y=38:w=1204:h=644:color=0x7f1d1d@0.65:t=4,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='THE IRON DOMINION':fontcolor=white:fontsize=54:x=(w-tw)/2:y=145:shadowcolor=black@0.9:shadowx=3:shadowy=3,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='NOW ON BEDROCK':fontcolor=0xef4444:fontsize=38:x=(w-tw)/2:y=220:shadowcolor=black@0.9:shadowx=2:shadowy=2,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='BEDROCK DOMINION':fontcolor=0xf2f4f5:fontsize=32:x=(w-tw)/2:y=330:shadowcolor=black@0.9:shadowx=2:shadowy=2,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:text='IN DEVELOPMENT':fontcolor=0xffb3b8:fontsize=28:x=(w-tw)/2:y=395:shadowcolor=black@0.9:shadowx=2:shadowy=2,drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:text='FOLLOW THE BUILD  •  JOIN THE COMMUNITY':fontcolor=white:fontsize=22:x=(w-tw)/2:y=610:shadowcolor=black@0.8:shadowx=2:shadowy=2,format=yuv420p" \
             -c:v libx264 -preset ultrafast -crf 23 -profile:v main -level 3.1 -pix_fmt yuv420p -movflags +faststart \
             -t 30 /tmp/video_only.mp4
           test -s /tmp/video_only.mp4
@@ -69,30 +70,32 @@ jobs:
             -filter_complex "[1:a]volume=0.92,highpass=f=75,lowpass=f=10500,acompressor=threshold=-18dB:ratio=3:attack=8:release=120[vo];[2:a]volume=0.25[mus];[vo][mus]amix=inputs=2:duration=first,loudnorm=I=-14:TP=-1.5:LRA=8[a]" \
             -map 0:v:0 -map '[a]' -t 30 \
             -c:v copy -c:a aac -b:a 160k -ar 48000 -movflags +faststart \
-            assets/Iron_Dominion_OFFICIAL_TRAILER.mp4
+            assets/Bedrock_Dominion_DEVELOPMENT_TEASER.mp4
 
-      - name: Validate final MP4
+      - name: Validate final teaser
         run: |
-          test -s assets/Iron_Dominion_OFFICIAL_TRAILER.mp4
-          V=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_type -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4)
-          A=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4)
-          D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4)
-          VC=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4)
-          AC=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 assets/Iron_Dominion_OFFICIAL_TRAILER.mp4)
+          set -euo pipefail
+          VIDEO=assets/Bedrock_Dominion_DEVELOPMENT_TEASER.mp4
+          test -s "$VIDEO"
+          V=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_type -of csv=p=0 "$VIDEO")
+          A=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 "$VIDEO")
+          D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$VIDEO")
+          VC=$(ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 "$VIDEO")
+          AC=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of csv=p=0 "$VIDEO")
           echo "VIDEO=$V CODEC=$VC AUDIO=$A CODEC=$AC DURATION=$D"
           test "$V" = video
           test "$A" = audio
           test "$VC" = h264
           test "$AC" = aac
           awk -v d="$D" 'BEGIN { exit !(d >= 29.9 && d <= 30.2) }'
-          sha256sum assets/Iron_Dominion_OFFICIAL_TRAILER.mp4 > assets/Iron_Dominion_OFFICIAL_TRAILER.sha256
+          sha256sum "$VIDEO" > assets/Bedrock_Dominion_DEVELOPMENT_TEASER.sha256
 
-      - name: Commit trailer to website
+      - name: Commit development teaser
         run: |
+          set -euo pipefail
           git config user.name 'Iron Dominion Build Bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm -f assets/Iron_Dominion_MOON_SHOT.mp4 assets/Iron_Dominion_MOON_SHOT.sha256 2>/dev/null || true
-          git add assets/Iron_Dominion_OFFICIAL_TRAILER.mp4 assets/Iron_Dominion_OFFICIAL_TRAILER.sha256
+          git add assets/Bedrock_Dominion_DEVELOPMENT_TEASER.mp4 assets/Bedrock_Dominion_DEVELOPMENT_TEASER.sha256
           git diff --cached --quiet && exit 0
-          git commit -m 'Build self-contained official trailer'
+          git commit -m 'Build Bedrock Dominion development teaser'
           git push
