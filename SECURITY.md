@@ -33,9 +33,9 @@ Bedrock Dominion is in development. The existing Java/Bukkit-era bridge, token p
 
 ## Repository hardening added
 
-The repository now includes a scheduled CodeQL JavaScript/TypeScript analysis workflow, dependency-review checks for pull requests, and weekly Dependabot updates for GitHub Actions and the legacy Node.js API dependencies. These checks must run successfully and their alerts must be reviewed; configuration alone does not prove that the application is secure.
+The repository now includes scheduled CodeQL JavaScript/TypeScript analysis, an npm dependency audit in CI, and weekly Dependabot updates for GitHub Actions and the legacy Node.js API dependencies. The additional pull-request dependency-review check requires GitHub's dependency graph to be enabled and the repository variable `DEPENDENCY_GRAPH_ENABLED=true`; until then, the npm audit job is the fallback. These checks must run successfully and their alerts must be reviewed; configuration alone does not prove that the application is secure.
 
-The legacy Express API has also been hardened in source: proxy headers are not trusted by default, the in-memory rate-limit table is bounded, API responses are marked non-cacheable, additional defensive headers are set, SQLite foreign-key enforcement is enabled, and HTTP request timeouts are configured. These are code-level safeguards only. The API is still legacy reference code and is not approved for production or Bedrock Dominion.
+The legacy Express API has also been hardened in source: proxy headers are not trusted by default, the in-memory rate-limit table is bounded, API responses are marked non-cacheable, additional defensive headers are set, SQLite foreign-key enforcement is enabled, HTTP request timeouts are configured, and balance-changing SQLite transactions are serialized to prevent concurrent requests from sharing a transaction on the single database connection. Legacy workflow tokens now default to read-only access, and the video workflow can write only when dispatched from `main`. These are code-level safeguards only. The API is still legacy reference code and is not approved for production or Bedrock Dominion.
 
 ## Account and hosting controls (manual owner actions)
 
