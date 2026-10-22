@@ -3,8 +3,9 @@
 # Set the api-key and Tebex secret in plugins/IronDominionBridge/config.yml on the server.
 
 api:
-  # Stable production Vercel alias. This is the same backend used by the main site/store integration.
-  url: "https://iron-dominion-wasteland-studios-projects.vercel.app"
+  # Legacy Bukkit/Cauldron bridge only; not compatible with Bedrock Dominion.
+  # Leave blank until a reviewed legacy API is intentionally configured.
+  url: ""
   api-key: "REPLACE_ON_SERVER"
   connect-timeout-ms: 5000
   read-timeout-ms: 5000
