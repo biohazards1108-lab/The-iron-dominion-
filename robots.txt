@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /admin/
 
-Sitemap: https://biohazards1108-lab.github.io/The-iron-dominion-/sitemap.xml
+Sitemap: https://irondominion.com/sitemap.xml
