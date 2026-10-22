@@ -76,17 +76,17 @@ jobs:
           failures = []
           for page in sorted(root.glob('*.html')):
               text = page.read_text(encoding='utf-8')
-              if re.search(r'<style\\b|<script\\b|\\sstyle\\s*=|\\son[a-z]+\\s*=', text, re.I):
+              if re.search(r'<style\b|<script\b|\sstyle\s*=|\son[a-z]+\s*=', text, re.I):
                   failures.append(f'{page}: inline style/script/handler conflicts with the strict CSP')
               if page.name != '404.html':
-                  if not re.search(r'<link\\s+rel=["\\']canonical["\\']', text, re.I):
+                  if not re.search(r'<link\s+rel=["\']canonical["\']', text, re.I):
                       failures.append(f'{page}: missing canonical URL')
-                  if not re.search(r'<meta\\s+name=["\\']description["\\']', text, re.I):
+                  if not re.search(r'<meta\s+name=["\']description["\']', text, re.I):
                       failures.append(f'{page}: missing meta description')
 
           for css in root.rglob('*.css'):
               text = css.read_text(encoding='utf-8')
-              for raw in re.findall(r'url\\(\\s*["\\']?([^)"\\']+)', text, re.I):
+              for raw in re.findall(r'url\(\s*["\']?([^)"\']+)', text, re.I):
                   value = raw.strip()
                   if not value or value.startswith(('data:', 'http://', 'https://', '#')):
                       continue
@@ -106,7 +106,7 @@ jobs:
               failures.append(f'favicon.svg: invalid SVG/XML ({exc})')
 
           if failures:
-              print('\\n'.join(failures))
+              print('\n'.join(failures))
               raise SystemExit('CSP/metadata/asset validation failed')
           print('CSP, metadata, manifests, favicon, and CSS asset paths validated.')
           PY
