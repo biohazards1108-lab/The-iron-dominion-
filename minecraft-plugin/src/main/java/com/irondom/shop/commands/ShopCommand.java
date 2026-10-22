@@ -25,7 +25,7 @@ public class ShopCommand implements CommandExecutor {
         player.sendMessage("§6§l════════════════════════════════════════");
         player.sendMessage("§6§l          IRON DOMINION STORE");
         player.sendMessage("§6§l════════════════════════════════════════");
-        player.sendMessage("§eStore: §fhttps://iron-dominion-wasteland-studios-projects.vercel.app/shop.html");
+        player.sendMessage("§eStore: §fhttps://irondominion.com/shop.html");
         player.sendMessage("§eSeven supporter ranks are delivered through the secure Tebex bridge.");
         player.sendMessage("§7Purchases are verified by Tebex before a rank command is executed.");
         player.sendMessage("§7Current bridge: §a" + (plugin.getApiClient().tebexReady() ? "CONNECTED" : "NOT CONFIGURED"));
