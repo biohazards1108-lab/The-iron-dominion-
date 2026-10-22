@@ -69,13 +69,17 @@ fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 
 // -------------------- HTTP SECURITY --------------------
 app.disable('x-powered-by');
-app.set('trust proxy', 1);
+// Do not trust client-supplied X-Forwarded-* headers by default. Only enable
+// one trusted proxy hop when the deployment topology has been verified.
+app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : false);
 
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  res.setHeader('Cache-Control', 'no-store');
   if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   }
@@ -104,6 +108,7 @@ app.use(express.json({ limit: '16kb', strict: true }));
 const rateBuckets = new Map();
 const RATE_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT = 120;
+const MAX_RATE_BUCKETS = 10000;
 setInterval(() => {
   const cutoff = Date.now() - RATE_WINDOW_MS;
   for (const [key, bucket] of rateBuckets) {
@@ -116,6 +121,11 @@ function rateLimit(req, res, next) {
   const now = Date.now();
   let bucket = rateBuckets.get(key);
   if (!bucket || now - bucket.started >= RATE_WINDOW_MS) {
+    // Bound memory use if an attacker generates many distinct source addresses.
+    if (rateBuckets.size >= MAX_RATE_BUCKETS) {
+      const oldestKey = rateBuckets.keys().next().value;
+      if (oldestKey !== undefined) rateBuckets.delete(oldestKey);
+    }
     bucket = { started: now, count: 0 };
     rateBuckets.set(key, bucket);
   }
@@ -140,6 +150,8 @@ const db = new sqlite3.Database(DB_PATH, err => {
 });
 
 db.configure('busyTimeout', 5000);
+// SQLite does not enforce foreign keys unless explicitly enabled per connection.
+db.run('PRAGMA foreign_keys = ON');
 
 function run(sql, params = []) {
   return new Promise((resolve, reject) => {
@@ -499,6 +511,10 @@ app.use((err, req, res, next) => {
 const server = app.listen(PORT, () => {
   console.log(`Iron Dominion API listening on port ${PORT} (${NODE_ENV})`);
 });
+// Keep slow/incomplete HTTP requests from tying up sockets indefinitely.
+server.headersTimeout = 10_000;
+server.requestTimeout = 15_000;
+server.keepAliveTimeout = 5_000;
 
 function shutdown(signal) {
   console.log(`${signal}: shutting down...`);
