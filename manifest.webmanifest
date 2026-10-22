@@ -1,18 +1,11 @@
 {
-  "name": "Iron Dominion",
+  "name": "Iron Dominion — Bedrock Dominion",
   "short_name": "Iron Dominion",
-  "description": "The official Iron Dominion Minecraft server website.",
-  "start_url": "/The-iron-dominion-/",
-  "scope": "/The-iron-dominion-/",
+  "description": "The official Iron Dominion website and Bedrock Dominion server updates.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0b0f14",
-  "theme_color": "#d6a84f",
-  "icons": [
-    {
-      "src": "favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+  "background_color": "#0b0d0f",
+  "theme_color": "#b91c1c",
+  "icons": [{"src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
 }
