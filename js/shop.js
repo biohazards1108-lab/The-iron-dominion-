@@ -4,7 +4,7 @@
   function renderShopStatus() {
     const container = document.getElementById('shop-container');
     if (!container) return;
-    container.textContent = 'Unavailable';
+    container.textContent = 'unavailable';
     container.setAttribute('role', 'status');
     container.setAttribute('aria-live', 'polite');
   }
