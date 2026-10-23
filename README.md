@@ -4,9 +4,9 @@ The public website and planning repository for **Iron Dominion** and its upcomin
 
 ## Public website
 
-- Website: https://irondominion.com/
-- Server information: https://irondominion.com/join.html
-- Mods and features: https://irondominion.com/mods.html
+- Website: https://theirondominion.com/
+- Server information: https://theirondominion.com/join.html
+- Mods and features: https://theirondominion.com/mods.html
 - Community Discord: https://discord.gg/bnXXc2ng72
 
 ## Current project status
