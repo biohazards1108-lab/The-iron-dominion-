@@ -7,6 +7,18 @@ The public website and planning repository for **Iron Dominion** and its upcomin
 - Website: https://theirondominion.com/
 - Server information: https://theirondominion.com/join.html
 - Mods and features: https://theirondominion.com/mods.html
+- Player guides: https://theirondominion.com/guides.html
+- Ranks: https://theirondominion.com/ranks.html
+- Currency: https://theirondominion.com/currency.html
+- Economy: https://theirondominion.com/economy.html
+- Store: https://theirondominion.com/shop.html
+- Server status: https://theirondominion.com/status.html
+- FAQ: https://theirondominion.com/faq.html
+- Support: https://theirondominion.com/support.html
+- Rules: https://theirondominion.com/rules.html
+- Privacy: https://theirondominion.com/privacy.html
+- Terms: https://theirondominion.com/terms.html
+- Development log: https://theirondominion.com/changelog.html
 - Community Discord: https://discord.gg/bnXXc2ng72
 
 ## Current project status
@@ -24,12 +36,20 @@ Bedrock Dominion is **in development**. The website is being prepared while the 
 - `index.html` — landing page and project announcement
 - `join.html` — server connection details and launch status
 - `mods.html` — custom content and feature status
+- `guides.html` — player preparation and future how-to guides
 - `rules.html` — community guidelines
 - `ranks.html` — rank system planning
 - `economy.html` — economy planning
+- `currency.html` — currency status and future currency guide
 - `leaderboard.html` — future rankings
 - `shop.html` — future official store status
 - `vote.html` — future voting links and rewards
+- `status.html` — live status page (unavailable until a verified endpoint is connected)
+- `faq.html` — frequently asked questions
+- `support.html` — support and safety guidance
+- `privacy.html` — website privacy notice
+- `terms.html` — website terms of use
+- `changelog.html` — development changelog
 - `404.html` — missing-page experience
 - `css/style.css` — shared responsive visual system
 - `js/server.js` — deliberately shows development status until the new server is verified
