@@ -9,5 +9,5 @@
   const cell = row.insertCell();
   cell.colSpan = 3;
   cell.className = 'empty-state';
-  cell.textContent = 'Unavailable';
+  cell.textContent = 'unavailable';
 })();
