@@ -3,6 +3,9 @@ name: "Legacy: Iron Dominion NPC plugin (manual only)"
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest

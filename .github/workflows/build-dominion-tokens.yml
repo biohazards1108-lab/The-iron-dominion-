@@ -1,6 +1,9 @@
 name: "Legacy: Build Dominion Tokens (manual only)"
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest

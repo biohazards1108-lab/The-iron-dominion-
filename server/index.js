@@ -69,13 +69,17 @@ fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 
 // -------------------- HTTP SECURITY --------------------
 app.disable('x-powered-by');
-app.set('trust proxy', 1);
+// Do not trust client-supplied X-Forwarded-* headers by default. Only enable
+// one trusted proxy hop when the deployment topology has been verified.
+app.set('trust proxy', process.env.TRUST_PROXY === 'true' ? 1 : false);
 
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  res.setHeader('Cache-Control', 'no-store');
   if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
     res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   }
@@ -104,6 +108,7 @@ app.use(express.json({ limit: '16kb', strict: true }));
 const rateBuckets = new Map();
 const RATE_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT = 120;
+const MAX_RATE_BUCKETS = 10000;
 setInterval(() => {
   const cutoff = Date.now() - RATE_WINDOW_MS;
   for (const [key, bucket] of rateBuckets) {
@@ -116,6 +121,11 @@ function rateLimit(req, res, next) {
   const now = Date.now();
   let bucket = rateBuckets.get(key);
   if (!bucket || now - bucket.started >= RATE_WINDOW_MS) {
+    // Bound memory use if an attacker generates many distinct source addresses.
+    if (rateBuckets.size >= MAX_RATE_BUCKETS) {
+      const oldestKey = rateBuckets.keys().next().value;
+      if (oldestKey !== undefined) rateBuckets.delete(oldestKey);
+    }
     bucket = { started: now, count: 0 };
     rateBuckets.set(key, bucket);
   }
@@ -140,6 +150,8 @@ const db = new sqlite3.Database(DB_PATH, err => {
 });
 
 db.configure('busyTimeout', 5000);
+// SQLite does not enforce foreign keys unless explicitly enabled per connection.
+db.run('PRAGMA foreign_keys = ON');
 
 function run(sql, params = []) {
   return new Promise((resolve, reject) => {
@@ -278,6 +290,27 @@ async function recordTransaction(playerId, username, type, amount, description, 
   );
 }
 
+// sqlite3 uses one connection here. Serialize multi-statement transactions so
+// concurrent requests cannot accidentally share, commit, or roll back each
+// other's transaction on that connection.
+let transactionQueue = Promise.resolve();
+function withTransaction(work) {
+  const operation = transactionQueue.then(async () => {
+    await run('BEGIN IMMEDIATE TRANSACTION');
+    try {
+      const result = await work();
+      await run('COMMIT');
+      return result;
+    } catch (err) {
+      try { await run('ROLLBACK'); } catch (_) { /* transaction may already be closed */ }
+      throw err;
+    }
+  });
+  transactionQueue = operation.catch(() => {});
+  return operation;
+}
+
+
 // -------------------- PUBLIC ENDPOINTS --------------------
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'iron-dominion-api', timestamp: new Date().toISOString() });
@@ -338,53 +371,51 @@ app.post('/api/shop/purchase', requireInternalKey, async (req, res) => {
   const username = normalizeUsername(req.body && req.body.playerName);
   const crateId = typeof (req.body && req.body.crateId) === 'string' ? req.body.crateId.trim() : '';
   const crate = SHOP_CRATES[crateId];
-
   if (!username || !crate) return res.status(400).json({ message: 'Invalid purchase request' });
 
-  const player = await getOrCreatePlayer(username);
-  const transactionId = generateTransactionId();
-
   try {
-    await run('BEGIN IMMEDIATE TRANSACTION');
+    const player = await getOrCreatePlayer(username);
+    const transactionId = generateTransactionId();
+    const result = await withTransaction(async () => {
+      const deduction = await run(
+        'UPDATE players SET balance = balance - ? WHERE id = ? AND balance >= ?',
+        [crate.price, player.id, crate.price]
+      );
+      if (deduction.changes !== 1) {
+        const err = new Error('Insufficient Dominion Tokens');
+        err.statusCode = 400;
+        const current = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
+        err.availableBalance = current ? current.balance : 0;
+        err.requiredBalance = crate.price;
+        throw err;
+      }
 
-    // The database performs the balance check and deduction atomically. The
-    // client cannot choose a price, item list, or crate name.
-    const deduction = await run(
-      'UPDATE players SET balance = balance - ? WHERE id = ? AND balance >= ? AND balance - ? <= ?',
-      [crate.price, player.id, crate.price, crate.price, MAX_BALANCE]
-    );
+      await recordTransaction(player.id, player.username, 'purchase', -crate.price, `Purchased ${crate.name}`, transactionId);
+      await run(
+        `INSERT INTO purchases (transaction_id, player_id, username, crate_id, crate_name, price, items)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [transactionId, player.id, player.username, crateId, crate.name, crate.price, JSON.stringify(crate.items)]
+      );
+      const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
+      return updated.balance;
+    });
 
-    if (deduction.changes !== 1) {
-      await run('ROLLBACK');
-      const current = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
-      return res.status(400).json({
-        message: `Insufficient Dominion Tokens. Required: ${crate.price}, Available: ${current ? current.balance : 0}`
-      });
-    }
-
-    await recordTransaction(player.id, player.username, 'purchase', -crate.price, `Purchased ${crate.name}`, transactionId);
-    await run(
-      `INSERT INTO purchases (transaction_id, player_id, username, crate_id, crate_name, price, items)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [transactionId, player.id, player.username, crateId, crate.name, crate.price, JSON.stringify(crate.items)]
-    );
-
-    await run('COMMIT');
-
-    const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
     res.status(201).json({
       success: true,
       message: `Successfully purchased ${crate.name}. Your items are queued for delivery.`,
       transactionId,
-      newBalance: updated.balance
+      newBalance: result
     });
   } catch (err) {
-    try { await run('ROLLBACK'); } catch (_) { /* transaction may already be closed */ }
+    if (err.statusCode === 400) {
+      return res.status(400).json({
+        message: `Insufficient Dominion Tokens. Required: ${err.requiredBalance}, Available: ${err.availableBalance}`
+      });
+    }
     console.error('Purchase error:', err);
     res.status(500).json({ message: 'Purchase failed' });
   }
 });
-
 app.get('/api/shop/pending-deliveries', requireInternalKey, async (req, res) => {
   try {
     const rows = await all(
@@ -461,30 +492,32 @@ app.post('/api/admin/add-tokens', requireAdminKey, async (req, res) => {
 
   try {
     const player = await getOrCreatePlayer(username);
-    await run('BEGIN IMMEDIATE TRANSACTION');
-    const result = await run(
-      'UPDATE players SET balance = balance + ? WHERE id = ? AND balance + ? <= ?',
-      [amount, player.id, amount, MAX_BALANCE]
-    );
+    const transactionId = generateTransactionId();
+    const balance = await withTransaction(async () => {
+      const result = await run(
+        'UPDATE players SET balance = balance + ? WHERE id = ? AND balance + ? <= ?',
+        [amount, player.id, amount, MAX_BALANCE]
+      );
+      if (result.changes !== 1) {
+        const err = new Error('Token grant would exceed the maximum balance');
+        err.statusCode = 409;
+        throw err;
+      }
 
-    if (result.changes !== 1) {
-      await run('ROLLBACK');
+      await recordTransaction(player.id, player.username, 'reward', amount, reason, transactionId);
+      const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
+      return updated.balance;
+    });
+
+    res.status(201).json({ success: true, transactionId, username: player.username, balance });
+  } catch (err) {
+    if (err.statusCode === 409) {
       return res.status(409).json({ message: 'Token grant would exceed the maximum balance' });
     }
-
-    const transactionId = generateTransactionId();
-    await recordTransaction(player.id, player.username, 'reward', amount, reason, transactionId);
-    await run('COMMIT');
-
-    const updated = await get('SELECT balance FROM players WHERE id = ?', [player.id]);
-    res.status(201).json({ success: true, transactionId, username: player.username, balance: updated.balance });
-  } catch (err) {
-    try { await run('ROLLBACK'); } catch (_) { /* transaction may already be closed */ }
     console.error('Admin token error:', err);
     res.status(500).json({ message: 'Token grant failed' });
   }
 });
-
 // -------------------- ERROR HANDLING --------------------
 app.use((req, res) => res.status(404).json({ message: 'Endpoint not found' }));
 app.use((err, req, res, next) => {
@@ -499,6 +532,10 @@ app.use((err, req, res, next) => {
 const server = app.listen(PORT, () => {
   console.log(`Iron Dominion API listening on port ${PORT} (${NODE_ENV})`);
 });
+// Keep slow/incomplete HTTP requests from tying up sockets indefinitely.
+server.headersTimeout = 10_000;
+server.requestTimeout = 15_000;
+server.keepAliveTimeout = 5_000;
 
 function shutdown(signal) {
   console.log(`${signal}: shutting down...`);

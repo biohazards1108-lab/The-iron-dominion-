@@ -125,7 +125,7 @@ jobs:
           urls = [node.text.strip() for node in root.iter(namespace + 'loc') if node.text]
           if not urls:
               raise SystemExit('Sitemap has no URLs')
-          canonical = 'https://irondominion.com/'
+          canonical = 'https://theirondominion.com/'
           required = {
               canonical,
               canonical + 'join.html',
@@ -167,8 +167,9 @@ jobs:
           set -euo pipefail
           grep -q 'THE IRON DOMINION' index.html
           grep -q 'NOW ON BEDROCK' index.html
-          grep -q 'Bedrock Dominion is in development' api/server.json
-          grep -q 'IN DEVELOPMENT' js/server.js
+          grep -q '"status": "unavailable"' api/server.json
+          grep -q '"players": "unavailable"' api/server.json
+          grep -q "textContent = 'unavailable'" js/server.js
           if grep -RInE 'the-iron-dominion-dev\.g\.akliz\.net|iron-dominion-wasteland-studios-projects\.vercel\.app|builder\.tebex\.io|biohazards1108-lab\.github\.io/The-iron-dominion-' --exclude-dir=.git --exclude='*.mp4' --exclude='ci.yml' .; then
             echo 'Legacy server host, store, or public-domain reference found.'
             exit 1
