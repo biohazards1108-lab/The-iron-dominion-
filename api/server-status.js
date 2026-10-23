@@ -13,13 +13,13 @@ module.exports = function handler(req, res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   return res.end(JSON.stringify({
     live: false,
-    online: null,
-    players: null,
-    maxPlayers: null,
-    tps: null,
-    version: null,
-    motd: null,
-    updatedAt: null,
+    online: 'unavailable',
+    players: 'unavailable',
+    maxPlayers: 'unavailable',
+    tps: 'unavailable',
+    version: 'unavailable',
+    motd: 'unavailable',
+    updatedAt: 'unavailable',
     source: 'unavailable',
     status: 'unavailable'
   }));
