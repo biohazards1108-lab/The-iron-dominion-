@@ -5,9 +5,9 @@
   const playersEl = document.getElementById('players');
   const tpsEl = document.getElementById('tps');
   if (statusEl) {
-    statusEl.textContent = 'Unavailable';
+    statusEl.textContent = 'unavailable';
     statusEl.classList.remove('online', 'offline');
   }
-  if (playersEl) playersEl.textContent = 'Unavailable';
-  if (tpsEl) tpsEl.textContent = 'Unavailable';
+  if (playersEl) playersEl.textContent = 'unavailable';
+  if (tpsEl) tpsEl.textContent = 'unavailable';
 })();
