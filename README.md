@@ -33,7 +33,7 @@ Bedrock Dominion is **in development**. The website is being prepared while the 
 - `404.html` — missing-page experience
 - `css/style.css` — shared responsive visual system
 - `js/server.js` — deliberately shows development status until the new server is verified
-- `api/server.json` — non-live placeholder status payload
+- `api/server.json` — unavailable server-status response
 
 ## Server planning
 
