@@ -125,7 +125,7 @@ jobs:
           urls = [node.text.strip() for node in root.iter(namespace + 'loc') if node.text]
           if not urls:
               raise SystemExit('Sitemap has no URLs')
-          canonical = 'https://irondominion.com/'
+          canonical = 'https://theirondominion.com/'
           required = {
               canonical,
               canonical + 'join.html',
