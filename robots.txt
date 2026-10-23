@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /admin/
 
-Sitemap: https://irondominion.com/sitemap.xml
+Sitemap: https://theirondominion.com/sitemap.xml
