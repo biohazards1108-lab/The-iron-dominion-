@@ -1,4 +1,4 @@
 Contact: https://discord.gg/bnXXc2ng72
 Expires: 2027-10-22T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://irondominion.com/.well-known/security.txt
+Canonical: https://theirondominion.com/.well-known/security.txt
