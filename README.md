@@ -4,9 +4,9 @@ The public website and planning repository for **Iron Dominion** and its upcomin
 
 ## Public website
 
-- Website: https://irondominion.com/
-- Server information: https://irondominion.com/join.html
-- Mods and features: https://irondominion.com/mods.html
+- Website: https://theirondominion.com/
+- Server information: https://theirondominion.com/join.html
+- Mods and features: https://theirondominion.com/mods.html
 - Community Discord: https://discord.gg/bnXXc2ng72
 
 ## Current project status
@@ -15,7 +15,7 @@ Bedrock Dominion is **in development**. The website is being prepared while the 
 
 - Java and Bedrock support are planned; compatibility is not yet confirmed.
 - The server address, port, supported versions, and launch date are not published until verified.
-- Custom mods, gameplay systems, and feature details are marked **Coming Soon** until they are implemented and tested.
+- Custom mods, gameplay systems, and feature details are marked **unavailable** until they are implemented and tested.
 - Economy, ranks, store, voting rewards, leaderboards, and live server status are not advertised as active unless explicitly confirmed on the site.
 - The official Discord invite above is retained for development updates.
 
