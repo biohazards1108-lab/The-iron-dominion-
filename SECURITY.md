@@ -29,3 +29,12 @@ Bedrock Dominion is in development. The existing Java/Bukkit-era bridge, token p
 - [ ] Keep secrets server-side.
 - [ ] Test authorization, rate limits, error handling, backups, and rollback.
 - [ ] Confirm the official Discord invite.
+
+## Donations and payment processing
+
+- `donate.html` is informational only; no payment is accepted until official recipient details and the backend have been verified.
+- Never embed PayPal client secrets, Cash App credentials, webhook secrets, or other private keys in static HTML, JavaScript served to browsers, or a public repository.
+- Prefer a provider-hosted payment flow. For PayPal Checkout, create and capture orders on a trusted server and verify provider webhooks before recording payment success.
+- A Cash App $cashtag transfer is not a trusted payment-verification webhook and must not automatically grant ranks, currency, or items. For automated entitlements, use an approved merchant integration with authenticated server-side confirmation.
+- Use idempotency keys, amount/currency checks, order ownership checks, webhook signature verification, rate limits, audit logs, and a documented refund/dispute process before launching.
+- GitHub Pages is static hosting and must not contain private payment secrets or pretend to provide a secure payment backend.
