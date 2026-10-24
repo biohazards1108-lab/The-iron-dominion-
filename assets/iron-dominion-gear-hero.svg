@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 820" role="img" aria-labelledby="title desc">
+<title id="title">The Iron Dominion — Forged in Rust</title><desc id="desc">A monumental weathered iron gear with rivets, dark steel teeth, rust and ember-red highlights against a smoky industrial forge.</desc>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#090b0d"/><stop offset=".55" stop-color="#1a1715"/><stop offset="1" stop-color="#050607"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#b84a20" stop-opacity=".55"/><stop offset=".45" stop-color="#722513" stop-opacity=".18"/><stop offset="1" stop-color="#070809" stop-opacity="0"/></radialGradient>
+ <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#77746d"/><stop offset=".18" stop-color="#25282a"/><stop offset=".35" stop-color="#a34b2b"/><stop offset=".49" stop-color="#363635"/><stop offset=".72" stop-color="#17191b"/><stop offset=".88" stop-color="#75503a"/><stop offset="1" stop-color="#111315"/></linearGradient>
+ <linearGradient id="face" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#b4aaa0"/><stop offset=".14" stop-color="#4a4946"/><stop offset=".38" stop-color="#222426"/><stop offset=".52" stop-color="#8d3b20"/><stop offset=".66" stop-color="#343231"/><stop offset="1" stop-color="#101214"/></linearGradient>
+ <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="18"/></filter>
+ <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" seed="14" result="noise"/><feColorMatrix in="noise" type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .23"/></feComponentTransfer><feBlend in="SourceGraphic" mode="soft-light"/></filter>
+ <pattern id="scratches" width="47" height="39" patternUnits="userSpaceOnUse"><path d="M4 8l12-3m14 18 9-4M1 34l7-2" stroke="#d1b09a" stroke-opacity=".2" stroke-width="1.5"/><circle cx="24" cy="8" r="1.2" fill="#e76a32" fill-opacity=".4"/></pattern>
+ <g id="tooth"><path d="M-64-330L-55-401Q0-421 55-401L64-330Z" fill="url(#metal)" stroke="#090a0b" stroke-width="12"/><path d="M-46-390L-38-330M44-391L39-330" stroke="#d9b39a" stroke-opacity=".35" stroke-width="5"/><path d="M-54-398Q0-414 54-398" stroke="#e4b39a" stroke-opacity=".5" stroke-width="4" fill="none"/></g>
+</defs>
+<rect width="1920" height="820" fill="url(#bg)"/><rect width="1920" height="820" fill="url(#glow)"/>
+<g opacity=".18" fill="none" stroke="#a34726"><path d="M0 620H1920M0 666H1920M0 712H1920M0 758H1920"/><path d="M100 0V820M180 0V820M1740 0V820M1820 0V820" stroke-opacity=".35"/></g>
+<g transform="translate(1420 385)">
+ <circle r="460" fill="#000" opacity=".6" filter="url(#shadow)"/>
+ <g fill="url(#metal)" stroke="#08090a" stroke-width="10">
+  <use href="#tooth" transform="rotate(0)"/><use href="#tooth" transform="rotate(22.5)"/><use href="#tooth" transform="rotate(45)"/><use href="#tooth" transform="rotate(67.5)"/><use href="#tooth" transform="rotate(90)"/><use href="#tooth" transform="rotate(112.5)"/><use href="#tooth" transform="rotate(135)"/><use href="#tooth" transform="rotate(157.5)"/><use href="#tooth" transform="rotate(180)"/><use href="#tooth" transform="rotate(202.5)"/><use href="#tooth" transform="rotate(225)"/><use href="#tooth" transform="rotate(247.5)"/><use href="#tooth" transform="rotate(270)"/><use href="#tooth" transform="rotate(292.5)"/><use href="#tooth" transform="rotate(315)"/><use href="#tooth" transform="rotate(337.5)"/>
+ </g>
+ <circle r="333" fill="url(#face)" stroke="#0a0b0c" stroke-width="22"/><circle r="313" fill="none" stroke="#c1a28c" stroke-opacity=".48" stroke-width="4"/><circle r="290" fill="url(#scratches)" stroke="#17191a" stroke-width="12"/>
+ <circle r="260" fill="none" stroke="#8d3e24" stroke-width="9" stroke-dasharray="12 16"/>
+ <g fill="#c1b5a7" stroke="#171819" stroke-width="5"><circle cx="0" cy="-303" r="11"/><circle cx="214" cy="-214" r="11"/><circle cx="303" cy="0" r="11"/><circle cx="214" cy="214" r="11"/><circle cx="0" cy="303" r="11"/><circle cx="-214" cy="214" r="11"/><circle cx="-303" cy="0" r="11"/><circle cx="-214" cy="-214" r="11"/></g>
+ <circle r="172" fill="#121516" stroke="#7b3b26" stroke-width="14"/><circle r="150" fill="none" stroke="#7c7b75" stroke-width="5" stroke-dasharray="2 9"/>
+ <path d="M-105-72L-34-144 0-105 34-144 105-72 72-34 105 0 72 34 105 72 34 144 0 105-34 144-105 72-72 34-105 0-72-34Z" fill="#25282a" stroke="#b35a34" stroke-width="7" opacity=".8"/>
+ <text x="0" y="-12" text-anchor="middle" font-family="Georgia,serif" font-size="39" font-weight="900" letter-spacing="4" fill="#d9d0c4" stroke="#111" stroke-width="2" paint-order="stroke">THE IRON</text>
+ <text x="0" y="40" text-anchor="middle" font-family="Georgia,serif" font-size="37" font-weight="900" letter-spacing="2" fill="#cf5c35" stroke="#090a0b" stroke-width="3" paint-order="stroke">DOMINION</text>
+ <path d="M-95 65H95" stroke="#a94a29" stroke-width="3"/><text x="0" y="91" text-anchor="middle" font-family="serif" font-size="12" letter-spacing="5" fill="#c7b7a5">FORGED IN IRON</text>
+</g>
+<g fill="none" stroke-linecap="round"><path d="M0 560L280 535 340 492 460 512 540 470" stroke="#c04d29" stroke-opacity=".26" stroke-width="4"/><path d="M40 700L220 676 288 704 420 674" stroke="#d8b59e" stroke-opacity=".15" stroke-width="3"/><path d="M1040 92l-48 44 23 34-35 39" stroke="#d45b2f" stroke-opacity=".3" stroke-width="3"/></g>
+<g fill="#ff7139" opacity=".55"><circle cx="1090" cy="590" r="3"/><circle cx="1202" cy="210" r="2"/><circle cx="980" cy="450" r="3"/><circle cx="1680" cy="130" r="2"/><circle cx="1780" cy="570" r="3"/><circle cx="1150" cy="300" r="2"/><circle cx="1300" cy="700" r="2"/></g>
+<path d="M0 0H1920V820H0Z" fill="none" stroke="#000" stroke-width="90" opacity=".55"/>
+</svg>
