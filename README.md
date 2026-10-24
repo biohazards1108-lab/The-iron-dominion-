@@ -12,6 +12,7 @@ The public website and planning repository for **Iron Dominion** and its upcomin
 - Currency: https://theirondominion.com/currency.html
 - Economy: https://theirondominion.com/economy.html
 - Store: https://theirondominion.com/shop.html
+- Donations (setup in progress; not accepting payments): https://theirondominion.com/donate.html
 - Server status: https://theirondominion.com/status.html
 - FAQ: https://theirondominion.com/faq.html
 - Support: https://theirondominion.com/support.html
@@ -80,3 +81,7 @@ They are retained as legacy reference code only. Before any of those systems are
 ## Development principle
 
 **Never advertise an unfinished system as live.** Update the public site only when the corresponding Bedrock Dominion configuration has been implemented and tested.
+
+## Donations and payment security
+
+The donation information page is a readiness page only; it does not process payments. Before activating donations, confirm ownership of the official PayPal destination and Cash App recipient. Use provider-hosted checkout/payment flows, keep all API secrets server-side, and never fulfill in-game rewards from a browser redirect or unverified peer-to-peer transfer. GitHub Pages alone cannot safely host private payment credentials or server-side order capture/webhook verification. The live payment integration must be deployed on a trusted backend and tested in sandbox before activation.
