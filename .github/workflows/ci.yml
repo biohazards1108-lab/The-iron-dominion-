@@ -80,7 +80,7 @@ jobs:
           failures = []
           for page in sorted(root.glob('*.html')):
               text = page.read_text(encoding='utf-8')
-              if re.search(r'<style\b|<script\b|\sstyle\s*=|\son[a-z]+\s*=', text, re.I):
+              if re.search(r'<style\b|<script\b(?![^>]*\bsrc\s*=)|\sstyle\s*=|\son[a-z]+\s*=', text, re.I):
                   failures.append(f'{page}: inline style/script/handler conflicts with the strict CSP')
               if page.name != '404.html':
                   if not re.search(r'<link\s+rel=["\']canonical["\']', text, re.I):
