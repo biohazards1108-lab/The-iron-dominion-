@@ -93,6 +93,10 @@ jobs:
                       failures.append(f'{page}: missing canonical URL')
                   if not re.search(r'<meta\s+name=["\']description["\']', text, re.I):
                       failures.append(f'{page}: missing meta description')
+                  if not re.search(r'<meta\s+property=["\']og:image["\']', text, re.I):
+                      failures.append(f'{page}: missing social preview image')
+                  if not re.search(r'<meta\s+name=["\']twitter:card["\']', text, re.I):
+                      failures.append(f'{page}: missing Twitter card metadata')
 
           for css in root.rglob('*.css'):
               text = css.read_text(encoding='utf-8')
