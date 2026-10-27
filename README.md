@@ -6,6 +6,7 @@ The public website and planning repository for **Iron Dominion** and its upcomin
 
 - Website: https://theirondominion.com/
 - Server information: https://theirondominion.com/join.html
+- Microsoft/Minecraft account shortcuts: https://theirondominion.com/account.html
 - Mods and features: https://theirondominion.com/mods.html
 - Player guides: https://theirondominion.com/guides.html
 - Ranks: https://theirondominion.com/ranks.html
@@ -35,6 +36,7 @@ Bedrock Dominion is **in development**. The website is being prepared while the 
 
 - `index.html` — landing page and project announcement
 - `join.html` — server connection details and launch status
+- `account.html` — shortcuts to official Microsoft/Minecraft account portals (not an in-site login)
 - `mods.html` — custom content and feature status
 - `guides.html` — player preparation and future how-to guides
 - `rules.html` — community guidelines
@@ -80,6 +82,10 @@ They are retained as legacy reference code only. Before any of those systems are
 - Do not grant purchases, ranks, votes, or rewards based on a client-side button or unverified redirect.
 - Any future economy, store, voting, or player-data integration must verify requests server-side.
 - Do not publish placeholder IPs, ports, fake player counts, or unverified compatibility claims.
+
+## Automated quality and security checks
+
+GitHub Actions validates public-page links and assets, keyboard skip links, canonical metadata, the full sitemap, safe external links, the static-site Content Security Policy, social preview metadata, development-status wording, and accidental secret patterns. A separate workflow runs CodeQL JavaScript analysis and an npm dependency audit; Dependabot proposes dependency updates. These checks reduce risk but do not guarantee the site is vulnerability-free. The Content Security Policy is delivered as a meta policy because GitHub Pages does not let this repository configure arbitrary HTTP response headers.
 
 ## Development principle
 
