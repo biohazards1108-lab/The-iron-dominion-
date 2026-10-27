@@ -86,6 +86,8 @@ jobs:
                   failures.append(f'{page}: missing keyboard-accessible skip link')
               if not re.search(r'<main\b[^>]*id=["\']main-content["\']', text, re.I):
                   failures.append(f'{page}: missing main-content skip-link target')
+              if not re.search(r'<nav\b[^>]*>[\s\S]*?href=["\']account\.html["\']', text, re.I):
+                  failures.append(f'{page}: missing global account navigation link')
               if re.search(r'<style\b|<script\b(?![^>]*\bsrc\s*=)[^>]*>|\sstyle\s*=|\son[a-z]+\s*=', text, re.I):
                   failures.append(f'{page}: inline style/script/handler conflicts with the strict CSP')
               if page.name != '404.html':
