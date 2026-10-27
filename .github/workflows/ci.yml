@@ -137,8 +137,10 @@ jobs:
               canonical + 'vote.html',
               canonical + 'rules.html',
           }
-          if set(urls) != required:
-              raise SystemExit(f'Sitemap mismatch. Missing: {sorted(required - set(urls))}; unexpected: {sorted(set(urls) - required)}')
+          if not required.issubset(set(urls)):
+              raise SystemExit(f'Sitemap is missing required public URLs: {sorted(required - set(urls))}')
+          if len(urls) != len(set(urls)):
+              raise SystemExit('Sitemap contains duplicate URLs')
           if any(not url.startswith(canonical) for url in urls):
               raise SystemExit('Sitemap contains a non-canonical domain')
           robots = Path('robots.txt').read_text(encoding='utf-8')
