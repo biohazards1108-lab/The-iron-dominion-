@@ -1,4 +1,4 @@
-// Placeholder endpoint for the upcoming Bedrock Dominion server.
+// Unavailable status endpoint for Bedrock Dominion.
 // Do not poll the retired legacy Tekkit host or infer launch status from it.
 module.exports = function handler(req, res) {
   if (req.method !== 'GET') {
@@ -13,14 +13,14 @@ module.exports = function handler(req, res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   return res.end(JSON.stringify({
     live: false,
-    online: false,
-    players: null,
-    maxPlayers: null,
-    tps: null,
-    version: null,
-    motd: null,
-    updatedAt: null,
-    source: 'development-placeholder',
-    status: 'Bedrock Dominion is in development'
+    online: 'unavailable',
+    players: 'unavailable',
+    maxPlayers: 'unavailable',
+    tps: 'unavailable',
+    version: 'unavailable',
+    motd: 'unavailable',
+    updatedAt: 'unavailable',
+    source: 'unavailable',
+    status: 'unavailable'
   }));
 };
