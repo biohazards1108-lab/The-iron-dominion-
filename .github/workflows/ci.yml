@@ -140,6 +140,14 @@ jobs:
               canonical + 'shop.html',
               canonical + 'vote.html',
               canonical + 'rules.html',
+              canonical + 'account.html',
+              canonical + 'faq.html',
+              canonical + 'guides.html',
+              canonical + 'status.html',
+              canonical + 'support.html',
+              canonical + 'privacy.html',
+              canonical + 'terms.html',
+              canonical + 'changelog.html',
           }
           if not required.issubset(set(urls)):
               raise SystemExit(f'Sitemap is missing required public URLs: {sorted(required - set(urls))}')
@@ -147,6 +155,11 @@ jobs:
               raise SystemExit('Sitemap contains duplicate URLs')
           if any(not url.startswith(canonical) for url in urls):
               raise SystemExit('Sitemap contains a non-canonical domain')
+          for url in urls:
+              path = url.removeprefix(canonical)
+              local = Path('index.html') if not path else Path(path)
+              if not local.is_file():
+                  raise SystemExit(f'Sitemap URL has no matching tracked site file: {url}')
           robots = Path('robots.txt').read_text(encoding='utf-8')
           if f'Sitemap: {canonical}sitemap.xml' not in robots:
               raise SystemExit('robots.txt does not advertise the canonical sitemap')
@@ -174,7 +187,7 @@ jobs:
           grep -q 'THE IRON DOMINION' index.html
           grep -q 'NOW ON BEDROCK' index.html
           grep -q 'Bedrock Dominion is in development' api/server.json
-          grep -q 'IN DEVELOPMENT' js/server.js
+          grep -q "statusEl.textContent = 'UNAVAILABLE'" js/server.js
           if grep -RInE 'the-iron-dominion-dev\.g\.akliz\.net|iron-dominion-wasteland-studios-projects\.vercel\.app|builder\.tebex\.io|biohazards1108-lab\.github\.io/The-iron-dominion-' --exclude-dir=.git --exclude='*.mp4' --exclude='ci.yml' .; then
             echo 'Legacy server host, store, or public-domain reference found.'
             exit 1
