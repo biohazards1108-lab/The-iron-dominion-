@@ -197,6 +197,10 @@ jobs:
           grep -q '"status": "unavailable"' api/server.json
           grep -q "status: 'unavailable'" api/server-status.js
           grep -q "statusEl.textContent = 'UNAVAILABLE'" js/server.js
+          if grep -nE 'SHOP_CRATES|Starter Crate|Industrial Crate|Legendary Crate|Dominion Tokens' js/shop.js; then
+            echo 'Hard-coded browser shop catalog or prices found.'
+            exit 1
+          fi
           if grep -RInE 'the-iron-dominion-dev\.g\.akliz\.net|iron-dominion-wasteland-studios-projects\.vercel\.app|builder\.tebex\.io|biohazards1108-lab\.github\.io/The-iron-dominion-' --exclude-dir=.git --exclude='*.mp4' --exclude='ci.yml' .; then
             echo 'Legacy server host, store, or public-domain reference found.'
             exit 1
