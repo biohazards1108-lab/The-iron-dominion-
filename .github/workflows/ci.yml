@@ -80,6 +80,8 @@ jobs:
           failures = []
           for page in sorted(root.glob('*.html')):
               text = page.read_text(encoding='utf-8')
+              if not re.search(r'<meta\s+http-equiv=["\']Content-Security-Policy["\']\s+content=["\']default-src [^"\']*["\']', text, re.I):
+                  failures.append(f'{page}: missing static-site Content Security Policy')
               if not re.search(r'<a\b[^>]*class=["\'][^"\']*\bskip-link\b[^"\']*["\'][^>]*href=["\']#main-content["\']', text, re.I):
                   failures.append(f'{page}: missing keyboard-accessible skip link')
               if not re.search(r'<main\b[^>]*id=["\']main-content["\']', text, re.I):
