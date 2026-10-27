@@ -55,6 +55,10 @@ Bedrock Dominion is **in development**. The website is being prepared while the 
 - `js/server.js` — deliberately shows development status until the new server is verified
 - `api/server.json` — non-live placeholder status payload
 
+## Hosting and API boundary
+
+The public site is hosted as a static GitHub Pages website. GitHub Pages serves HTML, CSS, JavaScript, and static JSON files; it does **not** execute the repository's `api/*.js` functions, the legacy Express server, or webhook handlers. `vercel.json` does not configure GitHub Pages. Therefore, API and payment integrations must not be described as live based on files existing in this repository. A separate trusted backend and explicit deployment are required before live status, Microsoft OAuth, purchases, voting rewards, economy, or player data can work.
+
 ## Server planning
 
 - `server/ARCHITECTURE.md` — server model decision guide, trade-offs, security baseline, and launch checklist

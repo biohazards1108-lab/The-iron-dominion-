@@ -192,7 +192,8 @@ jobs:
           set -euo pipefail
           grep -q 'THE IRON DOMINION' index.html
           grep -q 'NOW ON BEDROCK' index.html
-          grep -q 'Bedrock Dominion is in development' api/server.json
+          grep -q '"status": "unavailable"' api/server.json
+          grep -q "status: 'unavailable'" api/server-status.js
           grep -q "statusEl.textContent = 'UNAVAILABLE'" js/server.js
           if grep -RInE 'the-iron-dominion-dev\.g\.akliz\.net|iron-dominion-wasteland-studios-projects\.vercel\.app|builder\.tebex\.io|biohazards1108-lab\.github\.io/The-iron-dominion-' --exclude-dir=.git --exclude='*.mp4' --exclude='ci.yml' .; then
             echo 'Legacy server host, store, or public-domain reference found.'
