@@ -80,8 +80,14 @@ jobs:
           failures = []
           for page in sorted(root.glob('*.html')):
               text = page.read_text(encoding='utf-8')
-              if not re.search(r'<meta\s+http-equiv=["\']Content-Security-Policy["\']\s+content=["\']default-src [^"\']*["\']', text, re.I):
+              csp_match = re.search(r'<meta\s+http-equiv=["\']Content-Security-Policy["\']\s+content=["\']([^"\']+)["\']', text, re.I)
+              if not csp_match:
                   failures.append(f'{page}: missing static-site Content Security Policy')
+              else:
+                  policy = csp_match.group(1)
+                  for directive in ("default-src 'self'", "base-uri 'self'", "object-src 'none'", "script-src 'self'", "style-src 'self'", "connect-src 'self'", "form-action 'self'"):
+                      if directive not in policy:
+                          failures.append(f'{page}: CSP missing required directive {directive}')
               if not re.search(r'<a\b[^>]*class=["\'][^"\']*\bskip-link\b[^"\']*["\'][^>]*href=["\']#main-content["\']', text, re.I):
                   failures.append(f'{page}: missing keyboard-accessible skip link')
               if not re.search(r'<main\b[^>]*id=["\']main-content["\']', text, re.I):
@@ -91,8 +97,11 @@ jobs:
               if re.search(r'<style\b|<script\b(?![^>]*\bsrc\s*=)[^>]*>|\sstyle\s*=|\son[a-z]+\s*=', text, re.I):
                   failures.append(f'{page}: inline style/script/handler conflicts with the strict CSP')
               if page.name != '404.html':
-                  if not re.search(r'<link\s+rel=["\']canonical["\']', text, re.I):
+                  canonical_match = re.search(r'<link\s+rel=["\']canonical["\']\s+href=["\']([^"\']+)', text, re.I)
+                  if not canonical_match:
                       failures.append(f'{page}: missing canonical URL')
+                  elif not canonical_match.group(1).startswith('https://theirondominion.com/'):
+                      failures.append(f'{page}: canonical URL uses the wrong domain')
                   if not re.search(r'<meta\s+name=["\']description["\']', text, re.I):
                       failures.append(f'{page}: missing meta description')
                   if not re.search(r'<meta\s+property=["\']og:image["\']', text, re.I):
