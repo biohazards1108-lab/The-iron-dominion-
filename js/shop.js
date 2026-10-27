@@ -1,66 +1,16 @@
-// Public shop catalog renderer.
+// Public shop status renderer.
 //
-// Security rule: this browser script never sends a token balance, price,
-// item list, admin key, or purchase request. Balance-changing operations are
-// trusted-server operations and require the authenticated Minecraft bridge.
+// The official Bedrock Dominion store is not live. Do not publish hard-coded
+// catalog entries, prices, token balances, or pretend checkout is available.
+// A real catalog must come from a verified server-side source after launch.
 (function () {
-  const SHOP_CRATES = Object.freeze([
-    {
-      id: 'starter_crate',
-      name: 'Starter Crate',
-      description: 'Basic tools and resources.',
-      price: 100,
-      items: ['Iron Pickaxe', 'Coal x64', 'Wood x32']
-    },
-    {
-      id: 'industrial_crate',
-      name: 'Industrial Crate',
-      description: 'Machines and power components.',
-      price: 500,
-      items: ['Electric Furnace', 'Engine', 'Cable x64']
-    },
-    {
-      id: 'legendary_crate',
-      name: 'Legendary Crate',
-      description: 'Rare and exclusive items.',
-      price: 2000,
-      items: ['Quantum Armor Helmet', 'MFSU', 'Singularity']
-    }
-  ]);
+  'use strict';
 
-  function escapeHtml(value) {
-    return String(value)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
+  const container = document.getElementById('shop-container');
+  if (!container) return;
 
-  function renderShop() {
-    const container = document.getElementById('shop-container');
-    if (!container) return;
-
-    const cards = SHOP_CRATES.map(crate => `
-      <article class="crate-card">
-        <h3>${escapeHtml(crate.name)}</h3>
-        <p class="description">${escapeHtml(crate.description)}</p>
-        <p class="price">◆ ${crate.price.toLocaleString()} Dominion Tokens</p>
-        <ul class="items">
-          ${crate.items.map(item => `<li>✓ ${escapeHtml(item)}</li>`).join('')}
-        </ul>
-        <button type="button" disabled aria-disabled="true" title="Authenticated checkout is not enabled yet">
-          Checkout Coming Soon
-        </button>
-      </article>
-    `).join('');
-
-    container.innerHTML = `<div class="shop-grid">${cards}</div>`;
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', renderShop, { once: true });
-  } else {
-    renderShop();
-  }
+  const notice = document.createElement('p');
+  notice.className = 'notice';
+  notice.textContent = 'UNAVAILABLE — the official store and checkout are not enabled.';
+  container.replaceChildren(notice);
 })();
