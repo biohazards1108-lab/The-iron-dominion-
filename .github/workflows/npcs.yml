@@ -57,7 +57,7 @@ jobs:
           javap -classpath target/IronDominionNPCs-1.1.2.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnNms'
           javap -classpath target/IronDominionNPCs-1.1.2.jar -p com.irondominion.npcs.IronDominionNPCs | grep -q 'spawnBukkit'
       - name: Upload NPC plugin
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: IronDominionNPCs-1.1.2
           path: npc-plugin/target/IronDominionNPCs-1.1.2.jar
