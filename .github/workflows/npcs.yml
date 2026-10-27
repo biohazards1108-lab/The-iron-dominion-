@@ -10,7 +10,7 @@ jobs:
       - name: Legacy compatibility warning
         run: echo "This NPC plugin targets the old Bukkit/Cauldron 1.6.4 environment. It is not compatible with Bedrock Dominion."
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Java 8
         uses: actions/setup-java@v4
         with:

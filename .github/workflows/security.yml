@@ -27,7 +27,7 @@ jobs:
       actions: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
@@ -47,7 +47,7 @@ jobs:
         working-directory: server
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
@@ -70,7 +70,7 @@ jobs:
       pull-requests: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
       - name: Review dependency changes
         uses: actions/dependency-review-action@v4
         with:
