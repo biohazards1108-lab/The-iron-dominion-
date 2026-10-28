@@ -1,6 +1,6 @@
 # Iron Dominion — Bedrock Dominion
 
-The public website and planning repository for **Iron Dominion** and its upcoming Minecraft server, **Bedrock Dominion**.
+The public website and development repository for **Iron Dominion** and **Bedrock Dominion**.
 
 ## Public website
 
@@ -24,7 +24,7 @@ The public website and planning repository for **Iron Dominion** and its upcomin
 
 ## Current project status
 
-Bedrock Dominion is **in development**. The website is being prepared while the server setup and feature set are designed and tested.
+Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the owner has successfully connected and moved around in-game. The website and custom gameplay systems remain in active development.
 
 - Java and Bedrock support are planned; compatibility is not yet confirmed.
 - The server address, port, supported versions, and launch date are not published until verified.
