@@ -1,8 +1,8 @@
 # Bedrock Dominion — Server Architecture Plan
 
-**Status: planning only. No production server is configured or launched by this document.**
+**Status: Akliz Bedrock server provisioned; console reported `Server started` in the owner's screenshot on 2026-10-28. Website integrations and external connectivity checks remain incomplete.**
 
-This file keeps the server plan honest while the project moves from the previous Java/Bukkit-era setup to Bedrock Dominion. The old plugins and Node backend in this repository are not Bedrock-compatible by default and must not be installed into a new server.
+This file keeps the server plan honest while the project moves from the previous Java/Bukkit-era setup to Bedrock Dominion. The confirmed Akliz connection details are `the-iron-dominion-bedrock.g.akliz.net:15300` (Minecraft Bedrock; Akliz panel showed version `1.26.60`). These values are based on the owner's screenshot and should be rechecked after server version or hosting changes. The old plugins and Node backend in this repository are not Bedrock-compatible by default and must not be installed into this server.
 
 ## 1. Decide what “Bedrock server” means
 
@@ -23,10 +23,12 @@ Do not promise a single shared world, inventory, economy, or player identity acr
 ## 2. Decisions required before implementation
 
 - [ ] Primary server model: Bedrock-native, Java backend with Bedrock bridge, or separate servers.
-- [ ] Hosting provider and server operating system.
+- [x] Hosting provider: Akliz. Server OS/runtime details still need confirmation from the provider panel.
+- [x] Current Bedrock hostname/port recorded from Akliz: `the-iron-dominion-bedrock.g.akliz.net:15300`.
 - [ ] Target Minecraft version(s), chosen only after checking current official releases and compatibility.
 - [ ] Expected player capacity and performance budget.
-- [ ] Public connection address, port, and DNS plan.
+- [x] Public connection address and port recorded from Akliz: `the-iron-dominion-bedrock.g.akliz.net:15300`.
+- [ ] Verify connection from an external Bedrock client and confirm DNS reachability.
 - [ ] World type, difficulty, PvP policy, grief protection, and reset policy.
 - [ ] Backup schedule, retention, and restore test.
 - [ ] Admin/staff permissions, moderation process, and player reporting path.
@@ -64,7 +66,7 @@ Do not publish downloads or call a feature live until the matching build has bee
 
 The public website is static. It must not be treated as a trusted backend, account system, payment processor, or live server-status source.
 
-Only connect live status after the chosen server can provide verified status data. Only enable economy, ranks, voting, or purchases after server-side authentication, durable transaction records, duplicate-event protection, and a tested delivery process exist.
+The server console startup message is not the same as an external reachability test. Only connect live status after the chosen server can provide verified status data; until then, show online/player metrics as unavailable. Only enable economy, ranks, voting, or purchases after server-side authentication, durable transaction records, duplicate-event protection, and a tested delivery process exist.
 
 Never place private server credentials in browser JavaScript. Never use a player-entered username as proof of account ownership.
 
