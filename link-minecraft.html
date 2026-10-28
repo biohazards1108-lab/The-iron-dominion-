@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://dfdzjfsydaoovkxhilov.supabase.co wss://dfdzjfsydaoovkxhilov.supabase.co; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Securely link your Minecraft Bedrock player to your Iron Dominion website account.">
+<meta name="description" content="Securely link your Minecraft Bedrock player to your Iron Dominion website account."><meta property="og:title" content="Link Minecraft | Iron Dominion"><meta property="og:description" content="Securely link your Minecraft Bedrock player to your Iron Dominion website account."><meta property="og:type" content="website"><meta property="og:url" content="https://theirondominion.com/link-minecraft.html"><meta property="og:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp"><meta property="og:image:alt" content="The Iron Dominion dark-fantasy kingdom banner"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp">
 <meta name="theme-color" content="#0b0d0f"><meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="https://theirondominion.com/link-minecraft.html"><link rel="icon" href="favicon.svg" type="image/svg+xml">
 <title>Link Minecraft | Iron Dominion</title>
@@ -21,7 +21,7 @@
 <div id="linkMessage" class="auth-status" role="status" aria-live="polite">Checking your account…</div>
 <div id="linkControls" hidden>
 <p id="linkState">No Minecraft identity linked yet.</p>
-<div id="linkCodePanel" hidden><p>Your one-time code:</p><p id="linkCode" style="font-size:2rem;letter-spacing:.2em;font-weight:800;user-select:all"></p><p id="linkExpiry" class="auth-note"></p><button class="button secondary" id="copyLinkCode" type="button">Copy code</button></div>
+<div id="linkCodePanel" hidden><p>Your one-time code:</p><p id="linkCode" class="link-code-display"></p><p id="linkExpiry" class="auth-note"></p><button class="button secondary" id="copyLinkCode" type="button">Copy code</button></div>
 <div class="auth-actions"><button class="button" id="generateLinkCode" type="button">Generate link code</button><button class="button secondary" id="refreshLinkStatus" type="button">Refresh status</button></div>
 <ol><li>Join Bedrock Dominion in Minecraft Bedrock.</li><li>Type <code>!link YOURCODE</code> in the in-game chat.</li><li>Return here and select <strong>Refresh status</strong>.</li></ol>
 <p class="auth-note">Codes expire after 10 minutes and work once. Only use this flow on the official Iron Dominion site and server.</p>
