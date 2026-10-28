@@ -26,14 +26,8 @@ const setBusy = (form, busy) => {
     button.setAttribute("aria-busy", String(busy));
   }
 };
-const friendlyError = (error) => {
-  const known = {
-    "Invalid login credentials": "Email or password is incorrect.",
-    "Email not confirmed": "Please confirm your email using the link we sent before signing in.",
-    "User already registered": "We couldn\u0027t create that account. Try signing in or resetting your password."
-  };
-  return known[error?.message] || "We couldn't complete that request. Check your details and try again.";
-};
+// Keep provider errors generic so the UI does not reveal whether an email is registered.
+const friendlyError = () => "We couldn't complete that request. Check your details, confirm your email if needed, and try again.";
 
 const signupForm = document.querySelector("#signupForm");
 signupForm?.addEventListener("submit", async (event) => {
