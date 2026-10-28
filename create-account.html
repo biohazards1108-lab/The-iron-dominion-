@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://dfdzjfsydaoovkxhilov.supabase.co wss://dfdzjfsydaoovkxhilov.supabase.co; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="The Iron Dominion member registration page. Account registration will open after secure authentication is implemented.">
 <meta name="theme-color" content="#0b0d0f"><meta name="referrer" content="strict-origin-when-cross-origin">
@@ -27,18 +27,19 @@
 <p>One day, your account will be your key to the realm. We're building the foundations before opening registration.</p>
 </section>
 <section class="auth-card" aria-labelledby="signup-title">
-<span class="auth-stamp">🛡 Registration</span>
-<h2 id="signup-title">Create an account</h2>
-<p>We want member accounts to be real, secure, and worth trusting—not a form that pretends to work.</p>
-<div class="auth-status" role="status"><span aria-hidden="true">⚠</span><div><strong>Registration is not open yet</strong><p>No form is collecting your email or password. The site needs a secure authentication provider and server-side account storage before sign-up can launch.</p></div></div>
-<div class="auth-divider"></div>
-<h3>What the account system is being prepared for</h3>
-<ul><li>A private sign-in flow with protected sessions.</li><li>Secure account creation and password recovery—or a trusted identity provider.</li><li>Clear privacy terms and a way to request account deletion.</li><li>No collection of Microsoft passwords on Iron Dominion.</li></ul>
-<div class="auth-actions"><a class="button" href="login.html">Return to the Dominion Gate</a><a class="button secondary" href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">Follow updates on Discord ↗</a></div>
-<p class="auth-note">This page is a launch-ready visual shell, not a functioning registration service. We'll only enable account creation after the backend, security rules, and privacy handling are configured and tested.</p>
-<div class="auth-links"><a href="index.html">← Home</a><a href="account.html">Account links</a><a href="privacy.html">Privacy policy</a><a href="terms.html">Terms</a></div>
-</section>
+<span class="auth-stamp">🛡 Registration</span><h2 id="signup-title">Create an account</h2>
+<p>Create your Iron Dominion account with an email address and password.</p>
+<div id="authMessage" class="auth-status" role="status" aria-live="polite" hidden></div>
+<form id="signupForm" class="auth-form">
+<label for="signupEmail">Email address</label><input id="signupEmail" name="email" type="email" autocomplete="email" required maxlength="254">
+<label for="signupPassword">Password (at least 10 characters)</label><input id="signupPassword" name="password" type="password" autocomplete="new-password" required minlength="10" maxlength="128">
+<label for="confirmPassword">Confirm password</label><input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required minlength="10" maxlength="128">
+<label class="auth-checkbox"><input id="privacyAgree" type="checkbox" required> I agree to the <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms</a>.</label>
+<button class="button" type="submit">Create Iron Dominion account</button></form>
+<div class="auth-links"><a href="login.html">Already have an account? Sign in</a><a href="index.html">← Home</a></div>
+<p class="auth-note">Email verification may be required before your first sign-in. Keep your password private and unique.</p></section>
 </div>
 </main>
+<script type="module" src="js/auth.js"></script>
 </body>
 </html>
