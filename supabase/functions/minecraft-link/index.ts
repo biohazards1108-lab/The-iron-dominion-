@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
     if (authError || !user) return json(401, { error: "invalid_session" });
 
     if (action === "create") {
-      const rawCode = Array.from(crypto.getRandomValues(new Uint8Array(5)))
+      const rawCode = Array.from(crypto.getRandomValues(new Uint8Array(8)))
         .map((n) => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[n % 32]).join("");
       const codeHash = await sha256(rawCode);
       const now = new Date();
