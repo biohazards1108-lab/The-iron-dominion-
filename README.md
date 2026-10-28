@@ -22,6 +22,10 @@ The public website and planning repository for **Iron Dominion** and its upcomin
 - Development log: https://theirondominion.com/changelog.html
 - Community Discord: https://discord.gg/bnXXc2ng72
 
+## Account backend plan
+
+The Dominion Gate and registration pages are currently visual shells; they do not collect credentials. The proposed managed backend is Supabase Auth + PostgreSQL with Microsoft OAuth, documented in [AUTHENTICATION-PLAN.md](AUTHENTICATION-PLAN.md). The initial profile schema is in `supabase/migrations/202610280001_profiles.sql`. Do not apply it to production or enable credential forms until the Supabase project, OAuth provider, email delivery, RLS tests, privacy review, and launch gates in the plan are complete.
+
 ## Current project status
 
 Bedrock Dominion is **in development**. The website is being prepared while the server setup and feature set are designed and tested.
