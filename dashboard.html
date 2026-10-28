@@ -29,6 +29,30 @@
 <div><p class="dash-eyebrow">WELCOME BACK</p><h2 id="welcome-title">Your Dominion awaits.</h2><p id="member-email" class="muted" aria-live="polite"></p></div>
 <div class="dash-actions"><a class="button secondary" href="account.html">Microsoft / Minecraft account</a><button class="button" id="dash-signout" type="button">Sign out</button></div>
 </section>
+<section class="dash-section dash-panel profile-editor" aria-labelledby="profile-title">
+<div class="section-heading"><div><p class="dash-eyebrow">ACCOUNT PROFILE</p><h2 id="profile-title">Your Dominion profile</h2></div><span class="section-glyph" aria-hidden="true">✦</span></div>
+<div class="profile-editor-layout">
+<div class="profile-preview"><div id="profile-avatar" class="profile-avatar" aria-label="Generated profile initials">ID</div><div><h3 id="profile-display-preview">Dominion Member</h3><p id="profile-handle-preview" class="muted">@member</p><p class="muted small">Initials avatar · no external image is loaded.</p></div></div>
+<form id="profile-form" class="profile-form">
+<label for="profile-username">Username</label><input id="profile-username" name="username" autocomplete="nickname" minlength="3" maxlength="24" pattern="[a-zA-Z0-9_]{3,24}" required aria-describedby="profile-username-help"><p id="profile-username-help" class="muted small">3–24 letters, numbers, or underscores. Usernames are unique.</p>
+<label for="profile-display-name">Display name</label><input id="profile-display-name" name="display_name" maxlength="40" autocomplete="name" placeholder="How the Dominion sees you">
+<label class="profile-preference"><input id="compact-dashboard" type="checkbox"> Use compact dashboard layout</label>
+<button class="button" id="profile-save" type="submit">Save profile</button>
+<p id="profile-status" class="auth-status" role="status" aria-live="polite" hidden></p>
+</form></div>
+</section>
+<section class="dash-section dash-panel profile-editor" aria-labelledby="profile-title">
+<div class="section-heading"><div><p class="dash-eyebrow">ACCOUNT PROFILE</p><h2 id="profile-title">Your Dominion profile</h2></div><span class="section-glyph" aria-hidden="true">✦</span></div>
+<div class="profile-editor-layout">
+<div class="profile-preview"><div id="profile-avatar" class="profile-avatar" aria-label="Generated profile initials">ID</div><div><h3 id="profile-display-preview">Dominion Member</h3><p id="profile-handle-preview" class="muted">@member</p><p class="muted small">Initials avatar · no external image is loaded.</p></div></div>
+<form id="profile-form" class="profile-form">
+<label for="profile-username">Username</label><input id="profile-username" name="username" autocomplete="nickname" minlength="3" maxlength="24" pattern="[a-zA-Z0-9_]{3,24}" required aria-describedby="profile-username-help"><p id="profile-username-help" class="muted small">3–24 letters, numbers, or underscores. Usernames are unique.</p>
+<label for="profile-display-name">Display name</label><input id="profile-display-name" name="display_name" maxlength="40" autocomplete="name" placeholder="How the Dominion sees you">
+<label class="profile-preference"><input id="compact-dashboard" type="checkbox"> Use compact dashboard layout</label>
+<button class="button" id="profile-save" type="submit">Save profile</button>
+<p id="profile-status" class="auth-status" role="status" aria-live="polite" hidden></p>
+</form></div>
+</section>
 <section class="dash-section" aria-labelledby="identity-title">
 <div class="section-heading"><div><p class="dash-eyebrow">PLAYER IDENTITY</p><h2 id="identity-title">Your Minecraft account</h2></div><span class="section-glyph" aria-hidden="true">⚒</span></div>
 <div class="identity-grid">

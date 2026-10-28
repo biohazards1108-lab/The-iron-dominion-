@@ -36,7 +36,7 @@ Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the 
 
 - `index.html` — landing page and project announcement
 - `join.html` — server connection details and launch status
-- `account.html` — shortcuts to official Microsoft/Minecraft account portals (not an in-site login)
+- `account.html` — Iron Dominion account entry point and shortcuts to official Microsoft/Minecraft account portals
 - `mods.html` — custom content and feature status
 - `guides.html` — player preparation and future how-to guides
 - `rules.html` — community guidelines
@@ -59,7 +59,7 @@ Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the 
 
 ## Hosting and API boundary
 
-The public site is hosted as a static GitHub Pages website. GitHub Pages serves HTML, CSS, JavaScript, and static JSON files; it does **not** execute the repository's `api/*.js` functions, the legacy Express server, or webhook handlers. `vercel.json` does not configure GitHub Pages. Therefore, API and payment integrations must not be described as live based on files existing in this repository. A separate trusted backend and explicit deployment are required before live status, Microsoft OAuth, purchases, voting rewards, economy, or player data can work.
+The public site is hosted as a static GitHub Pages website. GitHub Pages serves HTML, CSS, JavaScript, and static JSON files; it does **not** execute the repository's `api/*.js` functions, the legacy Express server, or webhook handlers. `vercel.json` does not configure GitHub Pages. Therefore, API and payment integrations must not be described as live based on files existing in this repository. Microsoft OAuth is handled by Supabase Auth and returns users to the static site; verified Minecraft linking, trusted player statistics, purchases, voting rewards, and economy still require a separately deployed trusted backend.
 
 ## Server planning
 
@@ -90,3 +90,13 @@ GitHub Actions validates public-page links and assets, keyboard skip links, cano
 ## Development principle
 
 **Never advertise an unfinished system as live.** Update the public site only when the corresponding Bedrock Dominion configuration has been implemented and tested.
+
+
+## Account platform and trusted data
+
+- Microsoft OAuth and email/password authentication use Supabase Auth; the website never receives a Microsoft password.
+- `supabase/migrations/202610280002_account_profiles_and_trusted_data.sql` defines RLS-protected profile fields and read-only-to-clients tables for verified Minecraft links and trusted player statistics.
+- The migration must be applied manually in the Supabase SQL Editor; GitHub Pages deployment does not apply database migrations.
+- `ACCOUNT-PLATFORM-ROLLOUT.md` documents rollout and security checks.
+- The dashboard can edit a unique username, display name, generated initials avatar, and compact-layout preference once the migration is applied.
+- Minecraft identity, ranks, votes, and Dominion Tokens remain unavailable until trusted verification/game integrations write authoritative records. Never treat a Microsoft login or client-submitted gamertag as proof of Minecraft ownership.
