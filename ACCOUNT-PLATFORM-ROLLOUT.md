@@ -58,4 +58,4 @@ Do not deploy an unverified self-service UUID/gamertag form as account linking. 
 7. Confirm the link row was written by the Edge Function, the dashboard shows the verified gamertag, and direct client writes to the trusted tables remain denied.
 8. If the host doesn't permit the required script API, disable the pack and use an alternate trusted server integration. Do not claim Minecraft linking is live until an end-to-end test succeeds.
 
-Codes are eight characters, expire after ten minutes, are stored only as SHA-256 hashes, and are consumed once. The game integration proves that the user controls a website session and can submit a code from inside the server. It does not ask for or store Microsoft passwords.
+Codes are ten characters, expire after ten minutes, are stored only as SHA-256 hashes, and are consumed once. The game integration proves that the user controls a website session and can submit a code from inside the server. It does not ask for or store Microsoft passwords.
