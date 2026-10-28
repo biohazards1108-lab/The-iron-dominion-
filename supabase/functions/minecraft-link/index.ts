@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
     if (authError || !user) return json(401, { error: "invalid_session" });
 
     if (action === "create") {
-      const rawCode = Array.from(crypto.getRandomValues(new Uint8Array(8)))
+      const rawCode = Array.from(crypto.getRandomValues(new Uint8Array(10)))
         .map((n) => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[n % 32]).join("");
       const codeHash = await sha256(rawCode);
       const now = new Date();
@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
     const code = String(body.code || "").toUpperCase().trim();
     const gamertag = String(body.gamertag || "").trim();
     const playerId = String(body.playerId || "").trim();
-    if (!/^[A-HJ-NP-Z2-9]{8}$/.test(code) || !gamertag || gamertag.length > 64 || !playerId || playerId.length > 128) {
+    if (!/^[A-HJ-NP-Z2-9]{10}$/.test(code) || !gamertag || gamertag.length > 64 || !playerId || playerId.length > 128) {
       return json(400, { error: "invalid_link_payload" });
     }
 
