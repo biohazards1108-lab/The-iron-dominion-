@@ -1,0 +1,23 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Bedrock Dominion Website Link",
+    "description": "Secure one-time linking between a website account and a player on the Bedrock Dedicated Server.",
+    "uuid": "c03c5e42-3e86-4d1e-9d2f-34b8a85b2d90",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 26, 60]
+  },
+  "modules": [
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "9a6d1a5e-87b8-4e91-9a1a-1cc4d0cbbf3f",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    { "module_name": "@minecraft/server", "version": "2.6.0" },
+    { "module_name": "@minecraft/server-net", "version": "1.0.0-beta.1.26.60-preview.30" }
+  ]
+}
