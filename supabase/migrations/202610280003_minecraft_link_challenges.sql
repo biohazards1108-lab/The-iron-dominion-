@@ -17,6 +17,10 @@ create table if not exists public.minecraft_link_challenges (
 create index if not exists minecraft_link_challenges_user_created_idx
   on public.minecraft_link_challenges (user_id, created_at desc);
 
+create unique index if not exists minecraft_links_player_uuid_unique
+  on public.minecraft_links (player_uuid)
+  where player_uuid is not null and player_uuid <> '';
+
 alter table public.minecraft_link_challenges enable row level security;
 alter table public.minecraft_link_challenges force row level security;
 -- No client policies: only the Edge Function service-role client may access challenges.
