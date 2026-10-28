@@ -18,7 +18,7 @@ const showMessage = (text, kind = "info") => {
   message.dataset.kind = kind;
   message.hidden = false;
 };
-const formValue = (form, name) => String(new FormData(form).get(name) || "").trim();
+const formValue = (form, name) => String(new FormData(form).get(name) || "");
 const setBusy = (form, busy) => {
   const button = form?.querySelector('button[type="submit"]');
   if (button) {
@@ -73,7 +73,7 @@ loginForm?.addEventListener("submit", async (event) => {
   setBusy(loginForm, true);
   try {
     const { error } = await supabase.auth.signInWithPassword({
-      email: formValue(loginForm, "email"),
+      email: formValue(loginForm, "email").trim(),
       password: formValue(loginForm, "password")
     });
     if (error) throw error;
@@ -98,7 +98,7 @@ resetForm?.addEventListener("submit", async (event) => {
   if (!resetForm.reportValidity()) return;
   setBusy(resetForm, true);
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(formValue(resetForm, "email"), {
+    const { error } = await supabase.auth.resetPasswordForEmail(formValue(resetForm, "email").trim(), {
       redirectTo: new URL("login.html?mode=reset", location.origin).href
     });
     if (error) throw error;
