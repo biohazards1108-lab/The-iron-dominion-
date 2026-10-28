@@ -27,3 +27,18 @@
 @keyframes lockBreath{0%,100%{transform:translateY(0);filter:brightness(.92)}50%{transform:translateY(-5px);filter:brightness(1.12)}}
 @media(max-width:800px){.auth-hero{min-height:100vh;background-attachment:scroll}.auth-shell{grid-template-columns:1fr;gap:1.4rem;max-width:560px}.auth-art{padding:.25rem}.lock-stage{width:min(210px,54vw);margin-bottom:.7rem}.auth-art h1{font-size:clamp(2.4rem,10vw,4rem)}.auth-art p{font-size:.94rem}.auth-card{padding:1.4rem}}
 @media(prefers-reduced-motion:reduce){.lock-stage svg{animation:none}}
+
+/* Supabase email authentication forms */
+.auth-form{display:grid;gap:.65rem;margin-top:1rem}
+.auth-form label{font-weight:700;color:#e1e5eb;font-size:.92rem}
+.auth-form input[type=email],.auth-form input[type=password]{width:100%;min-height:46px;padding:.75rem .85rem;border:1px solid #777b84;border-radius:9px;background:#0b0d11;color:#fff;font:inherit}
+.auth-form input:focus-visible,.auth-form button:focus-visible,.auth-links a:focus-visible{outline:3px solid #f0b16a;outline-offset:3px}
+.auth-form button{width:100%;margin-top:.5rem;cursor:pointer}
+.auth-form button:disabled{opacity:.65;cursor:wait}
+.auth-checkbox{display:flex;gap:.55rem;align-items:flex-start;font-weight:400!important;line-height:1.5}
+.auth-checkbox input{margin-top:.35rem;flex-shrink:0}
+.auth-checkbox a{color:#f3b3ac}
+.auth-status[hidden],.auth-form[hidden],#signedInPanel[hidden]{display:none}
+.auth-status[data-kind=success]{border-color:#4dba8a66;background:#14734820;color:#c8f7df}
+.auth-status[data-kind=error]{border-color:#e56a6a80;background:#8e202020;color:#ffd4d4}
+.auth-status[data-kind=info]{border-color:#e5a34a55;background:#a95e1615;color:#f1d4a9}
