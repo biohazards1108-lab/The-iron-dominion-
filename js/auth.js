@@ -151,9 +151,10 @@ async function refreshSessionUI() {
   const text = document.querySelector("#signedInText");
   if (panel) panel.hidden = !user;
   if (text && user) text.textContent = "Signed in as " + (user.email || "your Iron Dominion account") + ".";
-  if (loginForm) loginForm.hidden = Boolean(user);
+  const isResetMode = new URLSearchParams(location.search).get("mode") === "reset";
+  if (loginForm) loginForm.hidden = Boolean(user) || isResetMode;
   const resetLink = document.querySelector("#showReset");
-  if (resetLink) resetLink.hidden = Boolean(user);
+  if (resetLink) resetLink.hidden = Boolean(user) || isResetMode;
   if (user && resetForm) resetForm.hidden = true;
 }
 supabase.auth.onAuthStateChange((event) => {
