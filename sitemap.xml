@@ -2,7 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://theirondominion.com/</loc></url>
   <url><loc>https://theirondominion.com/join.html</loc></url>
-  <url><loc>https://theirondominion.com/account.html</loc></url>\n  <url><loc>https://theirondominion.com/login.html</loc></url>\n  <url><loc>https://theirondominion.com/create-account.html</loc></url>
+  <url><loc>https://theirondominion.com/account.html</loc></url>
+  <url><loc>https://theirondominion.com/link-minecraft.html</loc></url>
+  <url><loc>https://theirondominion.com/login.html</loc></url>
+  <url><loc>https://theirondominion.com/create-account.html</loc></url>
   <url><loc>https://theirondominion.com/mods.html</loc></url>
   <url><loc>https://theirondominion.com/guides.html</loc></url>
   <url><loc>https://theirondominion.com/ranks.html</loc></url>
