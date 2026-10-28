@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://dfdzjfsydaoovkxhilov.supabase.co wss://dfdzjfsydaoovkxhilov.supabase.co; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Your Iron Dominion player dashboard for Minecraft identity, server rank, votes, Dominion Tokens, and live server activity.">
+<meta property="og:title" content="Player Dashboard | The Iron Dominion">
+<meta property="og:description" content="Your Iron Dominion player dashboard for Minecraft identity, server rank, votes, Dominion Tokens, and live server activity.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp">
+<meta property="og:image:alt" content="The Iron Dominion — dark fantasy Minecraft community banner">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp">
+<meta name="theme-color" content="#0b0d0f"><meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://theirondominion.com/dashboard.html"><link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Player Dashboard | The Iron Dominion</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/mobile.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/auth.css"><link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="auth-page dashboard-page">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav aria-label="Main navigation"><a href="index.html">🏰 Home</a><a href="join.html">▶ Server</a><a href="dashboard.html" aria-current="page">⚔ Player Dashboard</a><a href="account.html">🔐 Account</a><a href="support.html">🛟 Support</a><a href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">💬 Discord</a></nav>
+<main id="main-content" class="dashboard-wrap" tabindex="-1">
+<header class="dashboard-heading">
+<div class="dashboard-mark" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="M18 15h64v18H68v51H32V33H18z" fill="none" stroke="currentColor" stroke-width="5"/><path d="M39 44h22M39 56h22M39 68h22" stroke="currentColor" stroke-width="4"/><path d="M10 15h80M50 4v12" stroke="#d84b42" stroke-width="4"/></svg></div>
+<div><p class="dash-eyebrow">THE IRON DOMINION · MEMBER PORTAL</p><h1>PLAYER <span>DASHBOARD</span></h1><p class="dash-intro">Your place in the Dominion, gathered in one command center.</p></div>
+</header>
+<section class="dash-welcome dash-panel" aria-labelledby="welcome-title">
+<div><p class="dash-eyebrow">WELCOME BACK</p><h2 id="welcome-title">Your Dominion awaits.</h2><p id="member-email" class="muted" aria-live="polite"></p></div>
+<div class="dash-actions"><a class="button secondary" href="account.html">Microsoft / Minecraft account</a><button class="button" id="dash-signout" type="button">Sign out</button></div>
+</section>
+<section class="dash-section" aria-labelledby="identity-title">
+<div class="section-heading"><div><p class="dash-eyebrow">PLAYER IDENTITY</p><h2 id="identity-title">Your Minecraft account</h2></div><span class="section-glyph" aria-hidden="true">⚒</span></div>
+<div class="identity-grid">
+<article class="dash-panel minecraft-card"><div class="mc-avatar" aria-hidden="true"><svg viewBox="0 0 100 100"><rect x="15" y="8" width="70" height="84" rx="2" fill="#252a31" stroke="#9c493f" stroke-width="3"/><rect x="29" y="24" width="42" height="36" fill="#687d80"/><rect x="35" y="34" width="9" height="9" fill="#11161b"/><rect x="57" y="34" width="9" height="9" fill="#11161b"/><path d="M36 50h28M27 69h46M36 80h28" stroke="#c3b39a" stroke-width="4"/></svg></div><div><p class="stat-label">MINECRAFT GAMERTAG / USERNAME</p><h3 id="minecraft-name" class="data-value" aria-label="Minecraft username"></h3><p id="minecraft-uuid" class="muted small"></p></div><div class="identity-footer"><span class="status-dot" aria-hidden="true"></span><span id="minecraft-link-status"> </span></div></article>
+<article class="dash-panel rank-card"><p class="stat-label">SERVER RANK</p><div class="rank-emblem" aria-hidden="true">♜</div><h3 id="server-rank" class="data-value"></h3><p class="muted">Your current standing within the Dominion.</p><div class="rank-scale" aria-label="Available server ranks"><span>Peasant</span><i></i><span>Knight</span><i></i><span>Noble</span><i></i><span>King</span><i></i><span>Dominion Lord</span><i></i><span>Overlord</span></div></article>
+</div>
+</section>
+<section class="dash-section" aria-labelledby="stats-title">
+<div class="section-heading"><div><p class="dash-eyebrow">YOUR RECORD</p><h2 id="stats-title">Dominion statistics</h2></div><span class="section-glyph" aria-hidden="true">✦</span></div>
+<div class="stats-grid">
+<article class="dash-panel stat-card"><div class="stat-icon" aria-hidden="true">⚑</div><p class="stat-label">TOTAL SITE VOTES</p><p class="stat-number" id="vote-count" aria-label="Total votes"></p><p class="muted">Your recorded votes for the server.</p><a href="vote.html">Visit voting page ↗</a></article>
+<article class="dash-panel stat-card token-card"><div class="stat-icon" aria-hidden="true">◈</div><p class="stat-label">DOMINION TOKENS</p><p class="stat-number" id="token-balance" aria-label="Dominion Token balance"></p><p class="muted">Your in-game token balance.</p><span class="stat-foot">IN-GAME CURRENCY</span></article>
+<article class="dash-panel stat-card live-card"><div class="stat-icon" aria-hidden="true"><span class="live-pulse"></span>◉</div><p class="stat-label">PLAYERS ONLINE</p><p class="stat-number" id="online-count" aria-label="Players currently online"></p><p class="muted">Players currently active on the server.</p><span id="server-status" class="stat-foot"> </span></article>
+</div>
+</section>
+<section class="dash-section dash-panel data-note" aria-labelledby="connection-title">
+<div class="section-heading"><div><p class="dash-eyebrow">LIVE ACCOUNT DATA</p><h2 id="connection-title">Account connections</h2></div><span class="section-glyph" aria-hidden="true">⌁</span></div>
+<p class="muted">The dashboard is designed to show your real linked Minecraft identity, recorded votes, assigned server role, token balance, and live player count. These values must come from verified Minecraft/account linking and trusted server or voting data sources; this page will not invent them.</p>
+<div class="connection-grid"><div><span class="connection-indicator" aria-hidden="true"></span><strong>Iron Dominion account</strong><span id="iron-account-state" class="connection-state"></span></div><div><span class="connection-indicator" aria-hidden="true"></span><strong>Minecraft identity</strong><span id="mc-account-state" class="connection-state"></span></div><div><span class="connection-indicator" aria-hidden="true"></span><strong>Server statistics</strong><span id="server-data-state" class="connection-state"></span></div></div>
+<p id="dashboard-message" class="auth-status" role="status" aria-live="polite" hidden></p>
+</section>
+<footer class="dashboard-footer"><a href="privacy.html">Privacy</a><a href="support.html">Support</a><a href="join.html">Server connection details</a><span>THE IRON DOMINION</span></footer>
+</main>
+<script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

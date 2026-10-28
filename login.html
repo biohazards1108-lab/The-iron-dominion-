@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://dfdzjfsydaoovkxhilov.supabase.co wss://dfdzjfsydaoovkxhilov.supabase.co; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Approach the Dominion Gate: the Iron Dominion member account portal is being forged.">
+<meta name="description" content="Sign in to your Iron Dominion account using secure email authentication.">
 <meta name="theme-color" content="#0b0d0f"><meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="https://theirondominion.com/login.html"><link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta property="og:title" content="The Dominion Gate | Iron Dominion"><meta property="og:description" content="A new member account portal is being forged for the Iron Dominion."><meta property="og:type" content="website"><meta property="og:url" content="https://theirondominion.com/login.html"><meta property="og:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp"><meta property="og:image:alt" content="The Iron Dominion dark-fantasy kingdom banner"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp">
+<meta property="og:title" content="The Dominion Gate | Iron Dominion"><meta property="og:description" content="Sign in to your Iron Dominion account using email authentication."><meta property="og:type" content="website"><meta property="og:url" content="https://theirondominion.com/login.html"><meta property="og:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp"><meta property="og:image:alt" content="The Iron Dominion dark-fantasy kingdom banner"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp">
 <title>The Dominion Gate | Iron Dominion</title>
 <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/mobile.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/auth.css">
 </head>
 <body class="auth-page">
 <a class="skip-link" href="#main-content">Skip to content</a>
-<nav aria-label="Main navigation"><a href="index.html">🏰 Home</a><a href="account.html">🔐 Account</a><a href="login.html">🔒 Member Login</a><a href="create-account.html">🛡 Create Account</a><a href="support.html">❤️ Support</a><a href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">💬 Discord</a></nav>\n<main id="main-content" class="auth-hero" tabindex="-1">
+<nav aria-label="Main navigation"><a href="index.html">🏰 Home</a><a href="account.html">🔐 Account</a><a href="login.html">🔒 Member Login</a><a href="create-account.html">🛡 Create Account</a><a href="support.html">❤️ Support</a><a href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">💬 Discord</a></nav>
+<main id="main-content" class="auth-hero" tabindex="-1">
 <div class="auth-shell">
 <section class="auth-art" aria-labelledby="gate-title">
 <div class="lock-stage" aria-hidden="true">
@@ -27,21 +28,27 @@
 <g fill="#d7b68d" stroke="#231b18" stroke-width="3"><circle cx="85" cy="158" r="5"/><circle cx="235" cy="158" r="5"/><circle cx="91" cy="252" r="5"/><circle cx="229" cy="252" r="5"/></g><path d="M118 133 125 141M195 133 202 141M83 273 98 278M223 278 238 273" stroke="#f0c5a0" stroke-width="3" stroke-linecap="round"/>
 </svg>
 </div>
-<div class="auth-kicker">The gates are not yet open</div>
+<div class="auth-kicker">Your account awaits</div>
 <h1 id="gate-title">THE DOMINION <span>GATE</span></h1>
-<p>A kingdom forged in iron. A community built by its people. Your place at the table is coming.</p>
+<p>A kingdom forged in iron. A community built by its people. Sign in to continue your journey.</p>
 </section>
 <section class="auth-card" aria-labelledby="login-title">
-<span class="auth-stamp">⚒ Member access</span>
-<h2 id="login-title">Enter the Dominion</h2>
-<p>The secure member-account system is still being built.</p>
-<div class="auth-status" role="status"><span aria-hidden="true">⚠</span><div><strong>Gate sealed — account access unavailable</strong><p>This is a static GitHub Pages website today. No login credentials are requested, stored, or sent from this page.</p></div></div>
-<div class="auth-actions"><a class="button" href="create-account.html">Create your account plan</a><a class="button secondary" href="account.html">Microsoft / Minecraft account links</a><a class="button secondary" href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">Join the Dominion on Discord ↗</a></div>
-<div class="auth-divider"></div>
-<p class="auth-note">Never enter your Microsoft password on a third-party Minecraft community website. When the Dominion account system launches, its authentication and privacy details will be published first.</p>
-<div class="auth-links"><a href="index.html">← Return to the kingdom</a><a href="account.html">Account links</a><a href="privacy.html">Privacy</a></div>
-</section>
+<span class="auth-stamp">⚒ Member access</span><h2 id="login-title">Enter the Dominion</h2>
+<p>Sign in with your Iron Dominion email account.</p>
+<div id="authMessage" class="auth-status" role="status" aria-live="polite" hidden></div>
+<form id="loginForm" class="auth-form">
+<label for="loginEmail">Email address</label><input id="loginEmail" name="email" type="email" autocomplete="email" required maxlength="254">
+<label for="loginPassword">Password</label><input id="loginPassword" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128">
+<button class="button" type="submit">Sign in</button></form>
+<form id="resetForm" class="auth-form" hidden><h3>Reset your password</h3><p>Enter your account email and we'll send a password-reset link.</p>
+<label for="resetEmail">Email address</label><input id="resetEmail" name="email" type="email" autocomplete="email" required maxlength="254"><button class="button secondary" type="submit">Send reset email</button></form>
+<form id="updatePasswordForm" class="auth-form" hidden><h3>Choose a new password</h3><label for="newPassword">New password</label><input id="newPassword" name="password" type="password" autocomplete="new-password" required minlength="10" maxlength="128"><button class="button" type="submit">Update password</button></form>
+<div class="auth-links"><a href="#" id="showReset">Forgot password?</a><a href="create-account.html">Create an account</a></div><div class="auth-divider"></div>
+<div id="signedInPanel" hidden><p id="signedInText"></p><div class="auth-actions"><a class="button" href="dashboard.html">Open player dashboard</a><button id="signOutButton" class="button secondary" type="button">Sign out</button></div></div>
+<p class="auth-note">Use a unique password. Iron Dominion will never ask for your Microsoft password.</p>
+<div class="auth-links"><a href="index.html">← Return to the kingdom</a><a href="account.html">Account links</a><a href="privacy.html">Privacy</a></div></section>
 </div>
 </main>
+<script type="module" src="js/auth.js"></script>
 </body>
 </html>
