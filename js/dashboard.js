@@ -17,18 +17,18 @@ const setText = (selector, value) => {
   if (element) element.textContent = value ?? "";
 };
 
-// Intentionally leave server-derived values blank until trusted integrations exist.
-setText("#minecraft-name", "");
-setText("#minecraft-uuid", "");
-setText("#minecraft-link-status", "");
-setText("#server-rank", "");
-setText("#vote-count", "");
-setText("#token-balance", "");
-setText("#online-count", "");
-setText("#server-status", "");
-setText("#iron-account-state", "");
-setText("#mc-account-state", "");
-setText("#server-data-state", "");
+// Never invent account/server metrics. Mark unavailable data explicitly until trusted integrations exist.
+setText("#minecraft-name", "UNAVAILABLE");
+setText("#minecraft-uuid", "Minecraft account not linked");
+setText("#minecraft-link-status", "Linking not configured");
+setText("#server-rank", "UNAVAILABLE");
+setText("#vote-count", "UNAVAILABLE");
+setText("#token-balance", "UNAVAILABLE");
+setText("#online-count", "UNAVAILABLE");
+setText("#server-status", "SERVER DATA UNAVAILABLE");
+setText("#iron-account-state", "Checking session…");
+setText("#mc-account-state", "Not linked");
+setText("#server-data-state", "Unavailable");
 
 const { data, error } = await supabase.auth.getUser();
 if (error || !data.user) {
