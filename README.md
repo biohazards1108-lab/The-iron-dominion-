@@ -46,7 +46,7 @@ Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the 
 - `leaderboard.html` — future rankings
 - `shop.html` — future official store status
 - `vote.html` — future voting links and rewards
-- `status.html` — live status page (unavailable until a verified endpoint is connected)
+- `status.html` — external Bedrock status-provider check; its response may differ from actual player connectivity and is not authoritative when it cannot detect the server
 - `faq.html` — frequently asked questions
 - `support.html` — support and safety guidance
 - `privacy.html` — website privacy notice
