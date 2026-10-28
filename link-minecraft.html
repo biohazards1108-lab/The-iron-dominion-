@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://dfdzjfsydaoovkxhilov.supabase.co wss://dfdzjfsydaoovkxhilov.supabase.co; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Securely link your Minecraft Bedrock player to your Iron Dominion website account."><meta property="og:title" content="Link Minecraft | Iron Dominion"><meta property="og:description" content="Securely link your Minecraft Bedrock player to your Iron Dominion website account."><meta property="og:type" content="website"><meta property="og:url" content="https://theirondominion.com/link-minecraft.html"><meta property="og:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp"><meta property="og:image:alt" content="The Iron Dominion dark-fantasy kingdom banner"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp">
+<meta name="theme-color" content="#0b0d0f"><meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://theirondominion.com/link-minecraft.html"><link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Link Minecraft | Iron Dominion</title>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/mobile.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<nav aria-label="Main navigation"><a href="index.html">🏰 Home</a><a href="dashboard.html">⚔ Player Dashboard</a><a href="account.html">🔐 Account</a><a href="join.html">▶ Server Info</a></nav>
+<main id="main-content" class="auth-hero" tabindex="-1">
+<div class="auth-shell">
+<section class="auth-art"><div class="auth-kicker">Verified player identity</div><h1>LINK YOUR <span>MINECRAFT</span></h1><p>Prove control of your in-game player by using a one-time code from this page inside Bedrock Dominion.</p></section>
+<section class="auth-card"><span class="auth-stamp">⚒ Secure account linking</span><h2>Minecraft connection</h2>
+<p>This links your signed-in Iron Dominion account to the Bedrock player that enters your temporary code in the actual server. Your Microsoft password is never requested here.</p>
+<div id="linkMessage" class="auth-status" role="status" aria-live="polite">Checking your account…</div>
+<div id="linkControls" hidden>
+<p id="linkState">No Minecraft identity linked yet.</p>
+<div id="linkCodePanel" hidden><p>Your one-time code:</p><p id="linkCode" class="link-code-display"></p><p id="linkExpiry" class="auth-note"></p><button class="button secondary" id="copyLinkCode" type="button">Copy code</button></div>
+<div class="auth-actions"><button class="button" id="generateLinkCode" type="button">Generate link code</button><button class="button secondary" id="refreshLinkStatus" type="button">Refresh status</button></div>
+<ol><li>Join Bedrock Dominion in Minecraft Bedrock.</li><li>Type <code>!link YOURCODE</code> in the in-game chat.</li><li>Return here and select <strong>Refresh status</strong>.</li></ol>
+<p class="auth-note">Codes expire after 10 minutes and work once. Only use this flow on the official Iron Dominion site and server.</p>
+</div>
+<div class="auth-links"><a href="dashboard.html">← Back to dashboard</a><a href="privacy.html">Privacy</a></div>
+</section></div></main>
+<script type="module" src="js/minecraft-link.js"></script>
+</body></html>

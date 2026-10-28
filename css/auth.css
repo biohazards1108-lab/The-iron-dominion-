@@ -42,3 +42,6 @@
 .auth-status[data-kind=success]{border-color:#4dba8a66;background:#14734820;color:#c8f7df}
 .auth-status[data-kind=error]{border-color:#e56a6a80;background:#8e202020;color:#ffd4d4}
 .auth-status[data-kind=info]{border-color:#e5a34a55;background:#a95e1615;color:#f1d4a9}
+
+
+.link-code-display { font-size: 2rem; letter-spacing: .2em; font-weight: 800; user-select: all; overflow-wrap: anywhere; }
