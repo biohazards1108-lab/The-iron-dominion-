@@ -34,12 +34,12 @@
 </section>
 <section class="auth-card" aria-labelledby="login-title">
 <span class="auth-stamp">⚒ Member access</span><h2 id="login-title">Enter the Dominion</h2>
-<p>Sign in with your Iron Dominion email account.</p>
+<p>Sign in with your Iron Dominion email account or Microsoft account.</p>
 <div id="authMessage" class="auth-status" role="status" aria-live="polite" hidden></div>
 <form id="loginForm" class="auth-form">
 <label for="loginEmail">Email address</label><input id="loginEmail" name="email" type="email" autocomplete="email" required maxlength="254">
 <label for="loginPassword">Password</label><input id="loginPassword" name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128">
-<button class="button" type="submit">Sign in</button></form>
+<button class="button" type="submit">Sign in</button></form>\n<button class="button secondary" type="button" data-microsoft-signin>Continue with Microsoft</button>
 <form id="resetForm" class="auth-form" hidden><h3>Reset your password</h3><p>Enter your account email and we'll send a password-reset link.</p>
 <label for="resetEmail">Email address</label><input id="resetEmail" name="email" type="email" autocomplete="email" required maxlength="254"><button class="button secondary" type="submit">Send reset email</button></form>
 <form id="updatePasswordForm" class="auth-form" hidden><h3>Choose a new password</h3><label for="newPassword">New password</label><input id="newPassword" name="password" type="password" autocomplete="new-password" required minlength="10" maxlength="128"><button class="button" type="submit">Update password</button></form>
