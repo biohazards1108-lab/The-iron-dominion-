@@ -39,7 +39,7 @@ const signupForm = document.querySelector("#signupForm");
 signupForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!signupForm.reportValidity()) return;
-  const email = formValue(signupForm, "email");
+  const email = formValue(signupForm, "email").trim();
   const password = formValue(signupForm, "password");
   const confirm = formValue(signupForm, "confirmPassword");
   if (password.length < 10) return showMessage("Choose a password with at least 10 characters.", "error");
