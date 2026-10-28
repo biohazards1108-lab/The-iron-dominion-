@@ -61,6 +61,28 @@ signupForm?.addEventListener("submit", async (event) => {
 });
 
 const loginForm = document.querySelector("#loginForm");
+const microsoftButtons = document.querySelectorAll("[data-microsoft-signin]");
+microsoftButtons.forEach((button) => {
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    showMessage("Connecting securely to Microsoft…", "info");
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "azure",
+        options: {
+          scopes: "email",
+          redirectTo: new URL("login.html", location.origin).href
+        }
+      });
+      if (error) throw error;
+    } catch (error) {
+      showMessage(friendlyError(error), "error");
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    }
+  });
+});
 loginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!loginForm.reportValidity()) return;
@@ -147,6 +169,11 @@ async function refreshSessionUI() {
   if (text && user) text.textContent = "Signed in as " + (user.email || "your Iron Dominion account") + ".";
   const isResetMode = new URLSearchParams(location.search).get("mode") === "reset";
   if (loginForm) loginForm.hidden = Boolean(user) || isResetMode;
+  microsoftButtons.forEach((button) => {
+    button.hidden = Boolean(user) || isResetMode;
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+  });
   const resetLink = document.querySelector("#showReset");
   if (resetLink) resetLink.hidden = Boolean(user) || isResetMode;
   if (user && resetForm) resetForm.hidden = true;
