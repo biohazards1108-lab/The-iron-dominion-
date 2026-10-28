@@ -1,6 +1,6 @@
 # Bedrock Dominion — Server Architecture Plan
 
-**Status: planning only. No production server is configured or launched by this document.**
+**Status: native Bedrock server configured on Akliz; owner has confirmed successful in-game connection. Custom gameplay integrations remain in planning/testing.**
 
 This file keeps the server plan honest while the project moves from the previous Java/Bukkit-era setup to Bedrock Dominion. The old plugins and Node backend in this repository are not Bedrock-compatible by default and must not be installed into a new server.
 
@@ -16,7 +16,7 @@ There are two different goals that should not be confused:
 
 ### Provisional recommendation
 
-Treat Bedrock-native gameplay as the primary requirement until the owner explicitly chooses otherwise. Keep Java cross-play marked **planned / unconfirmed** on the website. Before writing server-specific plugins or publishing connection details, select the server software and test the intended client editions against it.
+The current live target is an Akliz-hosted native Minecraft Bedrock Dedicated Server. The owner has successfully connected using the friendly hostname and can move around in-game. The Akliz panel previously showed `the-iron-dominion-bedrock.g.akliz.net`, port `15300`, version `1.26.60`. Reconfirm the panel before any server-version update. Keep Java client access marked **planned / unconfirmed** until a supported bridge or separate Java server is actually installed and tested.
 
 Do not promise a single shared world, inventory, economy, or player identity across editions unless that behavior is implemented and verified.
 
