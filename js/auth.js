@@ -30,7 +30,7 @@ const friendlyError = (error) => {
   const known = {
     "Invalid login credentials": "Email or password is incorrect.",
     "Email not confirmed": "Please confirm your email using the link we sent before signing in.",
-    "User already registered": "An account may already exist for this email. Try signing in or resetting your password."
+    "User already registered": "We couldn\u0027t create that account. Try signing in or resetting your password."
   };
   return known[error?.message] || "We couldn't complete that request. Check your details and try again.";
 };
@@ -146,6 +146,10 @@ async function refreshSessionUI() {
   const text = document.querySelector("#signedInText");
   if (panel) panel.hidden = !user;
   if (text && user) text.textContent = "Signed in as " + (user.email || "your Iron Dominion account") + ".";
+  if (loginForm) loginForm.hidden = Boolean(user);
+  const resetLink = document.querySelector("#showReset");
+  if (resetLink) resetLink.hidden = Boolean(user);
+  if (user && resetForm) resetForm.hidden = true;
 }
 supabase.auth.onAuthStateChange((event) => {
   if (event === "PASSWORD_RECOVERY") {
