@@ -48,7 +48,7 @@ signupForm?.addEventListener("submit", async (event) => {
     if (error) throw error;
     if (data.session) {
       showMessage("Your account was created and you're signed in.", "success");
-      window.location.assign("login.html");
+      window.location.assign("dashboard.html");
     } else {
       signupForm.reset();
       showMessage("Account request received. Check your email for a confirmation link before signing in.", "success");
@@ -94,12 +94,9 @@ loginForm?.addEventListener("submit", async (event) => {
     });
     if (error) throw error;
     showMessage("Signed in successfully.", "success");
-    // Only allow the known internal dashboard destination; never trust arbitrary redirect URLs.
-    if (new URLSearchParams(location.search).get("next") === "dashboard") {
-      window.location.assign("dashboard.html");
-      return;
-    }
-    await refreshSessionUI();
+    // Successful sign-in always takes members to their dashboard.
+    window.location.replace("dashboard.html");
+    return;
   } catch (error) {
     showMessage(friendlyError(error), "error");
   } finally {
@@ -168,6 +165,12 @@ async function refreshSessionUI() {
   if (panel) panel.hidden = !user;
   if (text && user) text.textContent = "Signed in as " + (user.email || "your Iron Dominion account") + ".";
   const isResetMode = new URLSearchParams(location.search).get("mode") === "reset";
+  // If an OAuth callback or an existing session returns to the login page,
+  // send the member straight to the dashboard. Keep password recovery on this page.
+  if (user && !isResetMode) {
+    window.location.replace("dashboard.html");
+    return;
+  }
   if (loginForm) loginForm.hidden = Boolean(user) || isResetMode;
   microsoftButtons.forEach((button) => {
     button.hidden = Boolean(user) || isResetMode;
