@@ -78,6 +78,11 @@ loginForm?.addEventListener("submit", async (event) => {
     });
     if (error) throw error;
     showMessage("Signed in successfully.", "success");
+    // Only allow the known internal dashboard destination; never trust arbitrary redirect URLs.
+    if (new URLSearchParams(location.search).get("next") === "dashboard") {
+      window.location.assign("dashboard.html");
+      return;
+    }
     await refreshSessionUI();
   } catch (error) {
     showMessage(friendlyError(error), "error");
