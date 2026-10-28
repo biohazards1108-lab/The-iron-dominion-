@@ -25,16 +25,16 @@
       const data = await response.json();
       if (typeof data.online !== "boolean") throw new Error("Status provider response was incomplete");
 
-      setText(statusNodes, data.online ? "ONLINE" : "OFFLINE");
+      setText(statusNodes, data.online ? "ONLINE" : "NOT REACHABLE BY CHECKER");
       statusNodes.forEach(node => {
-        node.dataset.state = data.online ? "online" : "offline";
-        node.setAttribute("aria-label", "Bedrock server status: " + (data.online ? "online" : "offline"));
+        node.dataset.state = data.online ? "online" : "unavailable";
+        node.setAttribute("aria-label", data.online ? "Bedrock server status: online" : "Status provider could not detect the Bedrock server; this does not confirm the server is offline");
       });
       setText(playersNodes, data.online && Number.isFinite(data.players?.online) ? String(data.players.online) : (data.online ? "unavailable" : "—"));
       setText(maxNodes, data.online && Number.isFinite(data.players?.max) ? String(data.players.max) : (data.online ? "unavailable" : "—"));
       setText(versionNodes, data.online ? safeValue(data.version) : "—");
       const now = new Date().toLocaleString();
-      setText(checkedNodes, now + " (status provider cache may be up to 5 minutes old)");
+      setText(checkedNodes, data.online ? now + " (status provider cache may be up to 5 minutes old)" : now + " — provider did not detect the server; player connections may still work. Results can be affected by query support or network filtering.");
     } catch (_) {
       setText(statusNodes, "CHECK UNAVAILABLE");
       statusNodes.forEach(node => {
