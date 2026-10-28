@@ -45,8 +45,8 @@ world.beforeEvents.chatSend.subscribe((event) => {
   event.cancel = true;
   const code = message.slice(CHAT_PREFIX.length).trim().toUpperCase();
   const player = event.sender;
-  if (!/^[A-HJ-NP-Z2-9]{8}$/.test(code)) {
-    tell(player, "Use the code from your website dashboard like this: !link ABCD2345");
+  if (!/^[A-HJ-NP-Z2-9]{10}$/.test(code)) {
+    tell(player, "Use the code from your website dashboard like this: !link ABCD234567");
     return;
   }
   // Defer HTTP work out of the before-event restricted execution context.
