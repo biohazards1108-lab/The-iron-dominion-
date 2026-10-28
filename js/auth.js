@@ -181,12 +181,21 @@ async function refreshSessionUI() {
   if (resetLink) resetLink.hidden = Boolean(user) || isResetMode;
   if (user && resetForm) resetForm.hidden = true;
 }
-supabase.auth.onAuthStateChange((event) => {
+supabase.auth.onAuthStateChange((event, session) => {
   if (event === "PASSWORD_RECOVERY") {
     if (updateForm) updateForm.hidden = false;
     if (loginForm) loginForm.hidden = true;
     if (resetForm) resetForm.hidden = true;
     showMessage("Choose a new password for your account.", "info");
+    return;
+  }
+
+  // OAuth callbacks can establish the session after the first getUser() check.
+  // Handle the signed-in event too, so Microsoft sign-in cannot strand members
+  // on the login page if the PKCE callback finishes slightly later.
+  const isResetMode = new URLSearchParams(location.search).get("mode") === "reset";
+  if (session?.user && !isResetMode) {
+    window.location.replace("dashboard.html");
   }
 });
 if (new URLSearchParams(location.search).get("mode") === "reset") {
