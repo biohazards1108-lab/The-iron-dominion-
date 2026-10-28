@@ -8,6 +8,7 @@ create table if not exists public.profiles (
     check (username ~ '^[a-z0-9_]{3,24}$'),
   display_name text not null default ''
     check (char_length(display_name) <= 40),
+  compact_dashboard boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
