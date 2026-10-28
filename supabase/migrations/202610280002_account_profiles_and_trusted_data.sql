@@ -13,6 +13,8 @@ create table if not exists public.profiles (
   updated_at timestamptz not null default now()
 );
 
+alter table public.profiles add column if not exists compact_dashboard boolean not null default false;
+
 comment on table public.profiles is
   'User-editable public profile fields only. Never store passwords, provider tokens, or trusted game/economy state here.';
 comment on column public.profiles.username is
