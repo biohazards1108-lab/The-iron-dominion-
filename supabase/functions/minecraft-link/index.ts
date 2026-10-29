@@ -59,8 +59,11 @@ Deno.serve(async (req) => {
         p_user_id: user.id,
       });
       if (cooldownError) return json(500, { error: "challenge_rate_check_failed" });
-      if (allowed !== true) {
-        return json(429, { error: "challenge_rate_limited", retryAfterSeconds: 60 });
+      if (typeof allowed !== "number" || allowed !== 0) {
+        return json(429, {
+          error: "challenge_rate_limited",
+          retryAfterSeconds: typeof allowed === "number" ? Math.max(1, allowed) : 60,
+        });
       }
 
       const rawCode = Array.from(crypto.getRandomValues(new Uint8Array(10)))
