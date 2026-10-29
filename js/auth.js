@@ -174,7 +174,7 @@ async function refreshSessionUI() {
   // If an OAuth callback or an existing session returns to the login page,
   // send the member straight to the dashboard. Keep password recovery on this page.
   if (user && !isResetMode) {
-    window.location.replace("dashboard.html");
+    window.location.replace(getPostAuthDestination());
     return;
   }
   if (loginForm) loginForm.hidden = Boolean(user) || isResetMode;
