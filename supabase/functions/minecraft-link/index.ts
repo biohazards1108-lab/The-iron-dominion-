@@ -53,6 +53,26 @@ Deno.serve(async (req) => {
     if (authError || !user) return json(401, { error: "invalid_session" });
 
     if (action === "create") {
+      // Avoid flooding the challenge table or repeatedly rotating a valid code.
+      // The database still enforces single-use claims; this is a per-account
+      // cooldown, not a substitute for platform-level request rate limiting.
+      const cooldownSince = new Date(Date.now() - 60 * 1000).toISOString();
+      const { data: recentChallenge, error: recentError } = await admin
+        .from("minecraft_link_challenges")
+        .select("created_at,expires_at,consumed_at")
+        .eq("user_id", user.id)
+        .gt("created_at", cooldownSince)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (recentError) return json(500, { error: "challenge_rate_check_failed" });
+      if (recentChallenge) {
+        return json(429, {
+          error: "challenge_rate_limited",
+          retryAfterSeconds: Math.max(1, 60 - Math.floor((Date.now() - new Date(recentChallenge.created_at).getTime()) / 1000)),
+        });
+      }
+
       const rawCode = Array.from(crypto.getRandomValues(new Uint8Array(10)))
         .map((n) => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[n % 32]).join("");
       const codeHash = await sha256(rawCode);
