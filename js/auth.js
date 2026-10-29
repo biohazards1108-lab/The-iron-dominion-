@@ -19,6 +19,12 @@ const showMessage = (text, kind = "info") => {
   message.hidden = false;
 };
 const formValue = (form, name) => String(new FormData(form).get(name) || "");
+// Only allow known same-origin destinations; never redirect to a user-supplied external URL.
+const POST_AUTH_DESTINATIONS = new Set(["dashboard", "daily", "account", "link-minecraft", "join"]);
+const getPostAuthDestination = () => {
+  const requested = new URLSearchParams(location.search).get("next") || "";
+  return POST_AUTH_DESTINATIONS.has(requested) ? requested + ".html" : "dashboard.html";
+};
 const setBusy = (form, busy) => {
   const button = form?.querySelector('button[type="submit"]');
   if (button) {
@@ -72,7 +78,7 @@ microsoftButtons.forEach((button) => {
         provider: "azure",
         options: {
           scopes: "email",
-          redirectTo: new URL("login.html", location.origin).href
+          redirectTo: new URL("login.html?next=" + encodeURIComponent(getPostAuthDestination().replace(".html", "")), location.origin).href
         }
       });
       if (error) throw error;
@@ -95,7 +101,7 @@ loginForm?.addEventListener("submit", async (event) => {
     if (error) throw error;
     showMessage("Signed in successfully.", "success");
     // Successful sign-in always takes members to their dashboard.
-    window.location.replace("dashboard.html");
+    window.location.replace(getPostAuthDestination());
     return;
   } catch (error) {
     showMessage(friendlyError(error), "error");
@@ -195,7 +201,7 @@ supabase.auth.onAuthStateChange((event, session) => {
   // on the login page if the PKCE callback finishes slightly later.
   const isResetMode = new URLSearchParams(location.search).get("mode") === "reset";
   if (session?.user && !isResetMode) {
-    window.location.replace("dashboard.html");
+    window.location.replace(getPostAuthDestination());
   }
 });
 if (new URLSearchParams(location.search).get("mode") === "reset") {
