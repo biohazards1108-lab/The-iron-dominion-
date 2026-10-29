@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://dfdzjfsydaoovkxhilov.supabase.co; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Claim your daily Iron Dominion website points, check your streak status, and find your next community activity.">
+<meta name="theme-color" content="#0b0d0f">
+<meta property="og:title" content="Daily Dominion | The Iron Dominion">
+<meta property="og:description" content="Your daily check-in and community hub for Iron Dominion.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://theirondominion.com/assets/iron-dominion-banner.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://theirondominion.com/daily.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/pages.css">
+<title>Daily Dominion | The Iron Dominion</title>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="hero"><div class="overlay"><span class="badge">THE IRON DOMINION · DAILY HUB</span><h1>CLAIM YOUR DAILY REWARD</h1><p>Show up, build your legacy, and stay connected to the Dominion.</p><div class="hero-actions"><a class="button" href="dashboard.html">Player Dashboard</a><a class="button secondary" href="vote.html">Voting Center</a></div></div></header>
+<nav aria-label="Main navigation"><a href="index.html">🏰 Home</a><a href="join.html">▶ Server Info</a><a href="dashboard.html">⚔ Player Dashboard</a><a class="active" aria-current="page" href="daily.html">🔥 Daily Hub</a><a href="leaderboard.html">🏆 Leaderboard</a><a href="vote.html">🗳 Vote</a><a href="guides.html">📖 Guides</a><a href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">💬 Discord</a></nav>
+<main id="main-content">
+<section class="panel" aria-labelledby="claim-heading"><span class="eyebrow">DAILY CHECK-IN</span><h2 id="claim-heading">Your daily Dominion</h2><p>Sign in to claim <strong>25 website points</strong> once per UTC calendar day. These points are for the website only; they are not Minecraft currency and cannot currently be spent in-game.</p><div class="grid"><article class="card"><h3>Website points</h3><p><strong id="daily-balance" aria-live="polite">Loading…</strong></p></article><article class="card"><h3>Today’s claim</h3><p><strong id="daily-claim-state" aria-live="polite">Checking…</strong></p><p id="daily-date" class="muted"></p></article></div><p id="daily-message" role="status" aria-live="polite" hidden></p><div class="hero-actions"><button class="button" id="daily-claim" type="button" disabled>Checking account…</button><button class="button secondary" id="daily-refresh" type="button">Refresh status</button></div></section>
+<section class="panel"><span class="eyebrow">YOUR DAILY ROUTE</span><h2>Ways to stay involved</h2><div class="grid"><article class="card"><h3>📣 Catch the latest news</h3><p>Announcements, maintenance notices, and verified launch information are shared through the official community.</p><a href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">Visit the official Discord</a></article><article class="card"><h3>📚 Learn the Dominion</h3><p>Read the current rules and getting-started information before joining. Guides will expand as game systems are tested.</p><a href="guides.html">Read player guides</a></article><article class="card"><h3>🏆 Track the rankings</h3><p>Verified leaderboards will appear when trusted game statistics are available. We do not publish fabricated player scores.</p><a href="leaderboard.html">View leaderboard status</a></article><article class="card"><h3>🗳 Support the server</h3><p>Official vote listings will be added once configured and verified. A click alone will never be treated as proof of a vote.</p><a href="vote.html">Open voting center</a></article></div></section>
+<section class="panel"><h2>How the daily claim works</h2><ul><li>One claim per account per UTC day.</li><li>The server checks the date and records the claim securely.</li><li>Repeated requests cannot award the same day twice.</li><li>Website points are separate from any future in-game economy.</li></ul><p class="muted">If a claim fails, refresh the status and try again. If the problem persists, contact the team through the official Discord.</p></section>
+</main>
+<footer><p>⚒ Iron Dominion © 2026</p><p>Daily website points are not real-money value and are not spendable in Minecraft at this time.</p><p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="support.html">Support</a></p></footer>
+<script type="module" src="js/daily.js"></script>
+</body></html>
