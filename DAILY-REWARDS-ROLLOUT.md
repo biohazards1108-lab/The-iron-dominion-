@@ -13,7 +13,7 @@ This runbook is for the Iron Dominion website at `https://theirondominion.com`. 
 
 1. Review and merge the pull request after CI passes.
 2. Back up the Supabase project and confirm the project URL is `https://dfdzjfsydaoovkxhilov.supabase.co`.
-3. Apply `supabase/migrations/202610290001_dominion_daily_rewards.sql` to the intended Supabase project using the SQL editor or the approved migration workflow.
+3. Apply `supabase/migrations/202610280004_dominion_daily_rewards.sql` to the intended Supabase project using the SQL editor or the approved migration workflow.
 4. Verify both tables exist: `dominion_web_points` and `dominion_daily_claims`. Verify RLS is enabled and forced on both. Verify there are no client insert/update/delete policies and that only `service_role` can execute `claim_dominion_daily_points(uuid,date,integer)`.
 5. Deploy the Edge Function from a trusted development environment with the Supabase CLI installed and authenticated:
    ```sh
