@@ -66,7 +66,39 @@
 <section class="panel discord-feature"><div><span class="eyebrow">💬 DOMINION COMMAND CENTER</span><h2>Stay in the loop</h2><p>Discord remains the official place for announcements, support, and development updates.</p></div><a class="button discord-button" href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">💬 JOIN THE IRON DOMINION DISCORD</a></section>
 </main>
 <script src="js/bedrock-status.js" defer></script>
-<script src="js/bedrock-join.js" defer></script>
+<script defer>
+(() => {
+  "use strict";
+  const feedback = document.querySelector("#copy-feedback");
+  document.querySelectorAll("[data-copy-target]").forEach(button => {
+    button.addEventListener("click", async () => {
+      const target = document.getElementById(button.dataset.copyTarget);
+      if (!target) return;
+      const value = target.textContent.trim();
+      let copied = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(value);
+          copied = true;
+        } else {
+          const field = document.createElement("textarea");
+          field.value = value;
+          field.setAttribute("readonly", "");
+          field.style.position = "fixed";
+          field.style.opacity = "0";
+          document.body.appendChild(field);
+          field.select();
+          try { copied = document.execCommand("copy"); } catch (_) {}
+          field.remove();
+        }
+      } catch (_) {}
+      if (feedback) feedback.textContent = copied
+        ? "Copied: " + value
+        : "Copy wasn’t available. Please select and copy the value manually.";
+    });
+  });
+})();
+</script>
 <footer><p>⚒ The Iron Dominion © 2026</p><p>Bedrock Dominion connection details are intended for Minecraft Bedrock Edition. Check official announcements for confirmed availability.</p><p><a href="join.html">Server Info</a> · <a href="mods.html">Mods &amp; Features</a> · <a href="rules.html">Rules</a> · <a href="https://discord.gg/bnXXc2ng72" target="_blank" rel="noopener noreferrer">Discord Community</a></p></footer>
 <script src="js/dominion-effects.js" defer></script>
 </body></html>
