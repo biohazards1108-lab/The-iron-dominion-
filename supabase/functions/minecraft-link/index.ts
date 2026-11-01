@@ -53,6 +53,19 @@ Deno.serve(async (req) => {
     if (authError || !user) return json(401, { error: "invalid_session" });
 
     if (action === "create") {
+      // Atomically reserve a per-account challenge slot in the database so
+      // concurrent requests cannot race past an application-level cooldown.
+      const { data: allowed, error: cooldownError } = await admin.rpc("claim_minecraft_link_cooldown", {
+        p_user_id: user.id,
+      });
+      if (cooldownError) return json(500, { error: "challenge_rate_check_failed" });
+      if (typeof allowed !== "number" || allowed !== 0) {
+        return json(429, {
+          error: "challenge_rate_limited",
+          retryAfterSeconds: typeof allowed === "number" ? Math.max(1, allowed) : 60,
+        });
+      }
+
       const rawCode = Array.from(crypto.getRandomValues(new Uint8Array(10)))
         .map((n) => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[n % 32]).join("");
       const codeHash = await sha256(rawCode);
