@@ -8,6 +8,7 @@ The public website and development repository for **Iron Dominion** and **Bedroc
 - Server information: https://theirondominion.com/join.html
 - Microsoft/Minecraft account shortcuts: https://theirondominion.com/account.html
 - Mods and features: https://theirondominion.com/mods.html
+- Daily player hub (prepared; rewards require backend deployment): https://theirondominion.com/daily.html
 - Player guides: https://theirondominion.com/guides.html
 - Ranks: https://theirondominion.com/ranks.html
 - Currency: https://theirondominion.com/currency.html
@@ -36,6 +37,7 @@ Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the 
 
 - `index.html` — landing page and project announcement
 - `join.html` — server connection details and launch status
+- `daily.html` — daily player hub; website-only points remain inactive until the Supabase migration and Edge Function are deployed
 - `account.html` — Iron Dominion account entry point and shortcuts to official Microsoft/Minecraft account portals
 - `mods.html` — custom content and feature status
 - `guides.html` — player preparation and future how-to guides
@@ -60,6 +62,11 @@ Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the 
 ## Hosting and API boundary
 
 The public site is hosted as a static GitHub Pages website. GitHub Pages serves HTML, CSS, JavaScript, and static JSON files; it does **not** execute the repository's `api/*.js` functions, the legacy Express server, or webhook handlers. `vercel.json` does not configure GitHub Pages. Therefore, API and payment integrations must not be described as live based on files existing in this repository. Microsoft OAuth is handled by Supabase Auth and returns users to the static site; verified Minecraft linking, trusted player statistics, purchases, voting rewards, and economy still require a separately deployed trusted backend.
+
+## Daily reward rollout
+
+- `DAILY-REWARDS-ROLLOUT.md` — deployment sequence, security checks, release tests, and rollback guidance for the daily website-points feature.
+- `supabase/migrations/202610290001_dominion_daily_rewards.sql` and `supabase/functions/dominion-daily-reward/` define the proposed server-enforced daily website-points system. These are not live until explicitly deployed and tested.
 
 ## Server planning
 

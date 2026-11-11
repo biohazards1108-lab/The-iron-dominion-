@@ -1,2 +1,5 @@
 [functions.minecraft-link]
 verify_jwt = false
+
+[functions.dominion-daily-reward]
+verify_jwt = false
