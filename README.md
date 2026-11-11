@@ -22,6 +22,10 @@ The public website and development repository for **Iron Dominion** and **Bedroc
 - Development log: https://theirondominion.com/changelog.html
 - Community Discord: https://discord.gg/bnXXc2ng72
 
+## Account backend plan
+
+The Dominion Gate and registration pages are currently visual shells; they do not collect credentials. The proposed managed backend is Supabase Auth + PostgreSQL with Microsoft OAuth, documented in [AUTHENTICATION-PLAN.md](AUTHENTICATION-PLAN.md). The initial profile schema is in `supabase/migrations/202610280001_profiles.sql`. Do not apply it to production or enable credential forms until the Supabase project, OAuth provider, email delivery, RLS tests, privacy review, and launch gates in the plan are complete.
+
 ## Current project status
 
 Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the owner has successfully connected and moved around in-game. The website and custom gameplay systems remain in active development.
