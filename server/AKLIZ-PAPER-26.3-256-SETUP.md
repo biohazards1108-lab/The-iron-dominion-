@@ -19,7 +19,7 @@ For current Geyser NetherNet transport, the Geyser port must be reachable over b
 
 1. Set the Akliz Java runtime to **Java 25**.
 2. Select **Paper 26.3 build 256** in Akliz if the panel offers that exact build.
-3. If Akliz does not offer it, download the official Paper server JAR from [PaperMC Downloads](https://papermc.io/downloads/paper) and select Minecraft `26.3` / build `256`. Upload it and set the panel's startup JAR to the uploaded filename.
+3. If Akliz does not offer it, download the [official Paper 26.3 build 256 JAR](https://fill-data.papermc.io/v1/objects/c86baf83b1fb0eb0d572f39484c242210896c6adf9cc9342d5c16c4de70c9bdc/paper-26.3-256.jar) (52.7 MB). SHA-256: `c86baf83b1fb0eb0d572f39484c242210896c6adf9cc9342d5c16c4de70c9bdc`. Upload it and set the panel's startup JAR to the uploaded filename.
 4. Start the server once with no plugins. Let it generate its files, review the console, then stop it cleanly.
 5. Accept the Minecraft EULA only if you agree to it.
 6. Keep Akliz's assigned Java port and startup arguments intact. Do not overwrite the provider's `server.properties` with a generic template.
