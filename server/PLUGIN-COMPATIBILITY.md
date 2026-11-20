@@ -1,5 +1,8 @@
 # Iron Dominion — Paper 26.3 Plugin Compatibility Register
 
+**Paper server JAR:** [paper-26.3-256.jar](https://fill-data.papermc.io/v1/objects/c86baf83b1fb0eb0d572f39484c242210896c6adf9cc9342d5c16c4de70c9bdc/paper-26.3-256.jar)  
+**SHA-256:** `c86baf83b1fb0eb0d572f39484c242210896c6adf9cc9342d5c16c4de70c9bdc`
+
 **Target server:** Paper 26.3 build 256  
 **Runtime:** Java 25  
 **Hostname:** `the-iron-Dominion.g.akliz.net`  
