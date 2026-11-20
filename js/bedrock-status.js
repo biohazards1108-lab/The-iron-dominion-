@@ -1,8 +1,8 @@
 (() => {
   "use strict";
-  const HOST = "the-iron-dominion-bedrock.g.akliz.net";
-  const PORT = 15300;
-  const ENDPOINT = "https://api.mcsrvstat.us/bedrock/3/" + HOST + ":" + PORT;
+  const HOST = "the-iron-Dominion.g.akliz.net";
+  // Live polling stays disabled until Akliz confirms the new Geyser port.
+  const ENDPOINT = null;
   const statusNodes = [...document.querySelectorAll("[data-bedrock-status]")];
   const playersNodes = [...document.querySelectorAll("[data-bedrock-players]")];
   const maxNodes = [...document.querySelectorAll("[data-bedrock-max]")];
@@ -13,6 +13,14 @@
     typeof value === "string" && value.trim() ? value.trim().slice(0, 120) : fallback;
 
   async function refresh() {
+    if (!ENDPOINT) {
+      setText(statusNodes, "PORT VERIFICATION PENDING");
+      setText(playersNodes, "unavailable");
+      setText(maxNodes, "unavailable");
+      setText(versionNodes, "unavailable");
+      setText(checkedNodes, "Live checks will resume after the Akliz-assigned Geyser port is confirmed for " + HOST + ".");
+      return;
+    }
     setText(statusNodes, "CHECKING…");
     try {
       const response = await fetch(ENDPOINT, {
@@ -49,6 +57,4 @@
   }
 
   refresh();
-  // The upstream provider caches responses; poll no more frequently than every five minutes.
-  window.setInterval(refresh, 5 * 60 * 1000);
 })();
