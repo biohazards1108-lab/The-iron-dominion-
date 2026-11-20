@@ -24,10 +24,12 @@ The public website and development repository for **Iron Dominion** and **Bedroc
 
 ## Current project status
 
-Bedrock Dominion's Akliz-hosted native Bedrock server has been started, and the owner has successfully connected and moved around in-game. The website and custom gameplay systems remain in active development.
+The owner has provisioned a fresh Akliz-hosted Paper server for the Iron Dominion rebuild. Target server: Paper 26.3 build 256 on Java 25. New hostname supplied by the owner: `the-iron-Dominion.g.akliz.net`. The assigned Java and Geyser ports and successful external connectivity are not yet verified.
 
-- Java and Bedrock support are planned; compatibility is not yet confirmed.
-- The server address, port, supported versions, and launch date are not published until verified.
+- The target architecture is Paper 26.3 build 256 on Java 25, with Geyser-Spigot and Floodgate-Spigot for Bedrock cross-play.
+- New hostname: `the-iron-Dominion.g.akliz.net`. Java and Bedrock ports must be confirmed separately in Akliz.
+- Geyser supports Java 26.3 and its currently documented Bedrock range; test the owner's actual mobile client before announcing compatibility.
+- The server is in rebuild/setup status; do not claim online until both Java and Bedrock connections have been externally tested.
 - Custom mods, gameplay systems, and feature details are marked **Coming Soon** until they are implemented and tested.
 - Economy, ranks, store, voting rewards, leaderboards, and live server status are not advertised as active unless explicitly confirmed on the site.
 - The official Discord invite above is retained for development updates.
@@ -63,7 +65,9 @@ The public site is hosted as a static GitHub Pages website. GitHub Pages serves 
 
 ## Server planning
 
-- `server/ARCHITECTURE.md` — server model decision guide, trade-offs, security baseline, and launch checklist
+- `server/ARCHITECTURE.md` — current Paper + Geyser/Floodgate model, security baseline, and launch checklist
+- `server/AKLIZ-PAPER-26.3-256-SETUP.md` — new Akliz rebuild instructions and verified plugin sources
+- `server/PLUGIN-COMPATIBILITY.md` — plugin inventory, version evidence, and staged installation order
 
 ## Historical media
 
