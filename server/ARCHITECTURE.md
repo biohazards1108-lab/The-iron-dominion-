@@ -4,14 +4,14 @@
 
 This file tracks the current Java Paper backend with Geyser/Floodgate cross-play. Old Bukkit/Cauldron/Tekkit plugins in this repository are not automatically compatible with Paper 26.3 and must not be installed until migrated and tested.
 
-## 1. Decide what “Bedrock server” means
+## 1. Current server model
 
 There are two different goals that should not be confused:
 
 | Approach | What it means | Main trade-off |
 | --- | --- | --- |
-| **Bedrock-native server** | Run official Bedrock Dedicated Server software. | Bedrock clients are the native target. Java client access is not assumed and must not be promised without a tested, supported bridge. |
-| **Cross-play Java server** | Run a compatible Java server and use a bridge such as Geyser, with Floodgate if the chosen setup requires it. | Bedrock clients can connect to a Java backend, but this is not the same as running a native Bedrock Dedicated Server. Plugin and gameplay compatibility must be tested. |
+| **Bedrock-native server** | Run official Bedrock Dedicated Server software. | Not the current rebuild target; Java Paper plugins do not run on this server type. |
+| **Cross-play Java server** | Run Paper 26.3 and use Geyser-Spigot plus Floodgate-Spigot. | Current target. Java players connect directly to Paper; Bedrock players connect through Geyser. Both paths require testing. |
 | **Separate edition servers** | Run distinct Java and Bedrock servers and connect them at the community level. | More hosting, administration, backups, and potentially separate gameplay/economy systems. Shared identity or progress is not automatic. |
 
 ### Provisional recommendation
