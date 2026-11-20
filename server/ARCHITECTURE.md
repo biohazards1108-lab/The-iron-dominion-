@@ -1,8 +1,8 @@
 # Bedrock Dominion — Server Architecture Plan
 
-**Status: native Bedrock server configured on Akliz; owner has confirmed successful in-game connection. Custom gameplay integrations remain in planning/testing.**
+**Status: fresh Akliz-hosted Paper server provisioned by owner; rebuild target is Paper 26.3 build 256 on Java 25. New hostname: `the-iron-Dominion.g.akliz.net`. Assigned Java and Geyser ports and successful client tests are pending.**
 
-This file keeps the server plan honest while the project moves from the previous Java/Bukkit-era setup to Bedrock Dominion. The old plugins and Node backend in this repository are not Bedrock-compatible by default and must not be installed into a new server.
+This file tracks the current Java Paper backend with Geyser/Floodgate cross-play. Old Bukkit/Cauldron/Tekkit plugins in this repository are not automatically compatible with Paper 26.3 and must not be installed until migrated and tested.
 
 ## 1. Decide what “Bedrock server” means
 
@@ -16,17 +16,17 @@ There are two different goals that should not be confused:
 
 ### Provisional recommendation
 
-The current live target is an Akliz-hosted native Minecraft Bedrock Dedicated Server. The owner has successfully connected using the friendly hostname and can move around in-game. The Akliz panel previously showed `the-iron-dominion-bedrock.g.akliz.net`, port `15300`, version `1.26.60`. Reconfirm the panel before any server-version update. Keep Java client access marked **planned / unconfirmed** until a supported bridge or separate Java server is actually installed and tested.
+The current rebuild target is an Akliz-hosted Paper 26.3 build 256 server running on Java 25. Owner-supplied hostname: `the-iron-Dominion.g.akliz.net`. Geyser-Spigot and Floodgate-Spigot are the intended Bedrock bridge. The Java port and Geyser Bedrock port are not yet supplied; obtain both from the Akliz panel. Do not reuse the old hostname or old port 15300. Mark the server **setup in progress** until the panel ports, plugin startup, and Java/Bedrock client connections are tested.
 
 Do not promise a single shared world, inventory, economy, or player identity across editions unless that behavior is implemented and verified.
 
 ## 2. Decisions required before implementation
 
-- [ ] Primary server model: Bedrock-native, Java backend with Bedrock bridge, or separate servers.
+- [x] Primary server model: Paper 26.3 Java backend with Geyser-Spigot and Floodgate-Spigot for Bedrock cross-play.
 - [ ] Hosting provider and server operating system.
-- [ ] Target Minecraft version(s), chosen only after checking current official releases and compatibility.
+- [x] Target Minecraft version: Java 26.3 / Paper build 256; Java runtime 25. Confirm Bedrock client compatibility against current Geyser support.
 - [ ] Expected player capacity and performance budget.
-- [ ] Public connection address, port, and DNS plan.
+- [ ] Confirm Akliz Java port and separate Geyser Bedrock port for `the-iron-Dominion.g.akliz.net`.
 - [ ] World type, difficulty, PvP policy, grief protection, and reset policy.
 - [ ] Backup schedule, retention, and restore test.
 - [ ] Admin/staff permissions, moderation process, and player reporting path.
@@ -35,7 +35,7 @@ Do not promise a single shared world, inventory, economy, or player identity acr
 
 ## 3. Bedrock content plan
 
-For a Bedrock-native setup, design content around the actual capabilities of the selected Bedrock server and its supported add-on/behavior-pack/resource-pack systems. Do not assume Java Bukkit, Spigot, Paper, Cauldron, Forge, or Fabric plugins can run on Bedrock.
+For the current Paper setup, design content as Paper plugins, Nova addons, or InfinityAssets content packs. Bedrock clients receive the translated experience through Geyser; every custom item, GUI, resource pack, and interaction must be tested on both Java and Bedrock clients. Do not assume legacy Bukkit/Cauldron 1.6.4 JARs are compatible.
 
 For every custom feature, keep a small release record:
 
